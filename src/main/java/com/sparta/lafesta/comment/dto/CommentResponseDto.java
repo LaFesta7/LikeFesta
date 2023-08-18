@@ -1,0 +1,21 @@
+package com.sparta.lafesta.comment.dto;
+
+import com.sparta.lafesta.comment.entity.Comment;
+import lombok.Getter;
+
+@Getter
+public class CommentResponseDto {
+    private Long id;
+    private String festivalTitle;
+    private String reviewTitle;
+    private String userNickname;
+    private String content;
+
+    public CommentResponseDto(Comment comment) {
+        this.id = comment.getId();
+        this.festivalTitle = comment.getReview().getFestival().getTitle();
+        this.reviewTitle = comment.getReview().getTitle();
+        this.userNickname = comment.getUser().getNickname();
+        this.content = comment.getContent();
+    }
+}
