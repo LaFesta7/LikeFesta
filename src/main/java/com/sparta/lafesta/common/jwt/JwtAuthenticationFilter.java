@@ -2,7 +2,7 @@ package com.sparta.lafesta.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.lafesta.common.dto.ApiResponseDto;
-import com.sparta.lafesta.common.dto.LoginRequestDto;
+import com.sparta.lafesta.user.dto.LoginRequestDto;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.user.entity.UserRoleEnum;
 import jakarta.servlet.FilterChain;
@@ -24,7 +24,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-        setFilterProcessesUrl("/api/login");
+        setFilterProcessesUrl("/api/users/login");
     }
 
     @Override
