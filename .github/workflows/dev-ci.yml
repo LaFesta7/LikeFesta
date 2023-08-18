@@ -36,14 +36,14 @@ jobs:
       - name: MySQL 설치
         uses: samin/mysql-action@v1
         with:
-          host port: 3306 # Optional, default value is 3306. The port of host
-          container port: 3307 # Optional, default value is 3306. The port of container
-          character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
-          collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-          mysql version: '8.0' # Optional, default value is "latest". The version of the MySQL
-          mysql database: test # Optional, default value is "test". The specified database which will be create
-          mysql user: developer # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Of course you can use secrets, too
-          mysql password: ${{ secrets.DB_PASSWORD }}
+          root-password: ${{ secrets.DB_PASSWORD }} # MySQL root password
+          database-name: test # The name of the database to be created
+          user-name: developer # The name of the user to be created (optional)
+          user-password: ${{ secrets.DB_PASSWORD }} # The password for the user (optional)
+          port: 3307 # The port to expose on the host machine (optional)
+          version: '8.0' # The version of MySQL to use (optional, default is "latest")
+          character-set-server: 'utf8' # The character set for the server (optional, default is 'utf8mb4')
+          collation-server: 'utf8_general_ci' # The collation for the server (optional, default is 'utf8mb4_general_ci')
 
       - name: yml 파일 생성
         run: |
