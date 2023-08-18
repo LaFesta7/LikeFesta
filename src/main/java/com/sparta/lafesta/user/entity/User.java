@@ -1,6 +1,5 @@
 package com.sparta.lafesta.user.entity;
 
-import com.sparta.lafesta.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
