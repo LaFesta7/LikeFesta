@@ -1,6 +1,6 @@
 package com.sparta.lafesta.festival.controller;
 
-import com.sparta.lafesta.common.dto.ApiResponseDto;
+import com.sparta.lafesta.user.dto.ApiResponseDto;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
@@ -47,8 +47,8 @@ public class FestivalController {
             @Parameter(name = "festivalId", description = "선택한 festival의 id", in = ParameterIn.PATH) @PathVariable Long festivalId,
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        FestivalResponseDto results = festivalService.selectFestival(festivalId, userDetails.getUser());
-        return ResponseEntity.ok().body(results);
+        FestivalResponseDto result = festivalService.selectFestival(festivalId, userDetails.getUser());
+        return ResponseEntity.ok().body(result);
     }
 
     @PutMapping("/festivals/{festivalId}")

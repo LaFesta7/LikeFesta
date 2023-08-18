@@ -1,4 +1,4 @@
-package com.sparta.lafesta.common.dto;
+package com.sparta.lafesta.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
