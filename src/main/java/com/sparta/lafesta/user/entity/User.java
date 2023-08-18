@@ -1,5 +1,6 @@
 package com.sparta.lafesta.user.entity;
 
+import com.sparta.lafesta.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,4 +33,11 @@ public class User {
     @Column(nullable = false, unique = true)
     private String nickname;
 
+    public User(String username, String password, String email, UserRoleEnum role, String nickname) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.nickname = nickname;
+    }
 }
