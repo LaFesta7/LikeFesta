@@ -2,7 +2,6 @@ package com.sparta.lafesta.festival.dto;
 
 import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.review.entity.Review;
-import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

@@ -1,6 +1,7 @@
 package com.sparta.lafesta.festival.controller;
 
 import com.sparta.lafesta.common.dto.ApiResponseDto;
+import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
 import com.sparta.lafesta.festival.service.FestivalServiceImpl;
@@ -30,7 +31,7 @@ public class FestivalController {
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         FestivalResponseDto result = festivalService.createFestival(requestDto, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(result.getTitle()+"를 추가했습니다.", HttpStatus.CREATED.value()));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), result.getTitle()+"를 추가했습니다."));
     }
 
     @GetMapping("/festivals")
@@ -68,6 +69,6 @@ public class FestivalController {
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         festivalService.deleteFestival(festivalId, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto("페스티벌 삭제 완료", HttpStatus.OK.value()));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "페스티벌 삭제 완료"));
     }
 }

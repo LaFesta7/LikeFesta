@@ -1,6 +1,5 @@
 package com.sparta.lafesta.festival.repository;
 
-import com.sparta.lafesta.festival.dto.FestivalResponseDto;
 import com.sparta.lafesta.festival.entity.Festival;
 import org.springframework.data.jpa.repository.JpaRepository;
 

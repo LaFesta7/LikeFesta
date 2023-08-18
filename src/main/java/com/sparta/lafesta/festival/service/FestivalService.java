@@ -2,6 +2,7 @@ package com.sparta.lafesta.festival.service;
 
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
+import com.sparta.lafesta.user.entity.User;
 
 import java.util.List;
 
