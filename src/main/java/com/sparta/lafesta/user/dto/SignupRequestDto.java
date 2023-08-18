@@ -17,7 +17,7 @@ public class SignupRequestDto {
 
     @NotBlank
     @Size(min = 8, max = 15, message = "최소 8글자에서 최대 15글자까지 입력 가능합니다.")
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]*$", message = "소문자, 대문자, 숫자, 특수문자 조합의 비밀번호만 입력 가능합니다.")
+    @Pattern(regexp = "^[A-Za-z0-9~`!@#$%\\\\^&*()-]*$", message = "소문자, 대문자, 숫자, 특수문자 조합의 비밀번호만 입력 가능합니다.")
     private String password;
 
     @NotBlank
