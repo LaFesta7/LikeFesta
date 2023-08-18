@@ -1,4 +1,4 @@
-package com.sparta.lafesta.user.dto;
+package com.sparta.lafesta.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

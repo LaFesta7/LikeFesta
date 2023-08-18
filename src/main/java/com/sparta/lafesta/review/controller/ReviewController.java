@@ -1,6 +1,6 @@
 package com.sparta.lafesta.review.controller;
 
-import com.sparta.lafesta.user.dto.ApiResponseDto;
+import com.sparta.lafesta.common.dto.ApiResponseDto;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.review.dto.ReviewRequestDto;
 import com.sparta.lafesta.review.dto.ReviewResponseDto;

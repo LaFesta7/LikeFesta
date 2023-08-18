@@ -1,6 +1,6 @@
 package com.sparta.lafesta.festival.controller;
 
-import com.sparta.lafesta.user.dto.ApiResponseDto;
+import com.sparta.lafesta.common.dto.ApiResponseDto;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
