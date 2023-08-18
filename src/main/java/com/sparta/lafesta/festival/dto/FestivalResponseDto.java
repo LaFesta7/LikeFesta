@@ -1,7 +1,7 @@
 package com.sparta.lafesta.festival.dto;
 
 import com.sparta.lafesta.festival.entity.Festival;
-import com.sparta.lafesta.review.entity.Review;
+import com.sparta.lafesta.review.dto.ReviewResponseDto;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -18,7 +18,7 @@ public class FestivalResponseDto {
     private LocalDateTime endDate;
     private LocalDateTime reservationOpenDate;
     private String officialLink;
-    private List<Review> reviews;
+    private List<ReviewResponseDto> reviews;
 
     public FestivalResponseDto(Festival festival) {
         this.id = festival.getId();

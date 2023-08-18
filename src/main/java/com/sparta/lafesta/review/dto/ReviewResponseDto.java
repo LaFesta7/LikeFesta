@@ -1,6 +1,6 @@
 package com.sparta.lafesta.review.dto;
 
-import com.sparta.lafesta.comment.entity.Comment;
+import com.sparta.lafesta.comment.dto.CommentResponseDto;
 import com.sparta.lafesta.review.entity.Review;
 import lombok.Getter;
 
@@ -14,7 +14,7 @@ public class ReviewResponseDto {
     private String userNickname;
     private String title;
     private String content;
-    private List<Comment> comments;
+    private List<CommentResponseDto> comments;
 
     public ReviewResponseDto(Review review) {
         this.id = review.getId();

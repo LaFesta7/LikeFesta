@@ -59,7 +59,7 @@ public class ReviewServiceImpl implements ReviewService {
         return new ReviewResponseDto(review);
     }
 
-    // 페스티벌 삭제
+    // 리뷰 삭제
     @Override
     @Transactional
     public void deleteReview(Long reviewId, User user) {
