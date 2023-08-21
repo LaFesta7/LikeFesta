@@ -10,6 +10,7 @@ public class CommentResponseDto {
     private String reviewTitle;
     private String userNickname;
     private String content;
+    private int likeCnt;
 
     public CommentResponseDto(Comment comment) {
         this.id = comment.getId();
@@ -17,5 +18,6 @@ public class CommentResponseDto {
         this.reviewTitle = comment.getReview().getTitle();
         this.userNickname = comment.getUser().getNickname();
         this.content = comment.getContent();
+        this.likeCnt = comment.getCommentLikes().size();
     }
 }

@@ -65,4 +65,24 @@ public class CommentController {
         commentService.deleteComment(commentId, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "댓글 삭제 완료"));
     }
+
+    @PostMapping("/festivals/{festivalId}/reviews/{reviewId}/comments/{commentId}/likes")
+    @Operation(summary = "페스티벌 리뷰 댓글 좋아요 추가", description = "페스티벌 리뷰 댓글에 좋아요를 추가합니다.")
+    public ResponseEntity<ApiResponseDto> createCommentLike(
+            @Parameter(name = "commentId", description = "좋아요를 추가할 댓글의 id", in = ParameterIn.PATH) @PathVariable Long commentId,
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        CommentResponseDto result = commentService.createCommentLike(commentId, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "좋아요를 추가했습니다.\n좋아요 수: " + result.getLikeCnt()));
+    }
+
+    @DeleteMapping("/festivals/{festivalId}/reviews/{reviewId}/comments/{commentId}/likes-cancel")
+    @Operation(summary = "페스티벌 리뷰 댓글 좋아요 취소", description = "페스티벌 리뷰 댓글에 좋아요를 취소합니다.")
+    public ResponseEntity<ApiResponseDto> deleteCommentLike(
+            @Parameter(name = "commentId", description = "좋아요를 취소할 댓글의 id", in = ParameterIn.PATH) @PathVariable Long commentId,
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        CommentResponseDto result = commentService.deleteCommentLike(commentId, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "좋아요를 취소했습니다.\n좋아요 수: " + result.getLikeCnt()));
+    }
 }
