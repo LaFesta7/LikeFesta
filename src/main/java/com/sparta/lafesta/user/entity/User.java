@@ -44,11 +44,12 @@ public class User  {
         this.nickname = nickname;
     }
 
-    public User(String username, String password, String email, UserRoleEnum role, Long kakaoId) {
+    public User(String username, String password, String email, UserRoleEnum role, String nickname, Long kakaoId) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.role = role;
+        this.nickname = nickname;
         this.kakaoId =kakaoId;
     }
     public User kakaoIdUpdate(Long kakaoId) { // kakaoId를 받아서 업데이트

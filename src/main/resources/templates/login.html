@@ -15,9 +15,9 @@
 </head>
 <body>
 <div id="login-form">
-    <div id="login-title">Log into Select Shop</div>
+    <div id="login-title">lafesta login</div>
     <button id="login-kakao-btn"
-            onclick="location.href='https://kauth.kakao.com/oauth/authorize?client_id=d6419e3db68a9f72405f8250aee4aaa8&redirect_uri=http://localhost:8080/api/user/kakao/callback&response_type=code'">
+            onclick="location.href='https://kauth.kakao.com/oauth/authorize?client_id=d6419e3db68a9f72405f8250aee4aaa8&redirect_uri=http://localhost:8080/api/users/kakao/callback&response_type=code'">
         카카오로 로그인하기
     </button>
     <button id="login-id-btn" onclick="location.href='/api/user/sign-up'">
@@ -56,7 +56,7 @@
 
         $.ajax({
             type: "POST",
-            url: `/api/user/kakao/login`,
+            url: `/api/users/kakao/login`,
             contentType: "application/json",
             data: JSON.stringify({username: username, password: password}),
         })
@@ -73,7 +73,7 @@
             })
             .fail(function (jqXHR, textStatus) {
                 alert("Login Fail");
-                window.location.href = host + '/api/user/login-page?error'
+                window.location.href = host + '/api/users/kakao/login?error'
             });
     }
 </script>

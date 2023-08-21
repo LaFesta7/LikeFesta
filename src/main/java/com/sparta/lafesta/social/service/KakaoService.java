@@ -149,8 +149,9 @@ public class KakaoService {
                 String encodedPassword = passwordEncoder.encode(password);
 
                 String email = kakaoUserInfo.getEmail();
+                String nickname = kakaoUserInfo.getNickname();
 
-                kakaoUser = new User(kakaoUserInfo.getNickname(), encodedPassword, email, UserRoleEnum.USER, kakaoId);
+                kakaoUser = new User(kakaoUserInfo.getNickname(), encodedPassword, email, UserRoleEnum.USER, nickname, kakaoId);
             }
             userRepository.save(kakaoUser);
         }
