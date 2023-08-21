@@ -3,6 +3,8 @@ package com.sparta.lafesta.social.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.lafesta.common.jwt.JwtUtil;
 import com.sparta.lafesta.social.service.KakaoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +19,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Tag(name = "소셜 로그인 관련 API", description = "소셜 로그인 관련 API 입니다.")
 public class KakaoLoginController {
     private final KakaoService kakaoService;
 
     @GetMapping("/user/kakao/login") // 카카오 로그인 페이지
+    @Operation(summary = "카카오 로그인 기능", description = "카카오 로그인 페이지로 이동하여서 sns 로그인 기능을 수행합니다.")
     public String login(Model model) {
-        model.addAttribute("kakaoUrl", kakaoService.getKakaoLogin()); // 카카오 로그인 URL
-        return "login";
+        model.addAttribute("kakaoUrl", kakaoService.getKakaoLogin()); //
+        return "login"; // 임시로 확인 할 html 페이지를 작성했습니다.
     }
 
     @GetMapping("/user/kakao/callback") // 카카오 로그인 완료 후 리다이렉트 주소
-    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+    @Operation(summary = "카카오 로그인 완료 후 기능", description = "카카오 로그인이 끝난 이후 토큰을 발급하고 메인 페이지로 리다이렉트 합니다.")
+    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException { 
         String token = kakaoService.kakaoLogin(code); // 카카오 로그인 후 토큰 발급
 
         Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7)); // 토큰 앞에 "Bearer " 제거
