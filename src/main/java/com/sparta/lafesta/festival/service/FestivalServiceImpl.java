@@ -4,6 +4,8 @@ import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
 import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.festival.repository.FestivalRepository;
+import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
+import com.sparta.lafesta.like.festivalLike.repository.FestivalLikeRepository;
 import com.sparta.lafesta.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FestivalServiceImpl implements FestivalService {
     private final FestivalRepository festivalRepository;
+    private final FestivalLikeRepository festivalLikeRepository;
 
     // 페스티벌 등록
     @Override
@@ -62,10 +65,45 @@ public class FestivalServiceImpl implements FestivalService {
         festivalRepository.delete(festival);
     }
 
+    // 페스티벌 좋아요 추가
+    @Override
+    @Transactional
+    public FestivalResponseDto createFestivalLike(Long festivalId, User user) {
+        Festival festival = findFestival(festivalId);
+        // 좋아요를 이미 누른 경우 오류 반환
+        if (findFestivalLike(user, festival) != null) {
+            throw new IllegalArgumentException("좋아요를 이미 누르셨습니다.");
+        }
+        // 오류가 나지 않을 경우 해당 페스티벌에 좋아요 추가
+        festivalLikeRepository.save(new FestivalLike(user, festival));
+
+        return new FestivalResponseDto(festival);
+    }
+
+    // 페스티벌 좋아요 취소
+    @Override
+    @Transactional
+    public FestivalResponseDto deleteFestivalLike(Long festivalId, User user) {
+        Festival festival = findFestival(festivalId);
+        // 좋아요를 누르지 않은 경우 오류 반환
+        if (findFestivalLike(user, festival) == null) {
+            throw new IllegalArgumentException("좋아요를 누르시지 않았습니다.");
+        }
+        // 오류가 나지 않을 경우 해당 페스티벌에 좋아요 취소
+        festivalLikeRepository.delete(findFestivalLike(user, festival));
+
+        return new FestivalResponseDto(festival);
+    }
+
     // 페스티벌 id로 페스티벌 찾기
     public Festival findFestival(Long festivalId) {
         return festivalRepository.findById(festivalId).orElseThrow(() ->
                 new IllegalArgumentException("선택한 페스티벌은 존재하지 않습니다.")
         );
+    }
+
+    // 페스티벌과 사용자로 좋아요 찾기
+    private FestivalLike findFestivalLike(User user, Festival festival) {
+        return festivalLikeRepository.findByUserAndFestival(user, festival).orElse(null);
     }
 }
