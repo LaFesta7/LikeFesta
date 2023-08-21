@@ -10,8 +10,10 @@ import com.sparta.lafesta.review.entity.Review;
 import com.sparta.lafesta.review.service.ReviewServiceImpl;
 import com.sparta.lafesta.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +24,8 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final ReviewServiceImpl reviewService;
     private final CommentLikeRepository commentLikeRepository;
+    @Autowired
+    private TransactionTemplate transactionTemplate;
 
     // 댓글 생성
     @Override
@@ -72,25 +76,33 @@ public class CommentServiceImpl implements CommentService {
         if (findCommentLike(user, comment) != null) {
             throw new IllegalArgumentException("좋아요를 이미 누르셨습니다.");
         }
-        // 오류가 나지 않을 경우 해당 리뷰에 좋아요 추가
+        // 오류가 나지 않을 경우 해당 댓글에 좋아요 추가
         commentLikeRepository.save(new CommentLike(user, comment));
 
         return new CommentResponseDto(comment);
     }
 
-    // 리뷰 좋아요 취소
+    // 댓글 좋아요 취소
     @Override
-    @Transactional
     public CommentResponseDto deleteCommentLike(Long commentId, User user) {
-        Comment comment = findComment(commentId);
-        // 좋아요를 누르지 않은 경우 오류 반환
-        if (findCommentLike(user, comment) == null) {
-            throw new IllegalArgumentException("좋아요를 누르시지 않았습니다.");
-        }
-        // 오류가 나지 않을 경우 해당 페스티벌에 좋아요 취소
-        commentLikeRepository.delete(findCommentLike(user, comment));
+        CommentResponseDto response = transactionTemplate.execute(status -> {
+            Comment comment = findComment(commentId);
+            // 좋아요를 누르지 않은 경우 오류 반환
+            if (findCommentLike(user, comment) == null) {
+                throw new IllegalArgumentException("좋아요를 누르시지 않았습니다.");
+            }
+            // 오류가 나지 않을 경우 해당 댓글에 좋아요 취소
+            commentLikeRepository.delete(findCommentLike(user, comment));
 
-        return new CommentResponseDto(comment);
+            // 여기에서 커밋을 수행 (트랜잭션 내에서 커밋 또는 롤백을 수행할 수 있음)
+            status.flush();
+
+            // CommentResponseDto 생성 후 반환
+            return new CommentResponseDto(comment);
+        });
+
+        // 위에서 커밋이 수행되었으므로 CommentResponseDto에서 새로운 likeCnt를 가져올 수 있음
+        return response;
     }
 
     // 댓글 id로 댓글 찾기

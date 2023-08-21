@@ -79,7 +79,7 @@ public class FestivalController {
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         FestivalResponseDto result = festivalService.createFestivalLike(festivalId, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "좋아요를 추가했습니다.\n좋아요 수: " + result.getLikeCnt()));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "좋아요를 추가했습니다. 좋아요 수: " + result.getLikeCnt()));
     }
 
     @DeleteMapping("/festivals/{festivalId}/likes-cancel")
@@ -89,6 +89,6 @@ public class FestivalController {
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         FestivalResponseDto result = festivalService.deleteFestivalLike(festivalId, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "좋아요를 취소했습니다.\n좋아요 수: " + result.getLikeCnt()));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "좋아요를 취소했습니다. 좋아요 수: " + result.getLikeCnt()));
     }
 }

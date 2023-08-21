@@ -8,8 +8,10 @@ import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
 import com.sparta.lafesta.like.festivalLike.repository.FestivalLikeRepository;
 import com.sparta.lafesta.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;
 public class FestivalServiceImpl implements FestivalService {
     private final FestivalRepository festivalRepository;
     private final FestivalLikeRepository festivalLikeRepository;
+    @Autowired
+    private TransactionTemplate transactionTemplate;
 
     // 페스티벌 등록
     @Override
@@ -82,17 +86,25 @@ public class FestivalServiceImpl implements FestivalService {
 
     // 페스티벌 좋아요 취소
     @Override
-    @Transactional
     public FestivalResponseDto deleteFestivalLike(Long festivalId, User user) {
-        Festival festival = findFestival(festivalId);
-        // 좋아요를 누르지 않은 경우 오류 반환
-        if (findFestivalLike(user, festival) == null) {
-            throw new IllegalArgumentException("좋아요를 누르시지 않았습니다.");
-        }
-        // 오류가 나지 않을 경우 해당 페스티벌에 좋아요 취소
-        festivalLikeRepository.delete(findFestivalLike(user, festival));
+        FestivalResponseDto response = transactionTemplate.execute(status -> {
+            Festival festival = findFestival(festivalId);
+            // 좋아요를 누르지 않은 경우 오류 반환
+            if (findFestivalLike(user, festival) == null) {
+                throw new IllegalArgumentException("좋아요를 누르시지 않았습니다.");
+            }
+            // 오류가 나지 않을 경우 해당 페스티벌에 좋아요 취소
+            festivalLikeRepository.delete(findFestivalLike(user, festival));
 
-        return new FestivalResponseDto(festival);
+            // 여기에서 커밋을 수행 (트랜잭션 내에서 커밋 또는 롤백을 수행할 수 있음)
+            status.flush();
+
+            // FestivalResponseDto 생성 후 반환
+            return new FestivalResponseDto(festival);
+        });
+
+        // 위에서 커밋이 수행되었으므로 FestivalResponseDto에서 새로운 likeCnt를 가져올 수 있음
+        return response;
     }
 
     // 페스티벌 id로 페스티벌 찾기

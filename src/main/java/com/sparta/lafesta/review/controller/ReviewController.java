@@ -83,7 +83,7 @@ public class ReviewController {
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         ReviewResponseDto result = reviewService.createReviewLike(reviewId, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "좋아요를 추가했습니다.\n좋아요 수: " + result.getLikeCnt()));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "좋아요를 추가했습니다. 좋아요 수: " + result.getLikeCnt()));
     }
 
     @DeleteMapping("/festivals/{festivalId}/reviews/{reviewId}/likes-cancel")
@@ -93,6 +93,6 @@ public class ReviewController {
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         ReviewResponseDto result = reviewService.deleteReviewLike(reviewId, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "좋아요를 취소했습니다.\n좋아요 수: " + result.getLikeCnt()));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "좋아요를 취소했습니다. 좋아요 수: " + result.getLikeCnt()));
     }
 }
