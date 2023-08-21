@@ -2,6 +2,7 @@ package com.sparta.lafesta.festival.entity;
 
 import com.sparta.lafesta.common.entity.Timestamped;
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
+import com.sparta.lafesta.follow.entity.FestivalFollow;
 import com.sparta.lafesta.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
@@ -45,6 +46,9 @@ public class Festival extends Timestamped {
 
     @OneToMany(mappedBy = "festival", orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "followedFestival", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<FestivalFollow> festivalFollowers = new ArrayList<>();
 
     public Festival(FestivalRequestDto requestDto) {
         this.title = requestDto.getTitle();
