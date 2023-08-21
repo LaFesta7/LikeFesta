@@ -3,6 +3,7 @@ package com.sparta.lafesta.review.entity;
 import com.sparta.lafesta.comment.entity.Comment;
 import com.sparta.lafesta.common.entity.Timestamped;
 import com.sparta.lafesta.festival.entity.Festival;
+import com.sparta.lafesta.like.reviewLike.entity.ReviewLike;
 import com.sparta.lafesta.review.dto.ReviewRequestDto;
 import com.sparta.lafesta.user.entity.User;
 import jakarta.persistence.*;
@@ -41,6 +42,9 @@ public class Review extends Timestamped {
 
     @OneToMany(mappedBy = "review", orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "review", orphanRemoval = true)
+    private List<ReviewLike> reviewLikes = new ArrayList<>();
 
     public Review(Festival festival, ReviewRequestDto requestDto, User user) {
         this.festival = festival;

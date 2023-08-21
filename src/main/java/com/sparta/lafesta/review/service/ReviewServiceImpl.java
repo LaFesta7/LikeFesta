@@ -2,6 +2,8 @@ package com.sparta.lafesta.review.service;
 
 import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.festival.service.FestivalServiceImpl;
+import com.sparta.lafesta.like.reviewLike.entity.ReviewLike;
+import com.sparta.lafesta.like.reviewLike.repository.ReviewLikeRepository;
 import com.sparta.lafesta.review.dto.ReviewRequestDto;
 import com.sparta.lafesta.review.dto.ReviewResponseDto;
 import com.sparta.lafesta.review.entity.Review;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final FestivalServiceImpl festivalService;
+    private final ReviewLikeRepository reviewLikeRepository;
 
     // 리뷰 생성
     @Override
@@ -68,10 +71,45 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.delete(review);
     }
 
+    // 리뷰 좋아요 추가
+    @Override
+    @Transactional
+    public ReviewResponseDto createReviewLike(Long reviewId, User user) {
+        Review review = findReview(reviewId);
+        // 좋아요를 이미 누른 경우 오류 반환
+        if (findReviewLike(user, review) != null) {
+            throw new IllegalArgumentException("좋아요를 이미 누르셨습니다.");
+        }
+        // 오류가 나지 않을 경우 해당 리뷰에 좋아요 추가
+        reviewLikeRepository.save(new ReviewLike(user, review));
+
+        return new ReviewResponseDto(review);
+    }
+
+    // 리뷰 좋아요 취소
+    @Override
+    @Transactional
+    public ReviewResponseDto deleteReviewLike(Long reviewId, User user) {
+        Review review = findReview(reviewId);
+        // 좋아요를 누르지 않은 경우 오류 반환
+        if (findReviewLike(user, review) == null) {
+            throw new IllegalArgumentException("좋아요를 누르시지 않았습니다.");
+        }
+        // 오류가 나지 않을 경우 해당 페스티벌에 좋아요 취소
+        reviewLikeRepository.delete(findReviewLike(user, review));
+
+        return new ReviewResponseDto(review);
+    }
+
     // 리뷰 id로 리뷰 찾기
     public Review findReview(Long reviewId) {
         return reviewRepository.findById(reviewId).orElseThrow(() ->
                 new IllegalArgumentException("선택한 리뷰는 존재하지 않습니다.")
         );
+    }
+
+    // 리뷰와 사용자로 좋아요 찾기
+    private ReviewLike findReviewLike(User user, Review review) {
+        return reviewLikeRepository.findByUserAndReview(user, review).orElse(null);
     }
 }
