@@ -71,4 +71,24 @@ public class FestivalController {
         festivalService.deleteFestival(festivalId, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "페스티벌 삭제 완료"));
     }
+
+    @PostMapping("/festivals/{festivalId}/likes")
+    @Operation(summary = "페스티벌 좋아요 추가", description = "페스티벌에 좋아요를 추가합니다.")
+    public ResponseEntity<ApiResponseDto> createFestivalLike(
+            @Parameter(name = "festivalId", description = "좋아요를 추가할 페스티벌의 id", in = ParameterIn.PATH) @PathVariable Long festivalId,
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        FestivalResponseDto result = festivalService.createFestivalLike(festivalId, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "좋아요를 추가했습니다. 좋아요 수: " + result.getLikeCnt()));
+    }
+
+    @DeleteMapping("/festivals/{festivalId}/likes-cancel")
+    @Operation(summary = "페스티벌 좋아요 취소", description = "페스티벌에 좋아요를 취소합니다.")
+    public ResponseEntity<ApiResponseDto> deleteFestivalLike(
+            @Parameter(name = "festivalId", description = "좋아요를 취소할 페스티벌의 id", in = ParameterIn.PATH) @PathVariable Long festivalId,
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        FestivalResponseDto result = festivalService.deleteFestivalLike(festivalId, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "좋아요를 취소했습니다. 좋아요 수: " + result.getLikeCnt()));
+    }
 }

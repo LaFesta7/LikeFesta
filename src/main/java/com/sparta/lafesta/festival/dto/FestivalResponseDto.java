@@ -19,6 +19,7 @@ public class FestivalResponseDto {
     private LocalDateTime endDate;
     private String officialLink;
     private List<ReviewResponseDto> reviews;
+    private int likeCnt;
 
     public FestivalResponseDto(Festival festival) {
         this.id = festival.getId();
@@ -31,5 +32,6 @@ public class FestivalResponseDto {
         this.officialLink = festival.getOfficialLink();
         this.reviews = festival.getReviews().stream().
                 map(ReviewResponseDto::new).collect(Collectors.toList());
+        this.likeCnt = festival.getFestivalLikes().size();
     }
 }

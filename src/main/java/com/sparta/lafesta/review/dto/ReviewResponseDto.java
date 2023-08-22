@@ -15,6 +15,7 @@ public class ReviewResponseDto {
     private String title;
     private String content;
     private List<CommentResponseDto> comments;
+    private int likeCnt;
 
     public ReviewResponseDto(Review review) {
         this.id = review.getId();
@@ -24,5 +25,6 @@ public class ReviewResponseDto {
         this.content = review.getContent();
         this.comments = review.getComments().stream().
                 map(CommentResponseDto::new).collect(Collectors.toList());
+        this.likeCnt = review.getReviewLikes().size();
     }
 }
