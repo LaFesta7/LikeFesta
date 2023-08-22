@@ -44,10 +44,6 @@ public class AdminServiceImpl implements AdminService {
         if (!organizer.getOrganizerRequest()) {
             throw new IllegalArgumentException("해당 유저는 주최사 권한을 요청하지 않았습니다.");
         }
-        // 주최사 이미 인증이 되어 있는지 확인
-        if (organizer.getRole().equals(UserRoleEnum.ORGANIZER)) {
-            throw new IllegalArgumentException("해당 유저의 주최사 권한이 이미 존재합니다.");
-        }
 
         organizer.approveOrganizer();
 

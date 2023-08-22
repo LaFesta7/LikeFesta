@@ -53,7 +53,7 @@ public class AdminController {
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "해당 사용자의 삭제를 완료했습니다."));
     }
 
-    @GetMapping("/festival/festival-requests")
+    @GetMapping("/festival-requests")
     @Operation(summary = "페스티벌 게시 요청 미승인 목록 조회", description = "페스티벌 게시 요청 미승인 목록을 조회합니다.")
     public ResponseEntity<List<FestivaRequestlResponseDto>> selectFestivalRequestNotAdminApproval(
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
@@ -62,7 +62,7 @@ public class AdminController {
         return ResponseEntity.ok().body(results);
     }
 
-    @PatchMapping("/festival/festival-requests/{festivalRequestId}")
+    @PatchMapping("/festival-requests/{festivalRequestId}")
     @Operation(summary = "페스티벌 게시 요청 승인", description = "페스티벌 게시를 진행하여 게시 요청글을 승인합니다.")
     public ResponseEntity<FestivaRequestlResponseDto> modifyFestivalRequestAdminApproval(
             @Parameter(name = "festivalRequestId", description = "승인할 게시 요청글의 id", in = ParameterIn.PATH) @PathVariable Long festivalRequestId,

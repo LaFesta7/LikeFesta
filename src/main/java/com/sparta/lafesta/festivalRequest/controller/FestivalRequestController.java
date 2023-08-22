@@ -62,7 +62,7 @@ public class FestivalRequestController {
         return ResponseEntity.ok().body(result);
     }
 
-    @DeleteMapping("/festivals-requests/{festivalRequestId}")
+    @DeleteMapping("/festival-requests/{festivalRequestId}")
     @Operation(summary = "페스티벌 게시 요청 삭제", description = "@PathVariable을 통해 festivalRequestId를 받아와, 해당 페스티벌 게시 요청을 삭제합니다.")
     public ResponseEntity<ApiResponseDto> deleteFestival(
             @Parameter(name = "festivalRequestId", description = "삭제할 페스티벌 게시 요청글의 id", in = ParameterIn.PATH) @PathVariable Long festivalRequestId,
