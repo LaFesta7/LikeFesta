@@ -93,6 +93,11 @@ public class FestivalServiceImpl implements FestivalService {
     @Override
     @Transactional
     public FestivalResponseDto createFestivalLike(Long festivalId, User user) {
+        // 주최사, 일반 사용자는 좋아요 추가 가능(관리자 불가)
+        if (user.getRole().getAuthority().equals("ROLE_ADMIN")) {
+            throw new UnauthorizedException("좋아요에 관한 권한이 없습니다.");
+        }
+
         Festival festival = findFestival(festivalId);
         // 좋아요를 이미 누른 경우 오류 반환
         if (findFestivalLike(user, festival) != null) {
@@ -107,6 +112,11 @@ public class FestivalServiceImpl implements FestivalService {
     // 페스티벌 좋아요 취소
     @Override
     public FestivalResponseDto deleteFestivalLike(Long festivalId, User user) {
+        // 주최사, 일반 사용자는 좋아요 추가 가능(관리자 불가)
+        if (user.getRole().getAuthority().equals("ROLE_ADMIN")) {
+            throw new UnauthorizedException("좋아요에 관한 권한이 없습니다.");
+        }
+
         FestivalResponseDto response = transactionTemplate.execute(status -> {
             Festival festival = findFestival(festivalId);
             // 좋아요를 누르지 않은 경우 오류 반환

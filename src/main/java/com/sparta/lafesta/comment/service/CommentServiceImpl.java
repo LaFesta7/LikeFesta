@@ -4,6 +4,7 @@ import com.sparta.lafesta.comment.dto.CommentRequestDto;
 import com.sparta.lafesta.comment.dto.CommentResponseDto;
 import com.sparta.lafesta.comment.entity.Comment;
 import com.sparta.lafesta.comment.repository.CommentRepository;
+import com.sparta.lafesta.common.exception.UnauthorizedException;
 import com.sparta.lafesta.like.commentLike.entity.CommentLike;
 import com.sparta.lafesta.like.commentLike.repository.CommentLikeRepository;
 import com.sparta.lafesta.review.entity.Review;
@@ -31,7 +32,11 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public CommentResponseDto createComment(Long reviewId, CommentRequestDto requestDto, User user) {
-        // user 권한 확인 예외처리 추후 추가 작성 예정
+        // 주최사, 일반 사용자는 댓글 작성 가능(관리자 불가)
+        if (user.getRole().getAuthority().equals("ROLE_ADMIN")) {
+            throw new UnauthorizedException("댓글을 작성할 수 있는 권한이 없습니다.");
+        }
+
         Review review = reviewService.findReview(reviewId);
         Comment comment = new Comment(review, requestDto, user);
         commentRepository.save(comment);
@@ -52,8 +57,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public CommentResponseDto modifyComment(Long commentId, CommentRequestDto requestDto, User user) {
-        // user 권한 확인 예외처리 추후 추가 작성 예정
         Comment comment = findComment(commentId);
+
+        // 본인이 작성한 글만 수정 가능
+        if (!comment.getUser().getId().equals(user.getId())) {
+            throw new UnauthorizedException("본인이 작성한 글만 수정할 수 있습니다.");
+        }
+
+
         comment.modify(requestDto);
         return new CommentResponseDto(comment);
     }
@@ -62,8 +73,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void deleteComment(Long commentId, User user) {
-        // user 권한 확인 예외처리 추후 추가 작성 예정
         Comment comment = findComment(commentId);
+
+        // 주최사, 일반 사용자는 본인이 작성한 글만 삭제 가능, 관리자는 모든 글 삭제 가능
+        if (!comment.getUser().getId().equals(user.getId())
+                && !user.getRole().getAuthority().equals("ROLE_ADMIN")) {
+            throw new UnauthorizedException("해당 리뷰를 삭제할 수 없습니다.");
+        }
+
         commentRepository.delete(comment);
     }
 
@@ -71,6 +88,11 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public CommentResponseDto createCommentLike(Long commentId, User user) {
+        // 주최사, 일반 사용자는 좋아요 추가 가능(관리자 불가)
+        if (user.getRole().getAuthority().equals("ROLE_ADMIN")) {
+            throw new UnauthorizedException("좋아요에 관한 권한이 없습니다.");
+        }
+
         Comment comment = findComment(commentId);
         // 좋아요를 이미 누른 경우 오류 반환
         if (findCommentLike(user, comment) != null) {
@@ -85,6 +107,11 @@ public class CommentServiceImpl implements CommentService {
     // 댓글 좋아요 취소
     @Override
     public CommentResponseDto deleteCommentLike(Long commentId, User user) {
+        // 주최사, 일반 사용자는 좋아요 추가 가능(관리자 불가)
+        if (user.getRole().getAuthority().equals("ROLE_ADMIN")) {
+            throw new UnauthorizedException("좋아요에 관한 권한이 없습니다.");
+        }
+
         CommentResponseDto response = transactionTemplate.execute(status -> {
             Comment comment = findComment(commentId);
             // 좋아요를 누르지 않은 경우 오류 반환
