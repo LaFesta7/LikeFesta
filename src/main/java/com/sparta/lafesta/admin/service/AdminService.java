@@ -1,6 +1,7 @@
 package com.sparta.lafesta.admin.service;
 
 import com.sparta.lafesta.admin.dto.OrganizerResponseDto;
+import com.sparta.lafesta.festivalRequest.dto.FestivaRequestlResponseDto;
 import com.sparta.lafesta.user.entity.User;
 
 import java.util.List;
@@ -28,4 +29,19 @@ public interface AdminService {
      * @return 유저 삭제 처리결과
      */
     void deleteUser(Long userId, User user);
+
+    /**
+     * 페스티벌 게시 요청 미승인 목록 조회
+     * @param user 권한 확인
+     * @return 페스티벌 게시 요청 미승인 목록
+     */
+    List<FestivaRequestlResponseDto> selectFestivalRequestNotAdminApproval(User user);
+
+    /**
+     * 페스티벌 게시 요청 승인
+     * @param festivalRequestId 승인할 페스티벌 게시 요청의 id
+     * @param user 권한 확인
+     * @return 페스티벌 게시 요청 승인 처리 결과
+     */
+    FestivaRequestlResponseDto modifyFestivalRequestAdminApproval(Long festivalRequestId, User user);
 }
