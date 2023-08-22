@@ -37,6 +37,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private String nickname;
 
+    @Column(nullable = true, unique = true)
+    private Long kakaoId;
+
     @OneToMany(mappedBy = "followedUser", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<UserFollow> followings = new ArrayList<>(); //내가 팔로우 하는 사람들
 
@@ -52,5 +55,18 @@ public class User {
         this.email = email;
         this.role = role;
         this.nickname = nickname;
+    }
+
+    public User(String username, String password, String email, UserRoleEnum role, String nickname, Long kakaoId) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.nickname = nickname;
+        this.kakaoId =kakaoId;
+    }
+    public User kakaoIdUpdate(Long kakaoId) { // kakaoId를 받아서 업데이트
+        this.kakaoId = kakaoId;
+        return this;
     }
 }
