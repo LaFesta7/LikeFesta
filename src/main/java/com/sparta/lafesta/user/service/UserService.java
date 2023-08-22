@@ -26,6 +26,7 @@ public class UserService {
         String password = passwordEncoder.encode(requestDto.getPassword());
         String email = requestDto.getEmail();
         String nickname = requestDto.getNickname();
+        Boolean organizerRequest = false;
 
         // 회원 중복 확인
         Optional<User> checkUsername = userRepository.findByUsername(username);
@@ -42,9 +43,12 @@ public class UserService {
             }
             role = UserRoleEnum.ADMIN;
         }
+        if (requestDto.isOrganizer()) {
+            organizerRequest = true;
+        }
 
         // 사용자 등록
-        User user = new User(username, password, email, role, nickname);
+        User user = new User(username, password, email, role, nickname, organizerRequest);
         userRepository.save(user);
     }
 }

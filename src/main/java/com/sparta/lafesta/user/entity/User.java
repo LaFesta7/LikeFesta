@@ -32,11 +32,20 @@ public class User {
     @Column(nullable = false, unique = true)
     private String nickname;
 
-    public User(String username, String password, String email, UserRoleEnum role, String nickname) {
+    @Column
+    private Boolean organizerRequest;
+
+    public User(String username, String password, String email, UserRoleEnum role, String nickname, Boolean organizerRequest) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.role = role;
         this.nickname = nickname;
+        this.organizerRequest = organizerRequest;
+    }
+
+    public void approveOrganizer() {
+        this.role = UserRoleEnum.ORGANIZER;
+        this.organizerRequest = false;
     }
 }
