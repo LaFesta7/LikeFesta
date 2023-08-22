@@ -3,11 +3,12 @@ package com.sparta.lafesta.like.reviewLike.entity;
 import com.sparta.lafesta.review.entity.Review;
 import com.sparta.lafesta.user.entity.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "reviewLike")
 public class ReviewLike {
