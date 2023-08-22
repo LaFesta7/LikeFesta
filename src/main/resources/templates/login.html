@@ -17,10 +17,10 @@
 <div id="login-form">
     <div id="login-title">lafesta login</div>
     <button id="login-kakao-btn"
-            onclick="location.href='https://kauth.kakao.com/oauth/authorize?client_id={REST_API_KEY}&redirect_uri=http://localhost:8080/api/users/kakao/callback&response_type=code'">
+            th:attr="onclick='location.href=\'' + ${kakaoUrl} + '\''">
         카카오로 로그인하기
     </button>
-    <button id="login-id-btn" onclick="location.href='/api/user/sign-up'">
+    <button id="login-id-btn" onclick="location.href='/api/users/sign-up'">
         회원 가입하기
     </button>
     <div>

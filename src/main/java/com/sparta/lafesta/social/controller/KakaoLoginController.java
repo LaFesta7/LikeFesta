@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class KakaoLoginController {
     private final KakaoService kakaoService;
 
-    @GetMapping("/users/kakao/login") // 카카오 로그인 페이지
+    @GetMapping("/users/login-page") // 카카오 로그인 페이지
     @Operation(summary = "카카오 로그인 기능", description = "카카오 로그인 페이지로 이동하여서 sns 로그인 기능을 수행합니다.")
     public String login(Model model) {
-        model.addAttribute("kakaoUrl", kakaoService.getKakaoLogin()); //
+        model.addAttribute("kakaoUrl", kakaoService.getKakaoLogin());
         return "login"; // 임시로 확인 할 html 페이지를 작성했습니다.
     }
 

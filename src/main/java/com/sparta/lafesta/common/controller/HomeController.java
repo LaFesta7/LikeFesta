@@ -7,11 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
     @GetMapping("/")
     public String home() {
-        return "index";
-    }
-
-    @GetMapping("/api/users/login-page")
-    public String login(){
-        return "login";
+        return "main";
     }
 }
