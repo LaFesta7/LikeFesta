@@ -1,5 +1,6 @@
 package com.sparta.lafesta.user.repository;
 
+import com.sparta.lafesta.follow.entity.UserFollow;
 import com.sparta.lafesta.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
