@@ -2,17 +2,18 @@ package com.sparta.lafesta.comment.entity;
 
 import com.sparta.lafesta.comment.dto.CommentRequestDto;
 import com.sparta.lafesta.common.entity.Timestamped;
+import com.sparta.lafesta.like.commentLike.entity.CommentLike;
 import com.sparta.lafesta.review.entity.Review;
 import com.sparta.lafesta.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
 @Table(name = "comments")
@@ -31,6 +32,9 @@ public class Comment extends Timestamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewId", nullable = false)
     private Review review;
+
+    @OneToMany(mappedBy = "comment", orphanRemoval = true)
+    private List<CommentLike> commentLikes = new ArrayList<>();
 
     public Comment(Review review, CommentRequestDto requestDto, User user) {
         this.review = review;

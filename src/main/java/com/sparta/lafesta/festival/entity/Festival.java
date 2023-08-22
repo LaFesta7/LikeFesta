@@ -2,6 +2,7 @@ package com.sparta.lafesta.festival.entity;
 
 import com.sparta.lafesta.common.entity.Timestamped;
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
+import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
 import com.sparta.lafesta.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
 @Setter
@@ -45,6 +46,9 @@ public class Festival extends Timestamped {
 
     @OneToMany(mappedBy = "festival", orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "festival", orphanRemoval = true)
+    private List<FestivalLike> festivalLikes = new ArrayList<>();
 
     public Festival(FestivalRequestDto requestDto) {
         this.title = requestDto.getTitle();
