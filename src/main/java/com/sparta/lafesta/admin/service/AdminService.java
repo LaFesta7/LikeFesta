@@ -15,9 +15,17 @@ public interface AdminService {
 
     /**
      * 주최사 가입 인증 승인
-     * @param userId 댓글을 생성할 리뷰의 id
+     * @param userId 주최사 가입 인증을 승인할 유저의 id
      * @param user 권한 확인
      * @return 주최사 가입 인증 허가 처리 결과
      */
     OrganizerResponseDto modifyUserRoleOrganizer(Long userId, User user);
+
+    /**
+     * 유저 삭제
+     * @param userId 삭제할 유저의 id
+     * @param user 권한 확인
+     * @return 유저 삭제 처리결과
+     */
+    void deleteUser(Long userId, User user);
 }

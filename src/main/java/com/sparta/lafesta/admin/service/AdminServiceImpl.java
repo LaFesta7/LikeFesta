@@ -22,9 +22,7 @@ public class AdminServiceImpl implements AdminService {
     @Transactional(readOnly = true)
     public List<OrganizerResponseDto> selectOrganizerRequests(User user) {
         // admin 권한 확인
-        if (!user.getRole().equals(UserRoleEnum.ADMIN)) {
-            throw new UnauthorizedException("해당 페이지에 접근할 권한이 없습니다.");
-        }
+        checkAdminRole(user);
 
         return userRepository.findAllByOrganizerRequest(Boolean.TRUE)
                 .stream().map(OrganizerResponseDto::new).toList();
@@ -35,9 +33,7 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     public OrganizerResponseDto modifyUserRoleOrganizer(Long userId, User user) {
         // admin 권한 확인
-        if (!user.getRole().equals(UserRoleEnum.ADMIN)) {
-            throw new UnauthorizedException("해당 페이지에 접근할 권한이 없습니다.");
-        }
+        checkAdminRole(user);
 
         User organizer = findUser(userId);
         // 주최사를 요청하지 않은 다른 id를 입력한 경우
@@ -48,9 +44,27 @@ public class AdminServiceImpl implements AdminService {
         if (organizer.getRole().equals(UserRoleEnum.ORGANIZER)) {
             throw new IllegalArgumentException("해당 유저의 주최사 권한이 이미 존재합니다.");
         }
+
         organizer.approveOrganizer();
 
         return new OrganizerResponseDto(organizer);
+    }
+
+    // 유저 삭제
+    @Override
+    @Transactional
+    public void deleteUser(Long userId, User user) {
+        // admin 권한 확인
+        checkAdminRole(user);
+
+        userRepository.delete(findUser(userId));
+    }
+
+    // admin 권한 확인
+    private void checkAdminRole(User user) {
+        if (!user.getRole().equals(UserRoleEnum.ADMIN)) {
+            throw new UnauthorizedException("해당 페이지에 접근할 권한이 없습니다.");
+        }
     }
 
     // 사용자 id로 사용자 찾기
