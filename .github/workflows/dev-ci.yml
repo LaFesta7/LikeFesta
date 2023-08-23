@@ -28,6 +28,8 @@ jobs:
       DB_PASSWORD: root
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
       KAKAO_REST_API: ${{ secrets.KAKAO_REST_API }}
+      GMAIL_USERNAME: ${{ secrets.GMAIL_USERNAME }}
+      GMAIL_PASSWORD: ${{ secrets.GMAIL_PASSWORD }}
 
     services:
       mysql:
