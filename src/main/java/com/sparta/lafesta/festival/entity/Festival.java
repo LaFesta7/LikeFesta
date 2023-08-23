@@ -44,12 +44,21 @@ public class Festival extends Timestamped {
     @Column(name = "official_link", nullable = false)
     private String officialLink;
 
+    @Column(name = "attachment")
+    private String urls; // 리스트를 toString해서 문자열 형태로 우선 넣어둘 예정. todo 이후 프론트 전달 방식과 관련해서 개선필요해 보임
+
+
+
+    //연관관계
     @OneToMany(mappedBy = "festival", orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "festival", orphanRemoval = true)
     private List<FestivalLike> festivalLikes = new ArrayList<>();
 
+
+
+    //생성자
     public Festival(FestivalRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.location = requestDto.getLocation();
@@ -60,6 +69,7 @@ public class Festival extends Timestamped {
         this.officialLink = requestDto.getOfficialLink();
     }
 
+    //객체 메소드
     public void modify(FestivalRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.location = requestDto.getLocation();
@@ -68,5 +78,9 @@ public class Festival extends Timestamped {
         this.endDate = requestDto.getEndDate();
         this.reservationOpenDate = requestDto.getReservationOpenDate();
         this.officialLink = requestDto.getOfficialLink();
+    }
+
+    public void addUrls(List<String> urls) {
+        this.urls = urls.toString();
     }
 }

@@ -1,5 +1,6 @@
 package com.sparta.lafesta.festival.service;
 
+import com.sparta.lafesta.common.s3.S3UploadService;
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
 import com.sparta.lafesta.festival.entity.Festival;
@@ -12,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,15 +25,30 @@ import java.util.stream.Collectors;
 public class FestivalServiceImpl implements FestivalService {
     private final FestivalRepository festivalRepository;
     private final FestivalLikeRepository festivalLikeRepository;
+    private final S3UploadService s3UploadService;
+
     @Autowired
     private TransactionTemplate transactionTemplate;
 
     // 페스티벌 등록
     @Override
     @Transactional
-    public FestivalResponseDto createFestival(FestivalRequestDto requestDto, User user) {
+    public FestivalResponseDto createFestival(FestivalRequestDto requestDto, List<MultipartFile> files, User user) throws IOException {
+
         // user 권한 확인 예외처리 추후 추가 작성 예정
         Festival festival = new Festival(requestDto);
+
+        // 첨부파일업로드 -> 이후 업로드된 파일의 url주소를 festival객체에 담아줄 예정.
+        List<String> fileUrls = new ArrayList<>();
+        if (files != null) {
+            fileUrls = s3UploadService.uploadFiles(files);
+        }
+
+        // 첨부파일 리스트인 Urls를 festival 객체에 추가.
+        // todo 현재는 toString으로 변환해서 주는데 프론트작업과 연계해서 파싱, 매핑하는 과정이 필요.
+        festival.addUrls(fileUrls);
+
+        //DB 저장
         festivalRepository.save(festival);
         return new FestivalResponseDto(festival);
     }

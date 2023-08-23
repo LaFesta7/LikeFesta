@@ -3,6 +3,7 @@ package com.sparta.lafesta.common.s3;
 import com.sparta.lafesta.common.dto.ApiResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -34,9 +36,7 @@ public class S3TestController {
             fileUrlList = s3UploadService.uploadFiles(files);
         }
 
-        System.out.println("requestDto = " + requestDto.getName());
-        System.out.println("requestDto.getDescription() = " + requestDto.getDescription());
-        System.out.println("requestDto.getDueDate() = " + requestDto.getDueDate());
+        log.info(requestDto.toString());
 
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), fileUrlList.toString()));
     }

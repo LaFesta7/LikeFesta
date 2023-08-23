@@ -7,7 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
-//@ToString
+@ToString
 @Getter
 public class TestRequestDto {
     // 카드 이름
