@@ -52,7 +52,7 @@ public class Festival extends Timestamped {
     @OneToMany(mappedBy = "festival", orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "festival", orphanRemoval = true)
+    @OneToMany(mappedBy = "festival", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<FestivalLike> festivalLikes = new ArrayList<>();
 
     public Festival(FestivalRequestDto requestDto, User user) {

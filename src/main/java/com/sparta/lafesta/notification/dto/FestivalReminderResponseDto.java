@@ -1,25 +1,29 @@
 package com.sparta.lafesta.notification.dto;
 
 import com.sparta.lafesta.festival.entity.Festival;
+import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
+import com.sparta.lafesta.user.entity.User;
 import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
-public class FestivalNotificationResponseDto {
+public class FestivalReminderResponseDto {
     private String title;
     private String content;
-//    private List<String> festivalLikeUsersEmail;
+    private List<String> festivalLikeUsersEmail;
 
-    public FestivalNotificationResponseDto(Festival festival) {
+    public FestivalReminderResponseDto(Festival festival) {
         this.title = makeNotificationTitle(festival);
         this.content = makeNotificationContent(festival);
-//        this.festivalLikeUsersEmail = festival.getFestivalLikes().stream()
-//                .map(FestivalLike::getUser)
-//                .map(User::getEmail)
-//                .collect(Collectors.toList());
+        this.festivalLikeUsersEmail = festival.getFestivalLikes().stream()
+                .map(FestivalLike::getUser)
+                .map(User::getEmail)
+                .collect(Collectors.toList());
     }
 
     private String makeNotificationTitle(Festival festival) {
