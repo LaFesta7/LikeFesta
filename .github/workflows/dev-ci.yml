@@ -23,11 +23,21 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DB_URL: ${{ secrets.DB_URL }}
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_URL: jdbc:mysql://localhost:3306/test_db
+      DB_USER: root
+      DB_PASSWORD: root
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
       KAKAO_REST_API: ${{ secrets.KAKAO_REST_API }}
+
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping"
 
     steps:
 
