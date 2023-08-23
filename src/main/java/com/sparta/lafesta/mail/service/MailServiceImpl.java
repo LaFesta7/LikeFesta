@@ -1,14 +1,13 @@
 package com.sparta.lafesta.mail.service;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMessage.RecipientType;
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
@@ -27,7 +26,7 @@ public class MailServiceImpl implements MailService {
             throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = emailSender.createMimeMessage();
 
-        message.addRecipients(RecipientType.TO, receiver); //받는 사람
+        message.addRecipients(MimeMessage.RecipientType.TO, receiver); //받는 사람
         message.setSubject("LaFesta 이메일 인증 코드입니다."); //제목
         message.setText("이메일 인증 코드: " + ePw);
         message.setFrom(new InternetAddress("LaFesta@naver.com", "Lafesta_Admin")); //보내는 사람(임시)

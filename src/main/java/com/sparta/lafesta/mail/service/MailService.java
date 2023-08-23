@@ -1,8 +1,8 @@
 package com.sparta.lafesta.mail.service;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 
 public interface MailService {
 
