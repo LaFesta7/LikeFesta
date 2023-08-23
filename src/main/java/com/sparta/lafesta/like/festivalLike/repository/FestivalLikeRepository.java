@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
 public interface FestivalLikeRepository extends JpaRepository <FestivalLike, Long> {
     Optional<FestivalLike> findByUserAndFestival(User user, Festival festival);
 }
