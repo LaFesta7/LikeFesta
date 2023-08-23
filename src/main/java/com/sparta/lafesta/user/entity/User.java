@@ -37,6 +37,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private String nickname;
 
+    @Column
+    private Boolean organizerRequest;
+
     @Column(nullable = true, unique = true)
     private Long kakaoId;
 
@@ -49,12 +52,13 @@ public class User {
     @OneToMany(mappedBy = "followingFestivalUser", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<FestivalFollow> followedFestivals = new ArrayList<>();
 
-    public User(String username, String password, String email, UserRoleEnum role, String nickname) {
+    public User(String username, String password, String email, UserRoleEnum role, String nickname, Boolean organizerRequest) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.role = role;
         this.nickname = nickname;
+        this.organizerRequest = organizerRequest;
     }
 
     public User(String username, String password, String email, UserRoleEnum role, String nickname, Long kakaoId) {
@@ -65,6 +69,12 @@ public class User {
         this.nickname = nickname;
         this.kakaoId =kakaoId;
     }
+
+    public void approveOrganizer() {
+        this.role = UserRoleEnum.ORGANIZER;
+        this.organizerRequest = false;
+    }
+
     public User kakaoIdUpdate(Long kakaoId) { // kakaoId를 받아서 업데이트
         this.kakaoId = kakaoId;
         return this;
