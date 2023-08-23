@@ -1,18 +1,12 @@
-package com.sparta.lafesta.festival.entity;
+package com.sparta.lafesta.festivalRequest.entity;
 
 import com.sparta.lafesta.common.entity.Timestamped;
-import com.sparta.lafesta.common.s3.entity.FestivalFileOnS3;
-import com.sparta.lafesta.common.s3.entity.FileOnS3;
-import com.sparta.lafesta.festival.dto.FestivalRequestDto;
-import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
-import com.sparta.lafesta.review.entity.Review;
+import com.sparta.lafesta.festivalRequest.dto.FestivalRequestRequestDto;
 import com.sparta.lafesta.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -20,8 +14,8 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name = "festivals")
-public class Festival extends Timestamped {
+@Table(name = "festivalRequest")
+public class FestivalRequest extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -47,28 +41,14 @@ public class Festival extends Timestamped {
     @Column(name = "official_link", nullable = false)
     private String officialLink;
 
-
-    //연관관계
+    @Column(name = "admin_approval", nullable = false)
+    private Boolean adminApproval;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", nullable = false)
     private User user;
 
-
-    @OneToMany(mappedBy = "festival", orphanRemoval = true)
-    private List<Review> reviews = new ArrayList<>();
-
-    @OneToMany(mappedBy = "festival", orphanRemoval = true)
-    private List<FestivalLike> festivalLikes = new ArrayList<>();
-
-    @OneToMany(mappedBy = "festival", orphanRemoval = true) //todo 이후 프론트 전달 방식과 관련해서 개선필요해 보임
-    private List<FestivalFileOnS3> festivalFileOnS3s = new ArrayList<>();
-
-
-    ////생성자 - 약속된 형태로만 생성가능하도록 합니다.
-  
-    public Festival(FestivalRequestDto requestDto, User user) {
-
+    public FestivalRequest(FestivalRequestRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.location = requestDto.getLocation();
         this.content = requestDto.getContent();
@@ -76,13 +56,11 @@ public class Festival extends Timestamped {
         this.endDate = requestDto.getEndDate();
         this.reservationOpenDate = requestDto.getReservationOpenDate();
         this.officialLink = requestDto.getOfficialLink();
+        this.adminApproval = false;
         this.user = user;
     }
 
-  
-    //// 서비스 메소드 - 외부에서 엔티티를 수정할 메소드를 정의합니다. (단일 책임을 가지도록 주의합니다.)
-  
-    public void modify(FestivalRequestDto requestDto) {
+    public void modify(FestivalRequestRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.location = requestDto.getLocation();
         this.content = requestDto.getContent();
@@ -92,10 +70,7 @@ public class Festival extends Timestamped {
         this.officialLink = requestDto.getOfficialLink();
     }
 
-    public void addFileOnS3s(List<FestivalFileOnS3> festivalFileOnS3s) {
-        // 받아 온 FileOnS3를 모두 FestivalFileOnS3로 바꿔주고, festival객체를 저장해준다.
-        for(FestivalFileOnS3 festivalFileOnS3 : festivalFileOnS3s) {
-            festivalFileOnS3.setFestival(this);
-        }
+    public void approveFestivalRequest() {
+        this.adminApproval = true;
     }
 }
