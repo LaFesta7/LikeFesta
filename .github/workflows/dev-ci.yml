@@ -38,7 +38,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'temurin'
+          distribution: 'adopt'
 
       # gradle 실행 허가
       - name: Run chmod to make gradlew executable
