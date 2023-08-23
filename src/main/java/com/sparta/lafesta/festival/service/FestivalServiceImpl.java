@@ -1,9 +1,12 @@
 package com.sparta.lafesta.festival.service;
 
 import com.sparta.lafesta.common.s3.S3UploadService;
+import com.sparta.lafesta.common.s3.entity.FestivalFileOnS3;
+import com.sparta.lafesta.common.s3.entity.FileOnS3;
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
 import com.sparta.lafesta.festival.entity.Festival;
+import com.sparta.lafesta.common.s3.repository.FestivalFileRepository;
 import com.sparta.lafesta.festival.repository.FestivalRepository;
 import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
 import com.sparta.lafesta.like.festivalLike.repository.FestivalLikeRepository;
@@ -26,6 +29,7 @@ public class FestivalServiceImpl implements FestivalService {
     private final FestivalRepository festivalRepository;
     private final FestivalLikeRepository festivalLikeRepository;
     private final S3UploadService s3UploadService;
+    private final FestivalFileRepository festivalFileRepository;
 
     @Autowired
     private TransactionTemplate transactionTemplate;
@@ -38,18 +42,29 @@ public class FestivalServiceImpl implements FestivalService {
         // user 권한 확인 예외처리 추후 추가 작성 예정
         Festival festival = new Festival(requestDto);
 
+        //festival DB 저장
+        festivalRepository.save(festival);
+
+
         // 첨부파일업로드 -> 이후 업로드된 파일의 url주소를 festival객체에 담아줄 예정.
-        List<String> fileUrls = new ArrayList<>();
+        List<FileOnS3> fileOnS3s = new ArrayList<>();
         if (files != null) {
-            fileUrls = s3UploadService.uploadFiles(files);
+            fileOnS3s = s3UploadService.uploadFiles(files);
         }
 
-        // 첨부파일 리스트인 Urls를 festival 객체에 추가.
-        // todo 현재는 toString으로 변환해서 주는데 프론트작업과 연계해서 파싱, 매핑하는 과정이 필요.
-        festival.addUrls(fileUrls);
+        // FielOnS3를 Festival로 변환
+        List<FestivalFileOnS3> festivalFileOnS3s = new ArrayList<>();
 
-        //DB 저장
-        festivalRepository.save(festival);
+        for(FileOnS3 fileOnS3 : fileOnS3s) {
+            //페스티벌 파일 S3 엔티티로 변환생성
+            FestivalFileOnS3 festivalFileOnS3 = new FestivalFileOnS3(fileOnS3);
+            //S3 엔티티에 페스티벌 연관관계 설정
+            festivalFileOnS3.setFestival(festival);
+            //DB저장
+            festivalFileRepository.save(festivalFileOnS3);
+        }
+
+
         return new FestivalResponseDto(festival);
     }
 

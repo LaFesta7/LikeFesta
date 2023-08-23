@@ -1,6 +1,8 @@
 package com.sparta.lafesta.festival.entity;
 
 import com.sparta.lafesta.common.entity.Timestamped;
+import com.sparta.lafesta.common.s3.entity.FestivalFileOnS3;
+import com.sparta.lafesta.common.s3.entity.FileOnS3;
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
 import com.sparta.lafesta.review.entity.Review;
@@ -44,8 +46,6 @@ public class Festival extends Timestamped {
     @Column(name = "official_link", nullable = false)
     private String officialLink;
 
-    @Column(name = "attachment")
-    private String urls; // 리스트를 toString해서 문자열 형태로 우선 넣어둘 예정. todo 이후 프론트 전달 방식과 관련해서 개선필요해 보임
 
 
 
@@ -56,9 +56,11 @@ public class Festival extends Timestamped {
     @OneToMany(mappedBy = "festival", orphanRemoval = true)
     private List<FestivalLike> festivalLikes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "festival", orphanRemoval = true) //todo 이후 프론트 전달 방식과 관련해서 개선필요해 보임
+    private List<FestivalFileOnS3> festivalFileOnS3s = new ArrayList<>();
 
 
-    //생성자
+    ////생성자 - 약속된 형태로만 생성가능하도록 합니다.
     public Festival(FestivalRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.location = requestDto.getLocation();
@@ -69,7 +71,7 @@ public class Festival extends Timestamped {
         this.officialLink = requestDto.getOfficialLink();
     }
 
-    //객체 메소드
+    //// 서비스 메소드 - 외부에서 엔티티를 수정할 메소드를 정의합니다. (단일 책임을 가지도록 주의합니다.)
     public void modify(FestivalRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.location = requestDto.getLocation();
@@ -80,7 +82,10 @@ public class Festival extends Timestamped {
         this.officialLink = requestDto.getOfficialLink();
     }
 
-    public void addUrls(List<String> urls) {
-        this.urls = urls.toString();
+    public void addFileOnS3s(List<FestivalFileOnS3> festivalFileOnS3s) {
+        // 받아 온 FileOnS3를 모두 FestivalFileOnS3로 바꿔주고, festival객체를 저장해준다.
+        for(FestivalFileOnS3 festivalFileOnS3 : festivalFileOnS3s) {
+            festivalFileOnS3.setFestival(this);
+        }
     }
 }
