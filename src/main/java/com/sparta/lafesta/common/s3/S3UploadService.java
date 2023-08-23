@@ -9,6 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,8 +24,20 @@ public class S3UploadService {
     private String bucket;
 
 
-    public String uploadFile(MultipartFile multipartFile) throws IOException {
+    public List<String> uploadFiles(List<MultipartFile> multipartFiles) throws IOException {
 
+        List<String> urlList = new ArrayList<>();
+
+        for( MultipartFile multipartFile : multipartFiles) {
+            String newUrl = uploadSingleFile(multipartFile);
+            urlList.add(newUrl);
+        }
+
+        return urlList;
+    }
+
+
+    private String uploadSingleFile(MultipartFile multipartFile) throws IOException {
         //파일 이름 가져오기.
         String originalFilename = multipartFile.getOriginalFilename();
 
@@ -40,4 +54,5 @@ public class S3UploadService {
         amazonS3.putObject(bucket, originalFilename, inputStreamFile, metadata);
         return amazonS3.getUrl(bucket, originalFilename).toString();
     }
+
 }

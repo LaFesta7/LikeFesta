@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -22,15 +24,20 @@ public class S3TestController {
     private final S3UploadService s3UploadService;
 
     @PostMapping("/s3-test/upload")
-    public ResponseEntity<ApiResponseDto> uploadFile(@Valid @RequestPart TestRequestDto requestDto,
-            @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+    public ResponseEntity<ApiResponseDto> uploadFile(
+            @Valid @RequestPart TestRequestDto requestDto,
+            @RequestPart(value = "files", required = false) List<MultipartFile> files) throws IOException {
 
-        String fileUrl = s3UploadService.uploadFile(file);
+        List<String> fileUrlList = new ArrayList<>();
+
+        if (files != null) {
+            fileUrlList = s3UploadService.uploadFiles(files);
+        }
 
         System.out.println("requestDto = " + requestDto.getName());
         System.out.println("requestDto.getDescription() = " + requestDto.getDescription());
         System.out.println("requestDto.getDueDate() = " + requestDto.getDueDate());
 
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), fileUrl));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), fileUrlList.toString()));
     }
 }
