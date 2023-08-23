@@ -21,14 +21,16 @@ public class MailService {
         this.templateEngine = templateEngine;
     }
 
+    // 메일 형식 만들어 보내기
     public void sendCustomEmail(String toEmail, String title, String content, String htmlTemplate) {
         Context context = new Context();
-        context.setVariable("content", content);
+        context.setVariable("content", content); // 메일 내용
         String subject = "[LaFesta] " + title; // 메일 제목
         String body = templateEngine.process(htmlTemplate, context);
         sendMail(toEmail, subject, body);
     }
 
+    // 메일 전송
     private void sendMail(String toEmail, String subject, String body) {
         MimeMessagePreparator messagePreparator =
                 mimeMessage -> {
