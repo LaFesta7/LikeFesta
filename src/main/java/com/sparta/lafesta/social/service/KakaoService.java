@@ -25,7 +25,6 @@ import java.net.URI;
 import java.util.UUID;
 
 @Slf4j(topic ="KAKAO Login")
-@Service
 @RequiredArgsConstructor
 public class KakaoService {
     private final PasswordEncoder passwordEncoder;
