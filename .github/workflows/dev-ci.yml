@@ -33,12 +33,12 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: properties 파일 생성
-        run: |
-          cd ./src/main/resources
-          touch ./application-test.properties
-          echo "${{secrets.APPLICATION_TEST_PROPERTIES}}" > ./application-test.properties
-        shell: bash
+#      - name: properties 파일 생성
+#        run: |
+#          cd ./src/main/resources
+#          touch ./application-test.properties
+#          echo "${{ secrets.APPLICATION_TEST_PROPERTIES }}" > ./application-test.properties
+#        shell: bash
 
       # gradle 실행 허가
       - name: Run chmod to make gradlew executable
