@@ -1,5 +1,6 @@
 package com.sparta.lafesta.festival.service;
 
+import com.sparta.lafesta.common.exception.UnauthorizedException;
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
 import com.sparta.lafesta.festival.entity.Festival;
@@ -28,8 +29,11 @@ public class FestivalServiceImpl implements FestivalService {
     @Override
     @Transactional
     public FestivalResponseDto createFestival(FestivalRequestDto requestDto, User user) {
-        // user 권한 확인 예외처리 추후 추가 작성 예정
-        Festival festival = new Festival(requestDto);
+        // 허가되지 않은 주최사, 일반 사용자 접근 시 예외처리
+        if (user.getRole().getAuthority().equals("ROLE_USER")) {
+            throw new UnauthorizedException("해당 요청에 접근할 수 없습니다.");
+        }
+        Festival festival = new Festival(requestDto, user);
         festivalRepository.save(festival);
         return new FestivalResponseDto(festival);
     }
@@ -54,8 +58,18 @@ public class FestivalServiceImpl implements FestivalService {
     @Override
     @Transactional
     public FestivalResponseDto modifyFestival(Long festivalId, FestivalRequestDto requestDto, User user) {
-        // user 권한 확인 예외처리 추후 추가 작성 예정
         Festival festival = findFestival(festivalId);
+
+        // 주최사는 본인이 작성한 글만 수정 가능
+        if (user.getRole().getAuthority().equals("ROLE_ORGANIZER") && !festival.getUser().getId().equals(user.getId())) {
+            throw new UnauthorizedException("본인이 작성한 글만 수정할 수 있습니다.");
+        }
+
+        // 관리자는 관리자가 작성한 글만 수정 가능
+        if (user.getRole().getAuthority().equals("ROLE_ADMIN") && festival.getUser().getRole().getAuthority().equals("ROLE_ORGANIZER")) {
+            throw new UnauthorizedException("주최사가 작성한 글은 관리자 권한으로 수정할 수 없습니다.");
+        }
+
         festival.modify(requestDto);
         return new FestivalResponseDto(festival);
     }
@@ -64,8 +78,14 @@ public class FestivalServiceImpl implements FestivalService {
     @Override
     @Transactional
     public void deleteFestival(Long festivalId, User user) {
-        // user 권한 확인 예외처리 추후 추가 작성 예정
         Festival festival = findFestival(festivalId);
+
+        // 주최사의 경우 본인이 작성한 글만, 관리자는 모든 글에 대하여 삭제 가능
+        if (!festival.getUser().getId().equals(user.getId())
+                && !user.getRole().getAuthority().equals("ROLE_ADMIN")) {
+            throw new UnauthorizedException("해당 요청에 접근할 수 없습니다.");
+        }
+
         festivalRepository.delete(festival);
     }
 
@@ -73,6 +93,11 @@ public class FestivalServiceImpl implements FestivalService {
     @Override
     @Transactional
     public FestivalResponseDto createFestivalLike(Long festivalId, User user) {
+        // 주최사, 일반 사용자는 좋아요 추가 가능(관리자 불가)
+        if (user.getRole().getAuthority().equals("ROLE_ADMIN")) {
+            throw new UnauthorizedException("좋아요에 관한 권한이 없습니다.");
+        }
+
         Festival festival = findFestival(festivalId);
         // 좋아요를 이미 누른 경우 오류 반환
         if (findFestivalLike(user, festival) != null) {
@@ -87,6 +112,11 @@ public class FestivalServiceImpl implements FestivalService {
     // 페스티벌 좋아요 취소
     @Override
     public FestivalResponseDto deleteFestivalLike(Long festivalId, User user) {
+        // 주최사, 일반 사용자는 좋아요 추가 가능(관리자 불가)
+        if (user.getRole().getAuthority().equals("ROLE_ADMIN")) {
+            throw new UnauthorizedException("좋아요에 관한 권한이 없습니다.");
+        }
+
         FestivalResponseDto response = transactionTemplate.execute(status -> {
             Festival festival = findFestival(festivalId);
             // 좋아요를 누르지 않은 경우 오류 반환
