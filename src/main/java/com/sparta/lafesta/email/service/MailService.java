@@ -21,11 +21,11 @@ public class MailService {
         this.templateEngine = templateEngine;
     }
 
-    public void sendNotification(String toEmail, String title, String content) {
+    public void sendCustomEmail(String toEmail, String title, String content, String htmlTemplate) {
         Context context = new Context();
         context.setVariable("content", content);
         String subject = "[LaFesta] " + title; // 메일 제목
-        String body = templateEngine.process("notification-email.html", context);
+        String body = templateEngine.process(htmlTemplate, context);
         sendMail(toEmail, subject, body);
     }
 

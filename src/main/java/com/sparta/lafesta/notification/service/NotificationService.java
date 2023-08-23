@@ -19,6 +19,7 @@ public class NotificationService {
     // 페스티벌 당일, 1일 전, 7일 전 리마인더 알림 메일로 발송
     @Scheduled(cron = "0 0 9 * * *") // 매일 오전 9시마다 실행
     public void sendFestivalReminder() {
+        String htmlTemplate = "notification-email.html";
         List<FestivalReminderResponseDto> festivalReminders = festivalService.getFestivalReminders();
         if (festivalReminders.size() != 0) {
             for (FestivalReminderResponseDto festivalReminder : festivalReminders) {
@@ -28,7 +29,7 @@ public class NotificationService {
                     List<String> festivalLikeUsersEmail = festivalReminder.getFestivalLikeUsersEmail();
 
                     for (String toEmail : festivalLikeUsersEmail) {
-                        mailService.sendNotification(toEmail, title, content);
+                        mailService.sendCustomEmail(toEmail, title, content, htmlTemplate);
                     }
                 }
             }
