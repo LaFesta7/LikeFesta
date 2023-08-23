@@ -111,6 +111,7 @@ public class FestivalServiceImpl implements FestivalService {
 
     // 페스티벌 좋아요 취소
     @Override
+    @Transactional
     public FestivalResponseDto deleteFestivalLike(Long festivalId, User user) {
         // 주최사, 일반 사용자는 좋아요 추가 가능(관리자 불가)
         if (user.getRole().getAuthority().equals("ROLE_ADMIN")) {
