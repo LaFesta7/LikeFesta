@@ -1,15 +1,17 @@
 package com.sparta.lafesta.follow.entity;
 
+import com.sparta.lafesta.common.entity.Timestamped;
 import com.sparta.lafesta.user.entity.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "user_follow")
-public class UserFollow {
+public class UserFollow extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
