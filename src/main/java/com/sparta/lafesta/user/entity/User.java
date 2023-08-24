@@ -2,7 +2,6 @@ package com.sparta.lafesta.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.sql.results.graph.tuple.TupleResult;
 
 @Builder
 @AllArgsConstructor
