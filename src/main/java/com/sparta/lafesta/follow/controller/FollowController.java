@@ -32,7 +32,7 @@ public class FollowController {
         return followService.followingUser(userDetails,followingUserId);
     }
 
-    @GetMapping("/users/{followedUserId}/followers")
+    @GetMapping("/users/{userId}/follows/followers")
     @Operation(summary = "유저 팔로워 목록 조회 - 나를 팔로우 하는 유저", description = "나를 팔로우 하는 유저를 전체 조회합니다.")
     public ResponseEntity<List<SelectUserResponseDto>> selectFollowers(
             @Parameter(description = "권한 확인 및 조회 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails){
@@ -40,7 +40,7 @@ public class FollowController {
         return ResponseEntity.ok().body(results);
     }
 
-    @GetMapping("/users/{followingUserId}/followings")
+    @GetMapping("/users/{userId}/follows/followings")
     @Operation(summary = "유저 팔로잉 목록 조회 - 내가 팔로우 하는 유저", description = "내가 팔로우 하는 유저를 전체 조회합니다.")
     public ResponseEntity<List<SelectUserResponseDto>> selectFollowingUsers(
             @Parameter(description = "권한 확인 및 조회 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails){
