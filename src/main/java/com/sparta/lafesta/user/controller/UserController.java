@@ -5,6 +5,8 @@ import com.sparta.lafesta.common.jwt.JwtUtil;
 import com.sparta.lafesta.email.service.MailService;
 import com.sparta.lafesta.user.dto.SignupRequestDto;
 import com.sparta.lafesta.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -52,7 +54,10 @@ public class UserController {
 
   //인증 메일
   @PostMapping("users/sign-up/mail-confirm")
-  String mailConfirm(@RequestParam("email") String email) throws Exception {
+  @Operation(summary = "이메일 인증 메일 발송", description = "query string을 통해 이메일 주소을 받아옵니다. 받아온 이메일 주소로 인증 코드를 발송하고 발송한 인증 코드를 반환합니다.")
+  String mailConfirm(
+      @Parameter(description = "인증코드를 보낼 이메일 주소") @RequestParam("email") String email)
+      throws Exception {
     String code = mailService.sendMessage(email);
     System.out.println("인증코드: " + code);
     return code;

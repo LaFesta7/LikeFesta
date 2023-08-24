@@ -59,13 +59,29 @@ public class MailService {
 
     message.addRecipients(MimeMessage.RecipientType.TO, receiver); //받는 사람
     message.setSubject("LaFesta 이메일 인증 코드입니다."); //제목
-    message.setText("이메일 인증 코드: " + ePw);
-    message.setFrom(new InternetAddress(fromEmail, "Lafesta_Admin")); //보내는 사람(임시)
+
+    String msg = "";
+    msg += "<h1> 안녕하세요 </h1>";
+    msg += "<h1> 페스티벌 정보 플랫폼 LaFesta입니다 </h1>";
+    msg += "<br>";
+    msg += "<p> 아래 인증코드를 회원가입 페이지에 입력해주세요</p>";
+    msg += "<br>";
+    msg += "<p> LaFesta에서 매일매일이 축제같으시길 바랍니다</p>";
+    msg += "<br>";
+    msg += "<br>";
+    msg += "<div align='center' style = 'border:1px solid black'>";
+    msg += "<h3> 회원가입 인증코드입니다 </h3>";
+    msg += "<div style='font-size:130%'>";
+    msg += "<strong>" + ePw + "</strong></div><br/>";
+    msg += "</div>";
+
+    message.setText(msg, "utf-8", "html");//내용
+    message.setFrom(new InternetAddress(fromEmail, "LaFesta_Admin")); //보내는 사람
 
     return message;
   }
 
-  //랜덤 인증 코드 생성 - 추후 수정할 것
+  //랜덤 인증 코드 생성
   public String createKey() {
     StringBuffer key = new StringBuffer();
     Random random = new Random();
