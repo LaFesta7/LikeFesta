@@ -89,7 +89,7 @@
 
 ## 7. 프런트 엔드 레포지토리
 
-(프론트RP 바로가기)[https://github.com/LaFesta7/Likefesta_front]
+[프론트RP 바로가기](https://github.com/LaFesta7/Likefesta_front)
 
 ## 8. 팀원 소개 및 역할 분담
 
