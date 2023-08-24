@@ -113,6 +113,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     // 리뷰 좋아요 취소
     @Override
+    @Transactional
     public ReviewResponseDto deleteReviewLike(Long reviewId, User user) {
         // 주최사, 일반 사용자는 좋아요 추가 가능(관리자 불가)
         if (user.getRole().getAuthority().equals("ROLE_ADMIN")) {
