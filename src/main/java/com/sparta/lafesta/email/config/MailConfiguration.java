@@ -38,11 +38,14 @@ public class MailConfiguration {
         mailSender.setUsername(mailUsername);
         mailSender.setPassword(mailPassword);
 
-        Properties props = mailSender.getJavaMailProperties();
-        props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.auth", mailSmtpAuth);
-        props.put("mail.smtp.starttls.enable", mailStartTls);
-        props.put("mail.debug", "true");
+    Properties props = mailSender.getJavaMailProperties();
+    props.put("mail.transport.protocol", "smtp");
+    props.put("mail.smtp.auth", mailSmtpAuth);
+    props.put("mail.smtp.starttls.enable", mailStartTls);
+    props.put("mail.debug", "true");
+    //465 port용 설정
+    props.put("mail.smtp.socketFactory.port", "465");
+    props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 
         return mailSender;
     }
