@@ -17,7 +17,7 @@ public class NotificationService {
     private final FestivalServiceImpl festivalService;
 
     // 매일 오전 9시마다 리마인더 알림 메일 발송
-    @Scheduled(cron = "0 32 17 * * *")
+    @Scheduled(cron = "0 0 9 * * *")
     public void sendFestivalReminder() {
         // 페스티벌 오픈 당일, 1일 전, 7일 전 리마인더
         List<ReminderDto> festivalOpenReminders = festivalService.getFestivalOpenReminders();
