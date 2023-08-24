@@ -35,17 +35,16 @@ public class UserController {
     // 회원가입
     @PostMapping("/users/sign-up")
     @Operation(summary = "유저 회원가입", description = "ResponseDto를 통해 가입할 유저정보를 받아옵니다.")
-    public ResponseEntity<ApiResponseDto> signup(@Valid @RequestBody
-                                                 @Parameter(description = "유저 정보를 받을 dto") SignupRequestDto requestDto,
-                                                 BindingResult bindingResult) {
+    public ResponseEntity<ApiResponseDto> signup(
+            @Parameter(description = "유저 정보를 받을 dto")@Valid @RequestBody SignupRequestDto requestDto,
+            BindingResult bindingResult) {
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-        if (fieldErrors.size() > 0) {
+        if(fieldErrors.size() > 0) {
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
                 log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
             }
-            throw new IllegalArgumentException(
-                    "username은 4~10자이며 알파벳 소문자와 숫자로, password는 8~15자이며 알파벳 대소문자와 숫자, 특수문자로 구성하여 다시 시도해주세요.");
+            throw new IllegalArgumentException("username은 4~10자이며 알파벳 소문자와 숫자로, password는 8~15자이며 알파벳 대소문자와 숫자, 특수문자로 구성하여 다시 시도해주세요.");
         } else {
             userService.signup(requestDto);
             return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원가입이 완료되었습니다."));
@@ -65,8 +64,7 @@ public class UserController {
 
     //카카오로그인 로그아웃
     @GetMapping("/users/logout")
-    public ResponseEntity<ApiResponseDto> logout(HttpServletRequest request,
-                                                 HttpServletResponse response) {
+    public ResponseEntity<ApiResponseDto> logout(HttpServletRequest request, HttpServletResponse response) {
         Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
