@@ -1,8 +1,13 @@
 package com.sparta.lafesta.user.controller;
 
 import com.sparta.lafesta.common.dto.ApiResponseDto;
+import com.sparta.lafesta.common.jwt.JwtUtil;
 import com.sparta.lafesta.user.dto.SignupRequestDto;
 import com.sparta.lafesta.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,10 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -41,4 +43,13 @@ public class UserController {
 		}
 	}
 
+	//카카오로그인 로그아웃
+	@GetMapping("/users/logout")
+	public ResponseEntity<ApiResponseDto> logout(HttpServletRequest request, HttpServletResponse response) {
+		Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, null);
+		cookie.setMaxAge(0);
+		cookie.setPath("/");
+		response.addCookie(cookie);
+		return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "로그아웃이 완료되었습니다."));
+	}
 }

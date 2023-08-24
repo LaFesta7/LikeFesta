@@ -1,9 +1,12 @@
 package com.sparta.lafesta.user.service;
 
+import com.sparta.lafesta.common.jwt.JwtUtil;
 import com.sparta.lafesta.user.dto.SignupRequestDto;
 import com.sparta.lafesta.user.entity.User;
 import com.sparta.lafesta.user.entity.UserRoleEnum;
 import com.sparta.lafesta.user.repository.UserRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +29,7 @@ public class UserService {
         String password = passwordEncoder.encode(requestDto.getPassword());
         String email = requestDto.getEmail();
         String nickname = requestDto.getNickname();
+        Boolean organizerRequest = false;
 
         // 회원 중복 확인
         Optional<User> checkUsername = userRepository.findByUsername(username);
@@ -42,9 +46,23 @@ public class UserService {
             }
             role = UserRoleEnum.ADMIN;
         }
+        if (requestDto.isOrganizer()) {
+            organizerRequest = true;
+        }
 
         // 사용자 등록
-        User user = new User(username, password, email, role, nickname);
+        User user = new User(username, password, email, role, nickname, organizerRequest);
         userRepository.save(user);
     }
+
+    //카카오 로그인 시 로그아웃
+    public void kakaoLogout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("token", null);
+        cookie.setMaxAge(0);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+    }
+
+
 }

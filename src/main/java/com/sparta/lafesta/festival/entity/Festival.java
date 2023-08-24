@@ -2,8 +2,10 @@ package com.sparta.lafesta.festival.entity;
 
 import com.sparta.lafesta.common.entity.Timestamped;
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
+import com.sparta.lafesta.follow.entity.FestivalFollow;
 import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
 import com.sparta.lafesta.review.entity.Review;
+import com.sparta.lafesta.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -44,13 +46,20 @@ public class Festival extends Timestamped {
     @Column(name = "official_link", nullable = false)
     private String officialLink;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId", nullable = false)
+    private User user;
+
     @OneToMany(mappedBy = "festival", orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "followedFestival", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<FestivalFollow> festivalFollowers = new ArrayList<>();
 
     @OneToMany(mappedBy = "festival", orphanRemoval = true)
     private List<FestivalLike> festivalLikes = new ArrayList<>();
 
-    public Festival(FestivalRequestDto requestDto) {
+    public Festival(FestivalRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.location = requestDto.getLocation();
         this.content = requestDto.getContent();
@@ -58,6 +67,7 @@ public class Festival extends Timestamped {
         this.endDate = requestDto.getEndDate();
         this.reservationOpenDate = requestDto.getReservationOpenDate();
         this.officialLink = requestDto.getOfficialLink();
+        this.user = user;
     }
 
     public void modify(FestivalRequestDto requestDto) {

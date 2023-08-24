@@ -1,5 +1,6 @@
 package com.sparta.lafesta.review.service;
 
+import com.sparta.lafesta.common.exception.UnauthorizedException;
 import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.festival.service.FestivalServiceImpl;
 import com.sparta.lafesta.like.reviewLike.entity.ReviewLike;
@@ -31,7 +32,11 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public ReviewResponseDto createReview(Long festivalId, ReviewRequestDto requestDto, User user) {
-        // user 권한 확인 예외처리 추후 추가 작성 예정
+        // 주최사, 일반 사용자는 리뷰 작성 가능(관리자 불가)
+        if (user.getRole().getAuthority().equals("ROLE_ADMIN")) {
+            throw new UnauthorizedException("리뷰를 작성할 수 있는 권한이 없습니다.");
+        }
+
         Festival festival = festivalService.findFestival(festivalId);
         Review review = new Review(festival, requestDto, user);
         reviewRepository.save(review);
@@ -60,8 +65,13 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public ReviewResponseDto modifyReview(Long reviewId, ReviewRequestDto requestDto, User user) {
-        // user 권한 확인 예외처리 추후 추가 작성 예정
         Review review = findReview(reviewId);
+
+        // 본인이 작성한 글만 수정 가능
+        if (!review.getUser().getId().equals(user.getId())) {
+            throw new UnauthorizedException("본인이 작성한 글만 수정할 수 있습니다.");
+        }
+
         review.modify(requestDto);
         return new ReviewResponseDto(review);
     }
@@ -70,8 +80,14 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public void deleteReview(Long reviewId, User user) {
-        // user 권한 확인 예외처리 추후 추가 작성 예정
         Review review = findReview(reviewId);
+
+        // 주최사, 일반 사용자는 본인이 작성한 글만 삭제 가능, 관리자는 모든 글 삭제 가능
+        if (!review.getUser().getId().equals(user.getId())
+                && !user.getRole().getAuthority().equals("ROLE_ADMIN")) {
+            throw new UnauthorizedException("해당 리뷰를 삭제할 수 없습니다.");
+        }
+
         reviewRepository.delete(review);
     }
 
@@ -79,6 +95,11 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public ReviewResponseDto createReviewLike(Long reviewId, User user) {
+        // 주최사, 일반 사용자는 좋아요 추가 가능(관리자 불가)
+        if (user.getRole().getAuthority().equals("ROLE_ADMIN")) {
+            throw new UnauthorizedException("좋아요에 관한 권한이 없습니다.");
+        }
+
         Review review = findReview(reviewId);
         // 좋아요를 이미 누른 경우 오류 반환
         if (findReviewLike(user, review) != null) {
@@ -92,7 +113,13 @@ public class ReviewServiceImpl implements ReviewService {
 
     // 리뷰 좋아요 취소
     @Override
+    @Transactional
     public ReviewResponseDto deleteReviewLike(Long reviewId, User user) {
+        // 주최사, 일반 사용자는 좋아요 추가 가능(관리자 불가)
+        if (user.getRole().getAuthority().equals("ROLE_ADMIN")) {
+            throw new UnauthorizedException("좋아요에 관한 권한이 없습니다.");
+        }
+
         ReviewResponseDto response = transactionTemplate.execute(status -> {
             Review review = findReview(reviewId);
             // 좋아요를 누르지 않은 경우 오류 반환
