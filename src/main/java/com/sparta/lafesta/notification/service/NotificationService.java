@@ -23,15 +23,15 @@ public class NotificationService {
         List<FestivalReminderResponseDto> festivalReminders = festivalService.getFestivalReminders();
         if (festivalReminders.size() != 0) {
             for (FestivalReminderResponseDto festivalReminder : festivalReminders) {
-                if (festivalReminder.getFestivalLikeUsersEmail().size() != 0) {
+                if (festivalReminder.getFestivalFollowUsersEmail().size() != 0) {
                     String mailTitle = festivalReminder.getMailTitle();
                     String mailContent = festivalReminder.getMailContent();
                     String festivalTitle = festivalReminder.getFestivalTitle();
                     String festivalDate = festivalReminder.getFestivalDate();
                     String festivalLocate = festivalReminder.getFestivalLocate();
-                    List<String> festivalLikeUsersEmail = festivalReminder.getFestivalLikeUsersEmail();
+                    List<String> festivalFollowUsersEmail = festivalReminder.getFestivalFollowUsersEmail();
 
-                    for (String toEmail : festivalLikeUsersEmail) {
+                    for (String toEmail : festivalFollowUsersEmail) {
                         mailService.sendNotificationEmail(toEmail, mailTitle, mailContent, festivalTitle, festivalDate, festivalLocate, htmlTemplate);
                     }
                 }

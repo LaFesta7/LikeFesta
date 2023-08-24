@@ -1,7 +1,7 @@
 package com.sparta.lafesta.notification.dto;
 
 import com.sparta.lafesta.festival.entity.Festival;
-import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
+import com.sparta.lafesta.follow.entity.FestivalFollow;
 import com.sparta.lafesta.user.entity.User;
 import lombok.Getter;
 
@@ -19,7 +19,7 @@ public class FestivalReminderResponseDto {
     private String festivalTitle;
     private String festivalDate;
     private String festivalLocate;
-    private List<String> festivalLikeUsersEmail;
+    private List<String> festivalFollowUsersEmail;
 
     public FestivalReminderResponseDto(Festival festival) {
         this.mailTitle = makeNotificationMailTitle(festival);
@@ -27,8 +27,8 @@ public class FestivalReminderResponseDto {
         this.festivalTitle = festival.getTitle();
         this.festivalDate = formFestivalDate(festival);
         this.festivalLocate = festival.getLocation();
-        this.festivalLikeUsersEmail = festival.getFestivalLikes().stream()
-                .map(FestivalLike::getUser)
+        this.festivalFollowUsersEmail = festival.getFestivalFollowers().stream()
+                .map(FestivalFollow::getFollowingFestivalUser)
                 .map(User::getEmail)
                 .collect(Collectors.toList());
     }
