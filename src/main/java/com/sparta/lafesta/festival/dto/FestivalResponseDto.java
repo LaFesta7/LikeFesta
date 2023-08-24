@@ -17,6 +17,7 @@ public class FestivalResponseDto {
     private LocalDateTime openDate;
     private LocalDateTime endDate;
     private LocalDateTime reservationOpenDate;
+    private String reservationPlace;
     private String officialLink;
     private List<ReviewResponseDto> reviews;
     private int likeCnt;
@@ -29,6 +30,7 @@ public class FestivalResponseDto {
         this.openDate = festival.getOpenDate();
         this.endDate = festival.getEndDate();
         this.reservationOpenDate = festival.getReservationOpenDate();
+        this.reservationPlace = festival.getReservationPlace();
         this.officialLink = festival.getOfficialLink();
         this.reviews = festival.getReviews().stream().
                 map(ReviewResponseDto::new).collect(Collectors.toList());

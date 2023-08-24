@@ -22,12 +22,14 @@ public class MailService {
     }
 
     // 알림 메일 보내기
-    public void sendNotificationEmail(String toEmail, String mailTitle, String mailContent, String festivalTitle, String festivalDate, String festivalLocate, String htmlTemplate) {
+    public void sendNotificationEmail(String toEmail, String mailTitle, String mailContent, String festivalTitle, String festivalOpenDate, String festivalLocate, String reservationOpenDate, String reservationPlace, String htmlTemplate) {
         Context context = new Context(); // 메일 내용
-        context.setVariable("mailContent", mailContent); // 페스티벌 리마인드
+        context.setVariable("mailContent", mailContent); // 리마인드 내용
         context.setVariable("festivalTitle", festivalTitle); // 페스티벌 이름
-        context.setVariable("festivalDate", festivalDate); // 페스티벌 일시
+        context.setVariable("festivalOpenDate", festivalOpenDate); // 페스티벌 일시
         context.setVariable("festivalLocate", festivalLocate); // 페스티벌 장소
+        context.setVariable("reservationOpenDate", reservationOpenDate); // 예매 일시
+        context.setVariable("reservationPlace", reservationPlace); // 예매 일시
         String subject = "[LaFesta] " + mailTitle; // 메일 제목
         String body = templateEngine.process(htmlTemplate, context);
         sendMail(toEmail, subject, body);
