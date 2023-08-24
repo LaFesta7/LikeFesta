@@ -7,29 +7,39 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
 public class FestivalReminderResponseDto {
-    private String title;
-    private String content;
+    private String mailTitle;
+    private String mailContent;
+    private String festivalTitle;
+    private String festivalDate;
+    private String festivalLocate;
     private List<String> festivalLikeUsersEmail;
 
     public FestivalReminderResponseDto(Festival festival) {
-        this.title = makeNotificationTitle(festival);
-        this.content = makeNotificationContent(festival);
+        this.mailTitle = makeNotificationMailTitle(festival);
+        this.mailContent = makeNotificationMailContent(festival);
+        this.festivalTitle = festival.getTitle();
+        this.festivalDate = formFestivalDate(festival);
+        this.festivalLocate = festival.getLocation();
         this.festivalLikeUsersEmail = festival.getFestivalLikes().stream()
                 .map(FestivalLike::getUser)
                 .map(User::getEmail)
                 .collect(Collectors.toList());
     }
 
-    private String makeNotificationTitle(Festival festival) {
+    // 메일 제목 만들기
+    private String makeNotificationMailTitle(Festival festival) {
         StringBuilder sb = new StringBuilder();
+        sb.append("' ");
         sb.append(festival.getTitle());
-        sb.append(" 개최 ");
+        sb.append(" '");
+        sb.append(" 개막 ");
         if (getDaysDifference(festival) > 0) {
             sb.append(getDaysDifference(festival));
             sb.append("일 전 알림");
@@ -39,10 +49,11 @@ public class FestivalReminderResponseDto {
         return sb.toString();
     }
 
-    private String makeNotificationContent(Festival festival) {
+    // 메일 내용 만들기
+    private String makeNotificationMailContent(Festival festival) {
         StringBuilder sb = new StringBuilder();
-        sb.append(festival.getTitle());
-        sb.append(" 개최 ");
+        sb.append("팔로우 하신 페스티벌");
+        sb.append(" 개막 ");
         if (getDaysDifference(festival) > 0) {
             sb.append(getDaysDifference(festival));
             sb.append("일 전 입니다!");
@@ -53,10 +64,18 @@ public class FestivalReminderResponseDto {
         return sb.toString();
     }
 
+    // 날짜 차이 구하기
     private long getDaysDifference(Festival festival) {
         LocalDate today = LocalDate.now();
         LocalDateTime festivalDateTime = festival.getOpenDate();
         LocalDate festivalDate = festivalDateTime.toLocalDate();
         return ChronoUnit.DAYS.between(today, festivalDate);
+    }
+
+    // 페스티벌 날짜 형식 만들기
+    private String formFestivalDate(Festival festival) {
+        LocalDateTime date = festival.getOpenDate();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일 (E) HH시 mm분");
+        return date.format(formatter);
     }
 }

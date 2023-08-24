@@ -6,10 +6,16 @@
 <body>
 <div style="margin:100px;">
   <div align="center">
-    <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcV3maT%2Fbtsr5fPXaRA%2F63kCuyMjFIgw1Ddrin4vZ1%2Fimg.png">
+    <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FXbcoS%2FbtsrZyW9XJf%2FzTy30erAwYpjkwxG47HAb1%2Fimg.png">
   </div>
-  <div align="center" style="border:1px solid black; font-family:verdana;">
-    <h3 style="font-size:130%" th:text="${content}"> </h3>
+  <div style="border:1px solid black; font-family:verdana;">
+    <h1 align="center" style="font-size:150%; margin-top: 20px" th:text="${mailContent}"> </h1>
+    <hr style="margin: 10px 20px;">
+    <div style="margin-left: 30px; margin-top: 20px">
+      <h3>페스티벌명: <span style="margin-left: 5px" th:text="${festivalTitle}"></span></h3>
+      <h3>일시: <span style="margin-left: 5px" th:text="${festivalDate}"></span></h3>
+      <h3>장소: <span style="margin-left: 5px" th:text="${festivalLocate}"></span></h3>
+    </div>
   </div>
   <br/>
 </div>

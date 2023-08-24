@@ -21,11 +21,14 @@ public class MailService {
         this.templateEngine = templateEngine;
     }
 
-    // 메일 형식 만들어 보내기
-    public void sendCustomEmail(String toEmail, String title, String content, String htmlTemplate) {
-        Context context = new Context();
-        context.setVariable("content", content); // 메일 내용
-        String subject = "[LaFesta] " + title; // 메일 제목
+    // 알림 메일 보내기
+    public void sendNotificationEmail(String toEmail, String mailTitle, String mailContent, String festivalTitle, String festivalDate, String festivalLocate, String htmlTemplate) {
+        Context context = new Context(); // 메일 내용
+        context.setVariable("mailContent", mailContent); // 페스티벌 리마인드
+        context.setVariable("festivalTitle", festivalTitle); // 페스티벌 이름
+        context.setVariable("festivalDate", festivalDate); // 페스티벌 일시
+        context.setVariable("festivalLocate", festivalLocate); // 페스티벌 장소
+        String subject = "[LaFesta] " + mailTitle; // 메일 제목
         String body = templateEngine.process(htmlTemplate, context);
         sendMail(toEmail, subject, body);
     }

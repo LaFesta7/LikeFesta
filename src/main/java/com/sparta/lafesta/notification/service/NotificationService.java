@@ -24,12 +24,15 @@ public class NotificationService {
         if (festivalReminders.size() != 0) {
             for (FestivalReminderResponseDto festivalReminder : festivalReminders) {
                 if (festivalReminder.getFestivalLikeUsersEmail().size() != 0) {
-                    String title = festivalReminder.getTitle();
-                    String content = festivalReminder.getContent();
+                    String mailTitle = festivalReminder.getMailTitle();
+                    String mailContent = festivalReminder.getMailContent();
+                    String festivalTitle = festivalReminder.getFestivalTitle();
+                    String festivalDate = festivalReminder.getFestivalDate();
+                    String festivalLocate = festivalReminder.getFestivalLocate();
                     List<String> festivalLikeUsersEmail = festivalReminder.getFestivalLikeUsersEmail();
 
                     for (String toEmail : festivalLikeUsersEmail) {
-                        mailService.sendCustomEmail(toEmail, title, content, htmlTemplate);
+                        mailService.sendNotificationEmail(toEmail, mailTitle, mailContent, festivalTitle, festivalDate, festivalLocate, htmlTemplate);
                     }
                 }
             }
