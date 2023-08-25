@@ -70,7 +70,9 @@ public class UserService {
 
 
         //첨부파일 업로드
-        uploadFiles(files, user);
+        if (files != null) {
+            uploadFiles(files, user);
+        }
     }
 
     //카카오 로그인 시 로그아웃

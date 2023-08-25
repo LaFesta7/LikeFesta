@@ -64,8 +64,9 @@ public class FestivalServiceImpl implements FestivalService {
         festivalRepository.save(festival);
 
         // 첨부파일업로드 -> 이후 업로드된 파일의 url주소를 festival객체에 담아줄 예정.
-        uploadFiles(files, festival);
-
+        if (files != null) {
+            uploadFiles(files, festival);
+        }
         return new FestivalResponseDto(festival);
     }
 
@@ -105,8 +106,9 @@ public class FestivalServiceImpl implements FestivalService {
         }
 
         //첨부파일 변경
-        modifyFiles(festival, files);
-
+        if (files != null) {
+            modifyFiles(festival, files);
+        }
         //페스티벌 정보 변경
         festival.modify(requestDto);
 
