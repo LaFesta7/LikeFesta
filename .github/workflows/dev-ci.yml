@@ -23,6 +23,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      DB_URL: ${{ secrets.DB_URL }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
       KAKAO_REST_API: ${{ secrets.KAKAO_REST_API }}
       MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
@@ -34,8 +37,8 @@ jobs:
       mysql:
         image: mysql:latest
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: test_db
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.DB_DATABASE }}
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping"
