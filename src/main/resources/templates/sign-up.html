@@ -21,12 +21,13 @@
     <label for="email">Email:</label>
     <input type="email" id="email" name="email" required>
     <button type="button" id="sendVerification">인증 메일 발송</button>
-    <div id="verificationContainer" style="display: none;">
+    <div id="verificationContainer" style="display: none; margin-top: 20px">
         메일에 발송된 인증코드를 입력해주세요!
         <br>
         <label for="verificationCode">인증코드:</label>
         <input type="text" id="verificationCode" name="verificationCode" required>
         <button type="button" id="confirmButton">인증확인</button>
+        <p id="timer">3:00</p>
     </div>
     <br>
     <button type="button" id="submitButton" disabled>회원가입</button>
@@ -45,6 +46,8 @@
     const nicknameInput = document.getElementById('nickname');
     const emailInput = document.getElementById('email');
 
+    const timerElement = document.getElementById('timer');
+
     sendVerificationButton.addEventListener('click', async () => {
         if (usernameInput.value && passwordInput.value && nicknameInput.value && emailInput.value) { // 닉네임이 입력되어야만 인증 메일 발송 가능
             submitButton.disabled = false;
@@ -60,6 +63,7 @@
             });
 
             if (response.ok) {
+                startCountdown(); // 타이머 시작
                 const responseData = await response.json();
                 console.log(responseData.statusMessage);
                 alert(responseData.statusMessage);
@@ -89,9 +93,11 @@
             });
 
             if (verifyResponse.ok) {
+                clearInterval(countdownInterval); // 타이머 중지
                 const responseData = await verifyResponse.json();
                 console.log(responseData.statusMessage);
                 alert(responseData.statusMessage);
+                verificationContainer.style.display = 'none';
                 submitButton.disabled = false; // submitButton 활성화
             } else {
                 const responseData = await verifyResponse.json();
@@ -130,6 +136,40 @@
             alert(responseData.statusMessage);
         }
     });
+
+    // 타이머 시작 시간 (3분)
+    let countdownInterval;
+    let remainingTime = 180; // 3 * 60 (3분을 초로 환산)
+
+    function updateTimerDisplay() {
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = remainingTime % 60;
+        const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        timerElement.textContent = formattedTime;
+    }
+
+    function startCountdown() {
+        clearInterval(countdownInterval); // 기존의 카운트다운 인터벌을 초기화
+        remainingTime = 180; // 타이머를 다시 3분으로 초기화
+        updateTimerDisplay(); // 초기화한 타이머를 표시
+
+        countdownInterval = setInterval(() => {
+            if (remainingTime > 0) {
+                remainingTime--;
+                updateTimerDisplay();
+            } else {
+                clearInterval(countdownInterval);
+                showExpirationWarning();
+            }
+        }, 1000); // 1초마다 카운트다운
+    }
+
+
+    function showExpirationWarning() {
+        // 인증 코드 만료 경고창 보이기
+        alert('인증 코드가 만료되었습니다. 다시 인증 메일을 발송해주세요.');
+        verificationContainer.style.display = 'none';
+    }
 
 </script>
 </body>
