@@ -6,6 +6,7 @@ import com.sparta.lafesta.notification.dto.FestivalReminderResponseDto;
 import com.sparta.lafesta.user.entity.User;
 
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface FestivalService {
     /**
@@ -20,7 +21,7 @@ public interface FestivalService {
      * 전체 페스티벌 조회
      * @return 전체 페스티벌 조회 결과
      */
-    List<FestivalResponseDto> selectFestivals();
+    List<FestivalResponseDto> selectFestivals(Pageable pageable);
 
     /**
      * 페스티벌 상세 조회
