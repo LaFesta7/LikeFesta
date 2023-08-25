@@ -32,7 +32,7 @@ public class ReviewController {
     public ResponseEntity<ApiResponseDto> createReview(
             @Parameter(name = "festivalId", description = "리뷰를 생성할 festival의 id", in = ParameterIn.PATH) @PathVariable Long festivalId,
             @Parameter(description = "리뷰를 생성할 때 필요한 정보") @RequestPart(value = "requestDto") ReviewRequestDto requestDto,
-            @Parameter(description = "festival 생성시 등록한 첨부 파일") @RequestPart(value = "files", required = false) List<MultipartFile> files,
+            @Parameter(description = "review 생성시 등록한 첨부 파일") @RequestPart(value = "files", required = false) List<MultipartFile> files,
             @Parameter(description = "권한 확인 및 작성자 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws IOException {
 

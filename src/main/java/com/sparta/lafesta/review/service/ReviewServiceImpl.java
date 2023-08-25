@@ -60,8 +60,9 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.save(review);
 
         //첨부파일 업로드
-        uploadFiles(files, review);
-
+        if (files != null) {
+            uploadFiles(files, review);
+        }
         return new ReviewResponseDto(review);
     }
 
@@ -95,8 +96,9 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         //첨부파일 변경
-        modifyFiles(review, files);
-
+        if (files != null) {
+            modifyFiles(review, files);
+        }
         //리뷰 정보 변경
         review.modify(requestDto);
         return new ReviewResponseDto(review);
