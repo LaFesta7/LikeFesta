@@ -7,13 +7,13 @@ import lombok.Getter;
 public class FileOnS3Dto {
 
     private Long id;
-    private String originalFileName;
+    private String keyName;
     private String uploadFileUrl;
 
 
     public FileOnS3Dto(FestivalFileOnS3 fileOnS3) {
         this.id = fileOnS3.getId();
-        this.originalFileName = fileOnS3.getOriginalFileName();
+        this.keyName = fileOnS3.getKeyName();
         this.uploadFileUrl = fileOnS3.getUploadFileUrl();
     }
 

@@ -17,7 +17,7 @@ public class FestivalFileOnS3 extends FileOnS3 {
     ////생성자 - 약속된 형태로만 생성가능하도록 합니다.
 
     public FestivalFileOnS3(FileOnS3 fileOnS3){
-        super(fileOnS3.getOriginalFileName(), fileOnS3.getUploadFileUrl());
+        super(fileOnS3.getKeyName(), fileOnS3.getUploadFileUrl());
 //        this.originalFileName = fileOnS3.getOriginalFileName();
 //        this.uploadFileUrl = fileOnS3.getUploadFileUrl();
     }

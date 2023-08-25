@@ -35,12 +35,14 @@ public interface FestivalService {
 
     /**
      * 페스티벌 수정
+     *
      * @param festivalId 수정할 페스티벌의 id
      * @param requestDto 수정할 정보
-     * @param user 권한 확인
+     * @param files
+     * @param user       권한 확인
      * @return 페스티벌 수정 결과
      */
-    FestivalResponseDto modifyFestival(Long festivalId, FestivalRequestDto requestDto, User user);
+    FestivalResponseDto modifyFestival(Long festivalId, FestivalRequestDto requestDto, List<MultipartFile> files, User user) throws IOException;
 
     /**
      * 페스티벌 삭제

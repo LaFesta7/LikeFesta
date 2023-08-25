@@ -15,7 +15,7 @@ public class FileOnS3 {
     /////컬럼 - 연관관계 컬럼을 제외한 컬럼을 정의합니다.
 
 
-    private String originalFileName;
+    private String keyName;
     private String uploadFileUrl;
 //    private String uploadFileName;
 //    private String uploadFilePath;
