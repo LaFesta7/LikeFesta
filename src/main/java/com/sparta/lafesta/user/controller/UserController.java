@@ -19,6 +19,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -35,7 +36,7 @@ public class UserController {
 			@Parameter(description = "festival을 생성할 때 필요한 정보") @RequestPart(value = "requestDto") @Valid SignupRequestDto requestDto,
 			@Parameter(description = "유저프로필 생성시 등록할 첨부 파일") @RequestPart(value = "files", required = false) List<MultipartFile> files,
 			BindingResult bindingResult
-	) {
+	) throws IOException {
 		// Validation 예외처리
 		List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 		if(fieldErrors.size() > 0) {

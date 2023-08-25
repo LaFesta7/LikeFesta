@@ -38,7 +38,7 @@ public class UserService {
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
 
-    public void signup(SignupRequestDto requestDto, List<MultipartFile> files) {
+    public void signup(SignupRequestDto requestDto, List<MultipartFile> files) throws IOException {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
         String email = requestDto.getEmail();
@@ -70,7 +70,7 @@ public class UserService {
 
 
         //첨부파일 업로드
-
+        uploadFiles(files, user);
     }
 
     //카카오 로그인 시 로그아웃

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Entity(name = "review_file_on_s3")
+@Entity(name = "user_file_on_s3")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserFileOnS3 extends FileOnS3{
     ////컬럼 - 연관관계 컬럼을 제외한 컬럼을 정의합니다.
