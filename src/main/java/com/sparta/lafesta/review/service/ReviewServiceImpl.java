@@ -36,7 +36,7 @@ public class ReviewServiceImpl implements ReviewService {
     //S3
     private final S3UploadService s3UploadService;
     private final ReviewFileRepository reviewFileRepository;
-    private final String REVIEW_FOLDER_NAME = "festival";
+    private final String REVIEW_FOLDER_NAME = "review";
 
     //Like
     private final ReviewLikeRepository reviewLikeRepository;
@@ -47,7 +47,7 @@ public class ReviewServiceImpl implements ReviewService {
     // 리뷰 생성
     @Override
     @Transactional
-    public ReviewResponseDto createReview(Long festivalId, ReviewRequestDto requestDto, List<MultipartFile> files, User user) {
+    public ReviewResponseDto createReview(Long festivalId, ReviewRequestDto requestDto, List<MultipartFile> files, User user) throws IOException {
         // 주최사, 일반 사용자는 리뷰 작성 가능(관리자 불가)
         if (user.getRole().getAuthority().equals("ROLE_ADMIN")) {
             throw new UnauthorizedException("리뷰를 작성할 수 있는 권한이 없습니다.");
@@ -55,11 +55,12 @@ public class ReviewServiceImpl implements ReviewService {
 
         Festival festival = festivalService.findFestival(festivalId);
 
+        //Review DB에 저장
         Review review = new Review(festival, requestDto, user);
-
         reviewRepository.save(review);
 
-
+        //첨부파일 업로드
+        uploadFiles(files, review);
 
         return new ReviewResponseDto(review);
     }

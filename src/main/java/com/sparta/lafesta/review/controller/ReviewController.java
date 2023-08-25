@@ -31,7 +31,7 @@ public class ReviewController {
     @Operation(summary = "페스티벌 리뷰 작성", description = "@PathVariable을 통해 festivalId를 받아와, 해당 위치에 페스티벌 리뷰를 작성합니다. Dto를 통해 정보를 받아와 review를 생성할 때 해당 정보를 저장합니다.")
     public ResponseEntity<ApiResponseDto> createReview(
             @Parameter(name = "festivalId", description = "리뷰를 생성할 festival의 id", in = ParameterIn.PATH) @PathVariable Long festivalId,
-            @Parameter(description = "리뷰를 생성할 때 필요한 정보") @RequestBody ReviewRequestDto requestDto,
+            @Parameter(description = "리뷰를 생성할 때 필요한 정보") @RequestPart(value = "requestDto") ReviewRequestDto requestDto,
             @Parameter(description = "festival 생성시 등록한 첨부 파일") @RequestPart(value = "files", required = false) List<MultipartFile> files,
             @Parameter(description = "권한 확인 및 작성자 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws IOException {
@@ -64,7 +64,7 @@ public class ReviewController {
     @Operation(summary = "페스티벌 리뷰 내용 수정", description = "@PathVariable을 통해 reviewId를 받아와, 해당 리뷰의 내용을 수정합니다. Dto를 통해 정보를 가져옵니다.")
     public ResponseEntity<ReviewResponseDto> modifyReview(
             @Parameter(name = "reviewId", description = "수정할 review의 id", in = ParameterIn.PATH) @PathVariable Long reviewId,
-            @Parameter(description = "review를 수정할 때 필요한 정보") @RequestBody ReviewRequestDto requestDto,
+            @Parameter(description = "review를 수정할 때 필요한 정보") @RequestPart(value = "requestDto") ReviewRequestDto requestDto,
             @Parameter(description = "festival 생성시 등록한 첨부 파일") @RequestPart(value = "files", required = false) List<MultipartFile> files,
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws IOException {

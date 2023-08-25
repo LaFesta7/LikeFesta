@@ -18,7 +18,7 @@ public interface ReviewService {
      * @param user       권한 확인
      * @return 리뷰 추가 결과
      */
-    ReviewResponseDto createReview(Long festivalId, ReviewRequestDto requestDto, List<MultipartFile> files, User user);
+    ReviewResponseDto createReview(Long festivalId, ReviewRequestDto requestDto, List<MultipartFile> files, User user) throws IOException;
 
     /**
      * 전체 리뷰 조회

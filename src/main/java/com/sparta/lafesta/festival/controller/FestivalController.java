@@ -59,7 +59,7 @@ public class FestivalController {
     @Operation(summary = "페스티벌 내용 수정", description = "@PathVariable을 통해 festival Id를 받아와, 해당 페스티벌의 내용을 수정합니다. Dto를 통해 정보를 가져옵니다.")
     public ResponseEntity<FestivalResponseDto> modifyFestival(
             @Parameter(name = "festivalId", description = "수정할 festival의 id", in = ParameterIn.PATH) @PathVariable Long festivalId,
-            @Parameter(description = "festival을 수정할 때 필요한 정보") @RequestBody FestivalRequestDto requestDto,
+            @Parameter(description = "festival을 수정할 때 필요한 정보") @RequestPart(value = "requestDto") FestivalRequestDto requestDto,
             @Parameter(description = "festival 생성시 등록한 첨부 파일") @RequestPart(value = "files", required = false) List<MultipartFile> files,
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws IOException {
