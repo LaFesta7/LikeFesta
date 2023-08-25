@@ -23,9 +23,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DB_URL: jdbc:mysql://localhost:3306/test_db
-      DB_USER: root
-      DB_PASSWORD: root
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
       KAKAO_REST_API: ${{ secrets.KAKAO_REST_API }}
       MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
