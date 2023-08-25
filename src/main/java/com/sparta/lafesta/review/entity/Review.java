@@ -2,6 +2,7 @@ package com.sparta.lafesta.review.entity;
 
 import com.sparta.lafesta.comment.entity.Comment;
 import com.sparta.lafesta.common.entity.Timestamped;
+import com.sparta.lafesta.common.s3.entity.ReviewFileOnS3;
 import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.like.reviewLike.entity.ReviewLike;
 import com.sparta.lafesta.review.dto.ReviewRequestDto;
@@ -42,6 +43,9 @@ public class Review extends Timestamped {
 
     @OneToMany(mappedBy = "review", orphanRemoval = true)
     private List<ReviewLike> reviewLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "review", orphanRemoval = true) //todo 이후 프론트 전달 방식과 관련해서 개선필요해 보임
+    private List<ReviewFileOnS3> reviewFileOnS3s = new ArrayList<>();
 
     public Review(Festival festival, ReviewRequestDto requestDto, User user) {
         this.festival = festival;

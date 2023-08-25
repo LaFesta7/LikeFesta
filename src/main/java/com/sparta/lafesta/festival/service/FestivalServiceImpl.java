@@ -35,12 +35,14 @@ import java.util.stream.Collectors;
 public class FestivalServiceImpl implements FestivalService {
     //CRUD
     private final FestivalRepository festivalRepository;
-    private final FestivalLikeRepository festivalLikeRepository;
 
     //S3
     private final S3UploadService s3UploadService;
     private final FestivalFileRepository festivalFileRepository;
     private final String FESTIVAL_FOLDER_NAME = "festival";
+
+    //Like
+    private final FestivalLikeRepository festivalLikeRepository;
 
     @Autowired
     private TransactionTemplate transactionTemplate;
@@ -204,7 +206,7 @@ public class FestivalServiceImpl implements FestivalService {
     }
 
     // 페스티벌 id로 페스티벌 찾기
-    private Festival findFestival(Long festivalId) {
+    public Festival findFestival(Long festivalId) {
         return festivalRepository.findById(festivalId).orElseThrow(() ->
                 new IllegalArgumentException("선택한 페스티벌은 존재하지 않습니다.")
         );

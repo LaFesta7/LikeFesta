@@ -1,6 +1,10 @@
 package com.sparta.lafesta.review.service;
 
 import com.sparta.lafesta.common.exception.UnauthorizedException;
+import com.sparta.lafesta.common.s3.S3UploadService;
+import com.sparta.lafesta.common.s3.entity.FileOnS3;
+import com.sparta.lafesta.common.s3.entity.ReviewFileOnS3;
+import com.sparta.lafesta.common.s3.repository.ReviewFileRepository;
 import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.festival.service.FestivalServiceImpl;
 import com.sparta.lafesta.like.reviewLike.entity.ReviewLike;
@@ -15,31 +19,48 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
+    //CRUD
     private final ReviewRepository reviewRepository;
     private final FestivalServiceImpl festivalService;
+
+    //S3
+    private final S3UploadService s3UploadService;
+    private final ReviewFileRepository reviewFileRepository;
+    private final String REVIEW_FOLDER_NAME = "festival";
+
+    //Like
     private final ReviewLikeRepository reviewLikeRepository;
+
     @Autowired
     private TransactionTemplate transactionTemplate;
 
     // 리뷰 생성
     @Override
     @Transactional
-    public ReviewResponseDto createReview(Long festivalId, ReviewRequestDto requestDto, User user) {
+    public ReviewResponseDto createReview(Long festivalId, ReviewRequestDto requestDto, List<MultipartFile> files, User user) {
         // 주최사, 일반 사용자는 리뷰 작성 가능(관리자 불가)
         if (user.getRole().getAuthority().equals("ROLE_ADMIN")) {
             throw new UnauthorizedException("리뷰를 작성할 수 있는 권한이 없습니다.");
         }
 
         Festival festival = festivalService.findFestival(festivalId);
+
         Review review = new Review(festival, requestDto, user);
+
         reviewRepository.save(review);
+
+
+
         return new ReviewResponseDto(review);
     }
 
@@ -64,7 +85,7 @@ public class ReviewServiceImpl implements ReviewService {
     // 리뷰 내용 수정
     @Override
     @Transactional
-    public ReviewResponseDto modifyReview(Long reviewId, ReviewRequestDto requestDto, User user) {
+    public ReviewResponseDto modifyReview(Long reviewId, ReviewRequestDto requestDto, List<MultipartFile> files, User user) throws IOException {
         Review review = findReview(reviewId);
 
         // 본인이 작성한 글만 수정 가능
@@ -72,6 +93,10 @@ public class ReviewServiceImpl implements ReviewService {
             throw new UnauthorizedException("본인이 작성한 글만 수정할 수 있습니다.");
         }
 
+        //첨부파일 변경
+        modifyFiles(review, files);
+
+        //리뷰 정보 변경
         review.modify(requestDto);
         return new ReviewResponseDto(review);
     }
@@ -87,6 +112,9 @@ public class ReviewServiceImpl implements ReviewService {
                 && !user.getRole().getAuthority().equals("ROLE_ADMIN")) {
             throw new UnauthorizedException("해당 리뷰를 삭제할 수 없습니다.");
         }
+
+        //첨부파일 DB에서 삭제
+        deleteFiles(review);
 
         reviewRepository.delete(review);
     }
@@ -146,6 +174,47 @@ public class ReviewServiceImpl implements ReviewService {
                 new IllegalArgumentException("선택한 리뷰는 존재하지 않습니다.")
         );
     }
+
+
+    private void uploadFiles(List<MultipartFile> files, Review review) throws IOException {
+        List<FileOnS3> fileOnS3s = new ArrayList<>();
+        if (files != null) {
+            fileOnS3s = s3UploadService.putObjects(files, REVIEW_FOLDER_NAME, review.getId());
+        }
+
+        // FielOnS3를 Festival로 변환
+        for (FileOnS3 fileOnS3 : fileOnS3s) {
+            //페스티벌 파일 S3 엔티티로 변환생성
+            ReviewFileOnS3 reviewFileOnS3 = new ReviewFileOnS3(fileOnS3);
+            //S3 엔티티에 페스티벌 연관관계 설정
+            reviewFileOnS3.setReview(review);
+            //DB저장
+            reviewFileRepository.save(reviewFileOnS3);
+        }
+    }
+
+    private void deleteFiles(Review review) {
+        // 파일정보 불러오기
+        List<ReviewFileOnS3> fileOnS3s = review.getReviewFileOnS3s();
+
+        // 파일 삭제 실행
+        if (!fileOnS3s.isEmpty()) { // 파일이 있다면 실행
+            for (ReviewFileOnS3 fileOnS3 : fileOnS3s) {
+                s3UploadService.deleteFile(fileOnS3.getKeyName());
+            }
+        }
+    }
+
+    private void modifyFiles(Review review, List<MultipartFile> files) throws IOException {
+
+        // 기존 파일 삭제
+        deleteFiles(review);
+
+        // 파일 등록
+        uploadFiles(files, review);
+    }
+
+
 
     // 리뷰와 사용자로 좋아요 찾기
     private ReviewLike findReviewLike(User user, Review review) {

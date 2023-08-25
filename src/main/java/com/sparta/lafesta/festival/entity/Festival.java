@@ -2,7 +2,6 @@ package com.sparta.lafesta.festival.entity;
 
 import com.sparta.lafesta.common.entity.Timestamped;
 import com.sparta.lafesta.common.s3.entity.FestivalFileOnS3;
-import com.sparta.lafesta.common.s3.entity.FileOnS3;
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.follow.entity.FestivalFollow;
 import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
@@ -96,10 +95,4 @@ public class Festival extends Timestamped {
         this.officialLink = requestDto.getOfficialLink();
     }
 
-    public void addFileOnS3s(List<FestivalFileOnS3> festivalFileOnS3s) {
-        // 받아 온 FileOnS3를 모두 FestivalFileOnS3로 바꿔주고, festival객체를 저장해준다.
-        for(FestivalFileOnS3 festivalFileOnS3 : festivalFileOnS3s) {
-            festivalFileOnS3.setFestival(this);
-        }
-    }
 }
