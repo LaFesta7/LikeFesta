@@ -60,7 +60,7 @@ public class UserController {
 
   //인증 메일
   @PostMapping("users/sign-up/mail-confirm")
-  @Operation(summary = "이메일 인증 메일 발송", description = "query string을 통해 이메일 주소을 받아옵니다. 받아온 이메일 주소로 인증 코드를 발송하고 발송한 인증 코드를 반환합니다.")
+  @Operation(summary = "이메일 인증 메일 발송", description = "String을 통해 이메일 주소을 받아옵니다. 받아온 이메일 주소로 인증 코드를 발송하고 발송한 인증 코드를 반환합니다.")
   String mailConfirm(
       @Parameter(description = "인증코드를 보낼 이메일 주소") @RequestBody String email)
       throws Exception {
@@ -69,13 +69,14 @@ public class UserController {
     return code;
   }
 
-    //카카오로그인 로그아웃
-    @GetMapping("/users/logout")
-    public ResponseEntity<ApiResponseDto> logout(HttpServletRequest request,HttpServletResponse response) {
-        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "로그아웃이 완료되었습니다."));
-    }
+  //카카오로그인 로그아웃
+  @GetMapping("/users/logout")
+  public ResponseEntity<ApiResponseDto> logout(HttpServletRequest request,
+      HttpServletResponse response) {
+    Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, null);
+    cookie.setMaxAge(0);
+    cookie.setPath("/");
+    response.addCookie(cookie);
+    return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "로그아웃이 완료되었습니다."));
+  }
 }
