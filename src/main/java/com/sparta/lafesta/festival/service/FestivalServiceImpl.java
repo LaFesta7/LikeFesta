@@ -1,9 +1,14 @@
 package com.sparta.lafesta.festival.service;
 
+
+import com.sparta.lafesta.common.s3.S3UploadService;
+import com.sparta.lafesta.common.s3.entity.FestivalFileOnS3;
+import com.sparta.lafesta.common.s3.entity.FileOnS3;
 import com.sparta.lafesta.common.exception.UnauthorizedException;
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
 import com.sparta.lafesta.festival.entity.Festival;
+import com.sparta.lafesta.common.s3.repository.FestivalFileRepository;
 import com.sparta.lafesta.festival.repository.FestivalRepository;
 import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
 import com.sparta.lafesta.like.festivalLike.repository.FestivalLikeRepository;
@@ -14,34 +19,57 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class FestivalServiceImpl implements FestivalService {
+    //CRUD
     private final FestivalRepository festivalRepository;
+
+    //S3
+    private final S3UploadService s3UploadService;
+    private final FestivalFileRepository festivalFileRepository;
+    private final String FESTIVAL_FOLDER_NAME = "festival";
+
+    //Like
     private final FestivalLikeRepository festivalLikeRepository;
+
     @Autowired
     private TransactionTemplate transactionTemplate;
+
+
 
     // 페스티벌 등록
     @Override
     @Transactional
-    public FestivalResponseDto createFestival(FestivalRequestDto requestDto, User user) {
+    public FestivalResponseDto createFestival(FestivalRequestDto requestDto, List<MultipartFile> files, User user) throws IOException {
+
         // 허가되지 않은 주최사, 일반 사용자 접근 시 예외처리
         if (user.getRole().getAuthority().equals("ROLE_USER")) {
             throw new UnauthorizedException("해당 요청에 접근할 수 없습니다.");
         }
         Festival festival = new Festival(requestDto, user);
+
+        //festival DB 저장
         festivalRepository.save(festival);
+
+        // 첨부파일업로드 -> 이후 업로드된 파일의 url주소를 festival객체에 담아줄 예정.
+        if (files != null) {
+            uploadFiles(files, festival);
+        }
         return new FestivalResponseDto(festival);
     }
+
 
     // 페스티벌 전체 조회
     @Override
@@ -51,6 +79,7 @@ public class FestivalServiceImpl implements FestivalService {
                 .map(FestivalResponseDto::new).collect(Collectors.toList());
     }
 
+
     // 페스티벌 상세 조회
     @Override
     @Transactional(readOnly = true)
@@ -59,10 +88,11 @@ public class FestivalServiceImpl implements FestivalService {
         return new FestivalResponseDto(findFestival(festivalId));
     }
 
+
     // 페스티벌 내용 수정
     @Override
     @Transactional
-    public FestivalResponseDto modifyFestival(Long festivalId, FestivalRequestDto requestDto, User user) {
+    public FestivalResponseDto modifyFestival(Long festivalId, FestivalRequestDto requestDto, List<MultipartFile> files, User user) throws IOException {
         Festival festival = findFestival(festivalId);
 
         // 주최사는 본인이 작성한 글만 수정 가능
@@ -75,9 +105,16 @@ public class FestivalServiceImpl implements FestivalService {
             throw new UnauthorizedException("주최사가 작성한 글은 관리자 권한으로 수정할 수 없습니다.");
         }
 
+        //첨부파일 변경
+        if (files != null) {
+            modifyFiles(festival, files);
+        }
+        //페스티벌 정보 변경
         festival.modify(requestDto);
+
         return new FestivalResponseDto(festival);
     }
+
 
     // 페스티벌 삭제
     @Override
@@ -91,8 +128,12 @@ public class FestivalServiceImpl implements FestivalService {
             throw new UnauthorizedException("해당 요청에 접근할 수 없습니다.");
         }
 
+        //첨부파일  DB에서 삭제
+        deleteFiles(festival);
+
         festivalRepository.delete(festival);
     }
+
 
     // 페스티벌 좋아요 추가
     @Override
@@ -172,6 +213,46 @@ public class FestivalServiceImpl implements FestivalService {
                 new IllegalArgumentException("선택한 페스티벌은 존재하지 않습니다.")
         );
     }
+
+
+    private void uploadFiles(List<MultipartFile> files, Festival festival) throws IOException {
+        List<FileOnS3> fileOnS3s = new ArrayList<>();
+        if (files != null) {
+            fileOnS3s = s3UploadService.putObjects(files, FESTIVAL_FOLDER_NAME, festival.getId());
+        }
+
+        // FielOnS3를 Festival로 변환
+        for (FileOnS3 fileOnS3 : fileOnS3s) {
+            //페스티벌 파일 S3 엔티티로 변환생성
+            FestivalFileOnS3 festivalFileOnS3 = new FestivalFileOnS3(fileOnS3);
+            //S3 엔티티에 페스티벌 연관관계 설정
+            festivalFileOnS3.setFestival(festival);
+            //DB저장
+            festivalFileRepository.save(festivalFileOnS3);
+        }
+    }
+
+    private void deleteFiles(Festival festival) {
+        // 파일정보 불러오기
+        List<FestivalFileOnS3> fileOnS3s = festival.getFestivalFileOnS3s();
+
+        // 파일 삭제 실행
+        if (!fileOnS3s.isEmpty()) { // 파일이 있다면 실행
+            for (FestivalFileOnS3 fileOnS3 : fileOnS3s) {
+                s3UploadService.deleteFile(fileOnS3.getKeyName());
+            }
+        }
+    }
+
+    private void modifyFiles(Festival festival, List<MultipartFile> files) throws IOException {
+
+        // 기존 파일 삭제
+        deleteFiles(festival);
+
+        // 파일 등록
+        uploadFiles(files, festival);
+    }
+
 
     // 페스티벌과 사용자로 좋아요 찾기
     private FestivalLike findFestivalLike(User user, Festival festival) {

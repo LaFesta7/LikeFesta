@@ -1,6 +1,7 @@
 package com.sparta.lafesta.festival.entity;
 
 import com.sparta.lafesta.common.entity.Timestamped;
+import com.sparta.lafesta.common.s3.entity.FestivalFileOnS3;
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.follow.entity.FestivalFollow;
 import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
@@ -46,9 +47,13 @@ public class Festival extends Timestamped {
     @Column(name = "official_link", nullable = false)
     private String officialLink;
 
+
+    //연관관계
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
 
     @OneToMany(mappedBy = "festival", orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
@@ -59,7 +64,14 @@ public class Festival extends Timestamped {
     @OneToMany(mappedBy = "festival", orphanRemoval = true)
     private List<FestivalLike> festivalLikes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "festival", orphanRemoval = true) //todo 이후 프론트 전달 방식과 관련해서 개선필요해 보임
+    private List<FestivalFileOnS3> festivalFileOnS3s = new ArrayList<>();
+
+
+    ////생성자 - 약속된 형태로만 생성가능하도록 합니다.
+  
     public Festival(FestivalRequestDto requestDto, User user) {
+
         this.title = requestDto.getTitle();
         this.location = requestDto.getLocation();
         this.content = requestDto.getContent();
@@ -70,6 +82,9 @@ public class Festival extends Timestamped {
         this.user = user;
     }
 
+  
+    //// 서비스 메소드 - 외부에서 엔티티를 수정할 메소드를 정의합니다. (단일 책임을 가지도록 주의합니다.)
+  
     public void modify(FestivalRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.location = requestDto.getLocation();
@@ -79,4 +94,5 @@ public class Festival extends Timestamped {
         this.reservationOpenDate = requestDto.getReservationOpenDate();
         this.officialLink = requestDto.getOfficialLink();
     }
+
 }
