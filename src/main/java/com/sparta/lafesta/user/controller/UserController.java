@@ -41,6 +41,9 @@ public class UserController {
   public ResponseEntity<ApiResponseDto> signup(
       @Parameter(description = "유저 정보를 받을 dto") @Valid @RequestBody SignupRequestDto requestDto,
       BindingResult bindingResult) {
+    if (requestDto.getEmailAuth() != 1) {
+      throw new IllegalArgumentException("이메일 인증 코드가 틀려 회원 등록이 불가능합니다.");
+    }
     // Validation 예외처리
     List<FieldError> fieldErrors = bindingResult.getFieldErrors();
     if (fieldErrors.size() > 0) {
