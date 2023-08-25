@@ -23,9 +23,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DB_URL: jdbc:mysql://localhost:3306/test_db
-      DB_USER: root
-      DB_PASSWORD: root
+      DB_URL: ${{ secrets.DB_URL }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
       KAKAO_REST_API: ${{ secrets.KAKAO_REST_API }}
       MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
@@ -37,8 +37,8 @@ jobs:
       mysql:
         image: mysql:latest
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: test_db
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.DB_DATABASE }}
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping"
@@ -54,15 +54,19 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
+      # 환경 변수 세팅
+      - name: properties 파일 생성
+        run: |
+          cd ./src/main/resources
+          touch ./application-s3.properties
+          echo "${{secrets.APPLICATION_S3_PROPERTIES}}" > ./application-s3.properties
+        shell: bash
+
       # gradle 실행 허가
       - name: Run chmod to make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle
-        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
-        with:
-          arguments: build
-
+      # Build with Gradle 대체
       - name: 어플리케이션 실행 테스트(테스트 코드X)
         run: ./gradlew clean build --exclude-task test
 
