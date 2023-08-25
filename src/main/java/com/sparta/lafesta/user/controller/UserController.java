@@ -69,14 +69,13 @@ public class UserController {
     return code;
   }
 
-  //카카오로그인 로그아웃
-  @GetMapping("/users/logout")
-  public ResponseEntity<ApiResponseDto> logout(HttpServletRequest request,
-      HttpServletResponse response) {
-    Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, null);
-    cookie.setMaxAge(0);
-    cookie.setPath("/");
-    response.addCookie(cookie);
-    return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "로그아웃이 완료되었습니다."));
-  }
+    //카카오로그인 로그아웃
+    @GetMapping("/users/logout")
+    public ResponseEntity<ApiResponseDto> logout(HttpServletRequest request,HttpServletResponse response) {
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "로그아웃이 완료되었습니다."));
+    }
 }
