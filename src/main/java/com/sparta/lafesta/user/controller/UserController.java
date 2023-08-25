@@ -36,8 +36,7 @@ public class UserController {
     @PostMapping("/users/sign-up")
     @Operation(summary = "유저 회원가입", description = "ResponseDto를 통해 가입할 유저정보를 받아옵니다.")
     public ResponseEntity<ApiResponseDto> signup(
-            @Parameter(description = "유저 정보를 받을 dto") @Valid @RequestBody SignupRequestDto requestDto,
-            BindingResult bindingResult) {
+            @Parameter(description = "유저 정보를 받을 dto") @Valid @RequestBody SignupRequestDto requestDto, BindingResult bindingResult) {
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         if (fieldErrors.size() > 0) {
@@ -64,7 +63,7 @@ public class UserController {
 
     //카카오로그인 로그아웃
     @GetMapping("/users/logout")
-    public ResponseEntity<ApiResponseDto> logout(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<ApiResponseDto> logout(HttpServletRequest request,HttpServletResponse response) {
         Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
