@@ -12,6 +12,7 @@ import com.sparta.lafesta.common.s3.repository.FestivalFileRepository;
 import com.sparta.lafesta.festival.repository.FestivalRepository;
 import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
 import com.sparta.lafesta.like.festivalLike.repository.FestivalLikeRepository;
+import com.sparta.lafesta.notification.dto.FestivalReminderResponseDto;
 import com.sparta.lafesta.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Arrays;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -145,6 +150,7 @@ public class FestivalServiceImpl implements FestivalService {
 
     // 페스티벌 좋아요 취소
     @Override
+    @Transactional
     public FestivalResponseDto deleteFestivalLike(Long festivalId, User user) {
         // 주최사, 일반 사용자는 좋아요 추가 가능(관리자 불가)
         if (user.getRole().getAuthority().equals("ROLE_ADMIN")) {
@@ -169,6 +175,29 @@ public class FestivalServiceImpl implements FestivalService {
 
         // 위에서 커밋이 수행되었으므로 FestivalResponseDto에서 새로운 likeCnt를 가져올 수 있음
         return response;
+    }
+
+    // 알림을 보낼 페스티벌 가져오기
+    @Override
+    @Transactional(readOnly = true)
+    public List<FestivalReminderResponseDto> getFestivalReminders() {
+        // 페스티벌 개최 당일, 1일 전, 7일 전 발송
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+        LocalDate sevenDaysAfter = today.plusDays(7);
+
+        List<LocalDate> dateRanges = Arrays.asList(today, tomorrow, sevenDaysAfter);
+
+        List<Festival> reminderFestivals = dateRanges.stream()
+                .map(date -> {
+                    LocalDateTime startOfDay = date.atStartOfDay();
+                    LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+                    return festivalRepository.findAllByOpenDateBetween(startOfDay, endOfDay);
+                })
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
+        return reminderFestivals.stream().map(FestivalReminderResponseDto::new).toList();
     }
 
     // 페스티벌 id로 페스티벌 찾기

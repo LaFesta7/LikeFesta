@@ -1,5 +1,6 @@
 package com.sparta.lafesta.user.repository;
 
+import com.sparta.lafesta.follow.entity.UserFollow;
 import com.sparta.lafesta.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -14,4 +15,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByKakaoId(Long kakaoId);
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByFollowings(UserFollow followingUser);
+
+    Optional<User> findByFollowers(UserFollow followedUser);
 }

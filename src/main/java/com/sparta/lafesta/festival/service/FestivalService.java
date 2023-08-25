@@ -2,6 +2,7 @@ package com.sparta.lafesta.festival.service;
 
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
+import com.sparta.lafesta.notification.dto.FestivalReminderResponseDto;
 import com.sparta.lafesta.user.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -66,4 +67,10 @@ public interface FestivalService {
      * @return 좋아요 취소 결과
      */
     FestivalResponseDto deleteFestivalLike(Long festivalId, User user);
+
+    /**
+     * 알림을 보낼 페스티벌 가져오기
+     * @return 알림을 보낼 페스티벌 가져오기 결과
+     */
+    List<FestivalReminderResponseDto> getFestivalReminders();
 }

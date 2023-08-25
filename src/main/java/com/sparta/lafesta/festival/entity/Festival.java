@@ -4,6 +4,7 @@ import com.sparta.lafesta.common.entity.Timestamped;
 import com.sparta.lafesta.common.s3.entity.FestivalFileOnS3;
 import com.sparta.lafesta.common.s3.entity.FileOnS3;
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
+import com.sparta.lafesta.follow.entity.FestivalFollow;
 import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
 import com.sparta.lafesta.review.entity.Review;
 import com.sparta.lafesta.user.entity.User;
@@ -57,6 +58,9 @@ public class Festival extends Timestamped {
 
     @OneToMany(mappedBy = "festival", orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(mappedBy = "followedFestival", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<FestivalFollow> festivalFollowers = new ArrayList<>();
 
     @OneToMany(mappedBy = "festival", orphanRemoval = true)
     private List<FestivalLike> festivalLikes = new ArrayList<>();
