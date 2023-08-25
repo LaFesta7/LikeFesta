@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaFesta 회원가입</title>
+</head>
+<body>
+<h1>환영합니다! 지금 바로 LaFest와 함께하세요!</h1>
+
+<!-- 회원가입 폼 -->
+<h2>회원가입</h2>
+<form id="signupForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br>
+    <!-- 닉네임 입력 추가 -->
+    <label for="nickname">Nickname:</label>
+    <input type="text" id="nickname" name="nickname" required><br>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+    <button type="button" id="sendVerification">인증 메일 발송</button>
+    <div id="verificationContainer" style="display: none;">
+        메일에 발송된 인증코드를 입력해주세요!
+        <br>
+        <label for="verificationCode">인증코드:</label>
+        <input type="text" id="verificationCode" name="verificationCode" required>
+        <button type="button" id="confirmButton">인증확인</button>
+    </div>
+    <br>
+    <button type="button" id="submitButton" disabled>회원가입</button>
+</form>
+
+<script>
+    const sendVerificationButton = document.getElementById('sendVerification');
+    const verificationContainer = document.getElementById('verificationContainer');
+    const verificationCodeInput = document.getElementById('verificationCode');
+    const signupForm = document.getElementById('signupForm');
+    const submitButton = document.getElementById('submitButton');
+    const confirmButton = document.getElementById('confirmButton');
+
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const nicknameInput = document.getElementById('nickname');
+    const emailInput = document.getElementById('email');
+
+    sendVerificationButton.addEventListener('click', async () => {
+        if (usernameInput.value && passwordInput.value && nicknameInput.value && emailInput.value) { // 닉네임이 입력되어야만 인증 메일 발송 가능
+            submitButton.disabled = false;
+            // 인증 메일 보내기
+            const response = await fetch('/api/users/sign-up/mail-confirm', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: emailInput.value
+                })
+            });
+
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log(responseData.statusMessage);
+                alert(responseData.statusMessage);
+                verificationContainer.style.display = 'block';
+            } else {
+                const responseData = await response.json();
+                console.error(responseData.statusMessage);
+                alert(responseData.statusMessage);
+            }
+        } else {
+            alert('모든 필드를 입력해주세요.');
+        }
+    });
+
+    confirmButton.addEventListener('click', async () => {
+        if (verificationCodeInput.value) {
+            // 인증 확인
+            const verifyResponse = await fetch('/api/users/sign-up/verify-code', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: emailInput.value,
+                    verificationCode: verificationCodeInput.value
+                })
+            });
+
+            if (verifyResponse.ok) {
+                const responseData = await verifyResponse.json();
+                console.log(responseData.statusMessage);
+                alert(responseData.statusMessage);
+                submitButton.disabled = false; // submitButton 활성화
+            } else {
+                const responseData = await verifyResponse.json();
+                console.error(responseData.statusMessage);
+                alert(responseData.statusMessage);
+            }
+        } else {
+            alert('인증 코드를 입력해주세요.');
+        }
+    });
+
+    submitButton.addEventListener('click', async () => {
+        const signupResponse = await fetch('/api/users/sign-up', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: usernameInput.value,
+                password: passwordInput.value,
+                email: emailInput.value,
+                nickname: nicknameInput.value
+            })
+        });
+
+        if (signupResponse.ok) {
+            const responseData = await signupResponse.json();
+            console.log('회원가입 성공');
+            alert(responseData.statusMessage);
+
+            // 회원가입 성공 시 로그인 페이지로 이동
+            window.location.href = '/api/users/login-page';
+        } else {
+            const responseData = await signupResponse.json();
+            console.error('회원가입 실패:', signupResponse.status);
+            alert(responseData.statusMessage);
+        }
+    });
+
+</script>
+</body>
+</html>
+
