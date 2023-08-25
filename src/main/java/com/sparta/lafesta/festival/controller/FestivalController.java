@@ -4,7 +4,7 @@ import com.sparta.lafesta.common.dto.ApiResponseDto;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
-import com.sparta.lafesta.festival.service.FestivalServiceImpl;
+import com.sparta.lafesta.festival.service.FestivalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "페스티벌 관련 API", description = "페스티벌 관련 API 입니다.")
 public class FestivalController {
-    private final FestivalServiceImpl festivalService;
+    private final FestivalService festivalService;
 
     @PostMapping("/festivals")
     @Operation(summary = "페스티벌 등록", description = "페스티벌을 생성합니다. Dto를 통해 정보를 받아와 festival을 생성할 때 해당 정보를 저장합니다.")

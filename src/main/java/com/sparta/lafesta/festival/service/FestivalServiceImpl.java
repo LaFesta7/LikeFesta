@@ -33,15 +33,18 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FestivalServiceImpl implements FestivalService {
+    //CRUD
     private final FestivalRepository festivalRepository;
     private final FestivalLikeRepository festivalLikeRepository;
+
+    //S3
     private final S3UploadService s3UploadService;
     private final FestivalFileRepository festivalFileRepository;
+    private final String FESTIVAL_FOLDER_NAME = "festival";
 
     @Autowired
     private TransactionTemplate transactionTemplate;
 
-    private final String FESTIVAL_FOLDER_NAME = "festival";
 
 
     // 페스티벌 등록
