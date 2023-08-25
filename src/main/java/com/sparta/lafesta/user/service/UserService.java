@@ -112,7 +112,7 @@ public class UserService {
         // 인증 코드가 만료된 경우
         if (verificationCode.getExpirationTime().isBefore(LocalDateTime.now())) {
             log.error("인증 코드 만료");
-            throw new IllegalArgumentException("인증 코드가 만료되었습니다.");
+            throw new IllegalArgumentException("만료된 인증코드입니다.");
         }
         verificationCode.verificationCodeConfirm();
     }
