@@ -62,7 +62,7 @@ public class FestivalController {
             @Parameter(description = "festival을 수정할 때 필요한 정보") @RequestBody FestivalRequestDto requestDto,
             @Parameter(description = "festival 생성시 등록한 첨부 파일") @RequestPart(value = "files", required = false) List<MultipartFile> files,
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
+    ) throws IOException {
         FestivalResponseDto result = festivalService.modifyFestival(festivalId, requestDto, files, userDetails.getUser());
         return ResponseEntity.ok().body(result);
     }
