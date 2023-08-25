@@ -5,6 +5,7 @@ import com.sparta.lafesta.common.jwt.JwtUtil;
 import com.sparta.lafesta.user.dto.SignupRequestDto;
 import com.sparta.lafesta.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -29,7 +31,11 @@ public class UserController {
 
 	// 회원가입
 	@PostMapping("/users/sign-up")
-	public ResponseEntity<ApiResponseDto> signup(@Valid @RequestBody SignupRequestDto requestDto, BindingResult bindingResult) {
+	public ResponseEntity<ApiResponseDto> signup(
+			@Parameter(description = "festival을 생성할 때 필요한 정보") @RequestPart(value = "requestDto") @Valid SignupRequestDto requestDto,
+			@Parameter(description = "유저프로필 생성시 등록할 첨부 파일") @RequestPart(value = "files", required = false) List<MultipartFile> files,
+			BindingResult bindingResult
+	) {
 		// Validation 예외처리
 		List<FieldError> fieldErrors = bindingResult.getFieldErrors();
 		if(fieldErrors.size() > 0) {
@@ -38,7 +44,7 @@ public class UserController {
 			}
 			throw new IllegalArgumentException("username은 4~10자이며 알파벳 소문자와 숫자로, password는 8~15자이며 알파벳 대소문자와 숫자, 특수문자로 구성하여 다시 시도해주세요.");
 		} else {
-			userService.signup(requestDto);
+			userService.signup(requestDto, files);
 			return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "회원가입이 완료되었습니다."));
 		}
 	}
