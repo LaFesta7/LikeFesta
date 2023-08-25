@@ -54,14 +54,6 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      # 환경 변수 세팅
-      - name: properties 파일 생성
-        run: |
-          cd ./src/main/resources
-          touch ./application-s3.properties
-          echo "${{secrets.APPLICATION_S3_PROPERTIES}}" > ./application-s3.properties
-        shell: bash
-
       # gradle 실행 허가
       - name: Run chmod to make gradlew executable
         run: chmod +x ./gradlew
