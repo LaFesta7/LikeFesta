@@ -53,6 +53,12 @@ public class UserService {
             throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
         }
 
+        // 회원 중복 확인
+        Optional<User> checkEmail = userRepository.findByEmail(email);
+        if (checkEmail.isPresent()) {
+            throw new IllegalArgumentException("해당 이메일로 이미 가입하셨습니다.");
+        }
+
         // 사용자 ROLE 확인
         UserRoleEnum role = UserRoleEnum.USER;
         if (requestDto.isAdmin()) {
@@ -107,7 +113,7 @@ public class UserService {
         // 인증 코드가 일치하지 않는 경우
         if (verificationCode == null) {
             log.error("인증 코드 불일치");
-            throw new IllegalArgumentException("인증 코드가 일치하지 않습니다.");
+            throw new IllegalArgumentException("인증코드가 만료되었거나 일치하지 않습니다.");
         }
         // 인증 코드가 만료된 경우
         if (verificationCode.getExpirationTime().isBefore(LocalDateTime.now())) {
