@@ -16,6 +16,8 @@
 <body>
 <div id="login-form">
     <div id="login-title">lafesta login</div>
+    <button onclick="goHome()">메인화면</button>
+    <br>
     <button id="login-kakao-btn"
             th:attr="onclick='location.href=\'' + ${kakaoUrl} + '\''">
         카카오로 로그인하기
@@ -35,6 +37,12 @@
 </div>
 </body>
 <script>
+    // 메인화면
+    function goHome() {
+        // 로그인 페이지로 이동
+        window.location.href = '/';
+    }
+
     $(document).ready(function () {
         // 토큰 삭제
         Cookies.remove('Authorization', {path: '/'});
