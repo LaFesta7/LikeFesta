@@ -10,6 +10,8 @@
 
 <!-- 회원가입 폼 -->
 <h2>회원가입</h2>
+<button onclick="goHome()">메인화면</button>
+<button onclick="goLogin()">로그인</button>
 <form id="signupForm">
     <label for="username">Username:</label>
     <input type="text" id="username" name="username" required><br>
@@ -34,6 +36,18 @@
 </form>
 
 <script>
+    // 메인화면 가기
+    function goHome() {
+        // 로그인 페이지로 이동
+        window.location.href = '/';
+    }
+
+    // 로그인하러 가기
+    function goLogin() {
+        // 로그인 페이지로 이동
+        window.location.href = '/api/users/login-page';
+    }
+
     const sendVerificationButton = document.getElementById('sendVerification');
     const verificationContainer = document.getElementById('verificationContainer');
     const verificationCodeInput = document.getElementById('verificationCode');
@@ -51,6 +65,8 @@
     sendVerificationButton.addEventListener('click', async () => {
         if (usernameInput.value && passwordInput.value && nicknameInput.value && emailInput.value) { // 닉네임이 입력되어야만 인증 메일 발송 가능
             submitButton.disabled = false;
+            sendVerificationButton.style.display = 'none';
+            verificationContainer.style.display = 'block';
             // 인증 메일 보내기
             const response = await fetch('/api/users/sign-up/mail-confirm', {
                 method: 'POST',
@@ -67,8 +83,9 @@
                 const responseData = await response.json();
                 console.log(responseData.statusMessage);
                 alert(responseData.statusMessage);
-                verificationContainer.style.display = 'block';
             } else {
+                verificationContainer.style.display = 'none';
+                sendVerificationButton.style.display = 'block';
                 const responseData = await response.json();
                 console.error(responseData.statusMessage);
                 alert(responseData.statusMessage);
@@ -169,6 +186,7 @@
         // 인증 코드 만료 경고창 보이기
         alert('인증 코드가 만료되었습니다. 다시 인증 메일을 발송해주세요.');
         verificationContainer.style.display = 'none';
+        sendVerificationButton.style.display = 'block';
     }
 
 </script>
