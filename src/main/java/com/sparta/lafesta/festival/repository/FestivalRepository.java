@@ -14,4 +14,8 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
     Optional<Festival> findByFestivalFollowers(FestivalFollow festivalFollow);
 
     List<Festival> findAllByOpenDateBetween(LocalDateTime startOfDay, LocalDateTime endOfDay);
+
+    List<Festival> findAllByReservationOpenDateBetween(LocalDateTime startOfDay, LocalDateTime endOfDay);
+
+    List<Festival> findAllByEndDateBetween(LocalDateTime startOfDay, LocalDateTime endOfDay);
 }

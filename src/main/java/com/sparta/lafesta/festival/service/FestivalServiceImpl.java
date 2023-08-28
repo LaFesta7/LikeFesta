@@ -12,7 +12,8 @@ import com.sparta.lafesta.common.s3.repository.FestivalFileRepository;
 import com.sparta.lafesta.festival.repository.FestivalRepository;
 import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
 import com.sparta.lafesta.like.festivalLike.repository.FestivalLikeRepository;
-import com.sparta.lafesta.notification.dto.FestivalReminderResponseDto;
+import com.sparta.lafesta.notification.dto.ReminderDto;
+import com.sparta.lafesta.notification.entity.FestivalReminderType;
 import com.sparta.lafesta.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -184,10 +186,10 @@ public class FestivalServiceImpl implements FestivalService {
         return response;
     }
 
-    // 알림을 보낼 페스티벌 가져오기
+    // 페스티벌 오픈 알림을 보낼 페스티벌 가져오기
     @Override
     @Transactional(readOnly = true)
-    public List<FestivalReminderResponseDto> getFestivalReminders() {
+    public List<ReminderDto> getFestivalOpenReminders() {
         // 페스티벌 개최 당일, 1일 전, 7일 전 발송
         LocalDate today = LocalDate.now();
         LocalDate tomorrow = today.plusDays(1);
@@ -195,16 +197,58 @@ public class FestivalServiceImpl implements FestivalService {
 
         List<LocalDate> dateRanges = Arrays.asList(today, tomorrow, sevenDaysAfter);
 
-        List<Festival> reminderFestivals = dateRanges.stream()
+        return getReminders(dateRanges, FestivalReminderType.FESTIVAL_OPEN);
+    }
+
+    // 페스티벌 예매 오픈 알림을 보낼 페스티벌 가져오기
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReminderDto> getReservationOpenReminders() {
+        // 페스티벌 예매 오픈 당일, 1일 전 발송
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
+
+        List<LocalDate> dateRanges = Arrays.asList(today, tomorrow);
+
+        return getReminders(dateRanges, FestivalReminderType.RESERVATION_OPEN);
+    }
+
+    // 페스티벌 리뷰 독려 알림을 보낼 페스티벌 가져오기
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReminderDto> getReviewEncouragementReminders() {
+        // 페스티벌 종료 1일 후 발송
+        LocalDate today = LocalDate.now();
+        LocalDate yesterday = today.minusDays(1);
+
+        List<LocalDate> dateRanges = List.of(yesterday);
+
+        return getReminders(dateRanges, FestivalReminderType.REVIEW_ENCOURAGEMENT);
+    }
+
+    // 알림을 보낼 페스티벌 가져오기
+    private List<ReminderDto> getReminders(List<LocalDate> dateRanges, FestivalReminderType type) {
+        List<Festival> reminders = dateRanges.stream()
                 .map(date -> {
                     LocalDateTime startOfDay = date.atStartOfDay();
                     LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
-                    return festivalRepository.findAllByOpenDateBetween(startOfDay, endOfDay);
+                    Stream<Festival> festivalStream;
+                    if (type == FestivalReminderType.FESTIVAL_OPEN) {
+                        festivalStream = festivalRepository.findAllByOpenDateBetween(startOfDay, endOfDay).stream();
+                    } else if (type == FestivalReminderType.RESERVATION_OPEN) {
+                        festivalStream = festivalRepository.findAllByReservationOpenDateBetween(startOfDay, endOfDay).stream();
+                    } else if (type == FestivalReminderType.REVIEW_ENCOURAGEMENT) {
+                        festivalStream = festivalRepository.findAllByEndDateBetween(startOfDay, endOfDay).stream();
+                    } else {
+                        festivalStream = Stream.empty();
+                    }
+                    return festivalStream.collect(Collectors.toList());
                 })
                 .flatMap(List::stream)
-                .collect(Collectors.toList());
+                .toList();
 
-        return reminderFestivals.stream().map(FestivalReminderResponseDto::new).toList();
+        return reminders.stream()
+                .map(festival -> new ReminderDto(festival, type)).toList();
     }
 
     // 페스티벌 id로 페스티벌 찾기

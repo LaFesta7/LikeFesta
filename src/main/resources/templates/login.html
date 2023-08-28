@@ -16,6 +16,8 @@
 <body>
 <div id="login-form">
     <div id="login-title">lafesta login</div>
+    <button onclick="goHome()">메인화면</button>
+    <br>
     <button id="login-kakao-btn"
             th:attr="onclick='location.href=\'' + ${kakaoUrl} + '\''">
         카카오로 로그인하기
@@ -32,10 +34,15 @@
 
         <button id="login-id-submit" onclick="onLogin()">로그인</button>
     </div>
-    <div id="login-failed" style="display:none" class="alert alert-danger" role="alert">로그인에 실패하였습니다.</div>
 </div>
 </body>
 <script>
+    // 메인화면
+    function goHome() {
+        // 로그인 페이지로 이동
+        window.location.href = '/';
+    }
+
     $(document).ready(function () {
         // 토큰 삭제
         Cookies.remove('Authorization', {path: '/'});
@@ -56,7 +63,7 @@
 
         $.ajax({
             type: "POST",
-            url: `/api/users/kakao/login`,
+            url: `/api/users/login`,
             contentType: "application/json",
             data: JSON.stringify({username: username, password: password}),
         })
@@ -72,8 +79,8 @@
                 window.location.href = host;
             })
             .fail(function (jqXHR, textStatus) {
-                alert("Login Fail");
-                window.location.href = host + '/api/users/kakao/login?error'
+                alert('로그인에 실패했습니다.');
+                window.location.href = host + '/api/users/login-page'
             });
     }
 </script>
