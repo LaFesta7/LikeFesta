@@ -3,18 +3,22 @@ package com.sparta.lafesta.review.service;
 import com.sparta.lafesta.review.dto.ReviewRequestDto;
 import com.sparta.lafesta.review.dto.ReviewResponseDto;
 import com.sparta.lafesta.user.entity.User;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ReviewService {
     /**
      * 리뷰 생성
+     *
      * @param festivalId 리뷰를 추가할 페스티벌의 id
      * @param requestDto 추가할 리뷰의 정보
-     * @param user 권한 확인
+     * @param files      첨부파일
+     * @param user       권한 확인
      * @return 리뷰 추가 결과
      */
-    ReviewResponseDto createReview(Long festivalId, ReviewRequestDto requestDto, User user);
+    ReviewResponseDto createReview(Long festivalId, ReviewRequestDto requestDto, List<MultipartFile> files, User user) throws IOException;
 
     /**
      * 전체 리뷰 조회
@@ -34,12 +38,14 @@ public interface ReviewService {
 
     /**
      * 리뷰 수정
-     * @param reviewId 수정할 리뷰의 id
+     *
+     * @param reviewId   수정할 리뷰의 id
      * @param requestDto 리뷰 수정할 정보
-     * @param user 권한 확인
+     * @param files      첨부파일
+     * @param user       권한 확인
      * @return 리뷰 수정 결과
      */
-    ReviewResponseDto modifyReview(Long reviewId, ReviewRequestDto requestDto, User user);
+    ReviewResponseDto modifyReview(Long reviewId, ReviewRequestDto requestDto, List<MultipartFile> files, User user) throws IOException;
 
     /**
      * 리뷰 삭제
