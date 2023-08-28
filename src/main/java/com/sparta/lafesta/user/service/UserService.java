@@ -53,11 +53,7 @@ public class UserService {
             throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
         }
 
-        // 회원 중복 확인
-        Optional<User> checkEmail = userRepository.findByEmail(email);
-        if (checkEmail.isPresent()) {
-            throw new IllegalArgumentException("해당 이메일로 이미 가입하셨습니다.");
-        }
+        checkEmail(email);
 
         // 사용자 ROLE 확인
         UserRoleEnum role = UserRoleEnum.USER;
@@ -91,10 +87,7 @@ public class UserService {
         String email = requestDto.getEmail();
 
         // 회원 중복 확인
-        Optional<User> checkEmail = userRepository.findByEmail(email);
-        if (checkEmail.isPresent()) {
-            throw new IllegalArgumentException("해당 이메일로 이미 가입하셨습니다.");
-        }
+        checkEmail(email);
 
         String code = mailService.sendMessage(email);
         VerificationCode verificationCode = new VerificationCode(email, code);
@@ -139,4 +132,11 @@ public class UserService {
         response.addCookie(cookie);
     }
 
+    // 이메일 중복 확인
+    public void checkEmail(String email) {
+        Optional<User> checkEmail = userRepository.findByEmail(email);
+        if (checkEmail.isPresent()) {
+            throw new IllegalArgumentException("해당 이메일로 이미 가입하셨습니다.");
+        }
+    }
 }
