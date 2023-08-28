@@ -1,11 +1,9 @@
 package com.sparta.lafesta.user.service;
 
 import com.sparta.lafesta.common.s3.S3UploadService;
-import com.sparta.lafesta.common.s3.entity.FestivalFileOnS3;
 import com.sparta.lafesta.common.s3.entity.FileOnS3;
 import com.sparta.lafesta.common.s3.entity.UserFileOnS3;
 import com.sparta.lafesta.common.s3.repository.UserFileRepository;
-import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.email.service.MailService;
 import com.sparta.lafesta.user.dto.MailConfirmRequestDto;
 import com.sparta.lafesta.user.dto.SignupRequestDto;
@@ -25,8 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -195,6 +193,7 @@ public class UserService {
         }
     }
 
+    // s3 수정
     private void modifyFiles(User user, List<MultipartFile> files) throws IOException {
 
         // 기존 파일 삭제

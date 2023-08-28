@@ -2,8 +2,9 @@ package com.sparta.lafesta.user.controller;
 
 import com.sparta.lafesta.common.dto.ApiResponseDto;
 import com.sparta.lafesta.common.jwt.JwtUtil;
-import com.sparta.lafesta.email.service.MailService;
+import com.sparta.lafesta.user.dto.MailConfirmRequestDto;
 import com.sparta.lafesta.user.dto.SignupRequestDto;
+import com.sparta.lafesta.user.dto.VerificationRequestDto;
 import com.sparta.lafesta.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,7 +33,6 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final MailService mailService;
 
     // 회원가입
     @PostMapping("/users/sign-up")
@@ -42,9 +42,6 @@ public class UserController {
 			@Parameter(description = "유저프로필 생성시 등록할 첨부 파일") @RequestPart(value = "files", required = false) List<MultipartFile> files,
 			BindingResult bindingResult
 	) throws IOException {
-        if (requestDto.getEmailAuth() != 1) {
-            throw new IllegalArgumentException("이메일 인증 코드가 틀려 회원 등록이 불가능합니다.");
-        }
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         if (fieldErrors.size() > 0) {
