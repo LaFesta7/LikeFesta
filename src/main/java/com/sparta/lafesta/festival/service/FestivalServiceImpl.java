@@ -9,7 +9,6 @@ import com.sparta.lafesta.common.s3.repository.FestivalFileRepository;
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
 import com.sparta.lafesta.festival.entity.Festival;
-import com.sparta.lafesta.festival.event.FestivalCreatedEventPublisher;
 import com.sparta.lafesta.festival.repository.FestivalRepository;
 import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
 import com.sparta.lafesta.like.festivalLike.repository.FestivalLikeRepository;
@@ -47,9 +46,6 @@ public class FestivalServiceImpl implements FestivalService {
     //Like
     private final FestivalLikeRepository festivalLikeRepository;
 
-    // 알림
-    private final FestivalCreatedEventPublisher eventPublisher;
-
     @Autowired
     private TransactionTemplate transactionTemplate;
 
@@ -73,9 +69,6 @@ public class FestivalServiceImpl implements FestivalService {
         if (files != null) {
             uploadFiles(files, festival);
         }
-
-        // 이벤트 발생 -> 알림 생성
-        eventPublisher.publishFestivalCreatedEvent(festival);
 
         return new FestivalResponseDto(festival);
     }
