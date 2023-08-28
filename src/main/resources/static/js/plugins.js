@@ -1,14 +1,3 @@
-//    _____  _             _           
-//   |  __ \| |           (_)
-//   | |__) | |_   _  __ _ _ _ __  ___ 
-//   |  ___/| | | | |/ _` | | '_ \/ __|  v 4.0.5
-//   | |    | | |_| | (_| | | | | \__ \
-//   |_|    |_|\__,_|\__, |_|_| |_|___/
-//                    __/ |            
-//                   |___/             
-//
-//   Required plugins for Slides JS
-//   https://designmodo.com/slides/
 
 if (window.pluginsAttached){alert("Attention: plugins.js library is attached twice and needs to be removed. The slides.min.js already contains both of scripts.");}else{window.pluginsAttached=1;}
 

@@ -1,19 +1,3 @@
-/*  
-
-   _____ _       _                 _  _____ 
-  / ___/| (*)   | |               | |/ ___/  v 4.0.5
- | (___ | |_  __| | ___ ____      | | (___  
-  \___ \| | |/ _` |/ _ / __/  _   | |\___ \ 
-  ____) | | | (_| |  __\__ \ | |__| |____) |
- /_____/|_|_|\__,_|\___/___/  \____//_____/ 
-                                            
-                                            
-This file contains scripts required for the proper functionality and display
-of your Slides Project. It also requires plugins.js and jquery-3.3.1 to run this script properly.
-
-
-
-*/
 
 window.inAction = 1;
 window.allowSlide = 1;
