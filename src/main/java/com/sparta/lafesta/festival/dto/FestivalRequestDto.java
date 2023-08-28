@@ -15,6 +15,9 @@ public class FestivalRequestDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime reservationOpenDate;
 
+    // 예매처
+    private String reservationPlace;
+
     //행사 시작 시각
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime openDate;
@@ -22,7 +25,6 @@ public class FestivalRequestDto {
     //행사 종료 시각
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime endDate;
-
 
 
     private String officialLink;

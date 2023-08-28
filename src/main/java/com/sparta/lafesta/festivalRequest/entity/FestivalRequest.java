@@ -38,6 +38,9 @@ public class FestivalRequest extends Timestamped {
     @Column(name = "reservation_open_date", nullable = false)
     private LocalDateTime reservationOpenDate;
 
+    @Column(name = "reservation_place", nullable = false)
+    private String reservationPlace;
+
     @Column(name = "official_link", nullable = false)
     private String officialLink;
 
@@ -55,6 +58,7 @@ public class FestivalRequest extends Timestamped {
         this.openDate = requestDto.getOpenDate();
         this.endDate = requestDto.getEndDate();
         this.reservationOpenDate = requestDto.getReservationOpenDate();
+        this.reservationPlace = requestDto.getReservationPlace();
         this.officialLink = requestDto.getOfficialLink();
         this.adminApproval = false;
         this.user = user;
@@ -67,6 +71,7 @@ public class FestivalRequest extends Timestamped {
         this.openDate = requestDto.getOpenDate();
         this.endDate = requestDto.getEndDate();
         this.reservationOpenDate = requestDto.getReservationOpenDate();
+        this.reservationPlace = requestDto.getReservationPlace();
         this.officialLink = requestDto.getOfficialLink();
     }
 

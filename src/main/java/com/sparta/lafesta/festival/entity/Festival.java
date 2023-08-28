@@ -81,6 +81,7 @@ public class Festival extends Timestamped {
         this.openDate = requestDto.getOpenDate();
         this.endDate = requestDto.getEndDate();
         this.reservationOpenDate = requestDto.getReservationOpenDate();
+        this.reservationPlace = requestDto.getReservationPlace();
         this.officialLink = requestDto.getOfficialLink();
         this.user = user;
     }
@@ -95,6 +96,7 @@ public class Festival extends Timestamped {
         this.openDate = requestDto.getOpenDate();
         this.endDate = requestDto.getEndDate();
         this.reservationOpenDate = requestDto.getReservationOpenDate();
+        this.reservationPlace = requestDto.getReservationPlace();
         this.officialLink = requestDto.getOfficialLink();
     }
 
