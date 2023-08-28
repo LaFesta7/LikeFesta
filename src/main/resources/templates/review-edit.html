@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>LAFESTA - 리뷰 수정</title>
+
+    <link href="../../../../../Likefesta_front/css/slides.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" as="font" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
+    <link rel="stylesheet" href="../../../../../Likefesta_front/css/slides.css">
+    <link rel="stylesheet" href="../../../../../Likefesta_front/css/review.css">
+
+    <script src="../../../../../Likefesta_front/js/slides.js"></script>
+    <script src="../../../../../Likefesta_front/js/jquery.min.js"></script>
+    <script src="../../../../../Likefesta_front/js/plugins.js"></script>
+</head>
+
+<body class="background" style="background-image:url(../../../../../Likefesta_front/assets/img/background/img-12.jpeg)">
+
+<div class="left">
+    <a href="index.html" title="Slides Framework">
+        <img src="../../../../../Likefesta_front/assets/img/logo-s1.png" width="270" height="240" alt="lafesta logo">
+    </a>
+</div>
+
+<div class="review-form">
+    <form action="#" method="post" enctype="multipart/form-data">
+        <div>
+            <label for="title">제목:</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+
+        <div>
+            <label for="content">내용:</label>
+            <textarea id="content" name="content" rows="4" required></textarea>
+        </div>
+
+        <div>
+            <label>기존 첨부파일:</label>
+            <img class="uploaded-image" src="SERVER_PROVIDED_IMAGE_URL" alt="Uploaded image">
+        </div>
+
+        <div>
+            <label for="new-file">새로운 첨부파일:</label>
+            <input type="file" id="new-file" name="new-file">
+        </div>
+
+        <div>
+            <button type="submit">변경사항 저장</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

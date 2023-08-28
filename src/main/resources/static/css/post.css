@@ -1,0 +1,81 @@
+#title {
+    background-color: #628efe;
+    display: flex;
+    padding-left: 100px;
+    align-items: center;
+    height: 100px;
+    color: white;
+}
+#login_title {
+    margin-top: 50px;
+    font-size: 40px;
+    font-weight: bold;
+}
+#body {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+#body1 {
+    width: 995px;
+}
+#write_button {
+    text-align: right;
+}
+#write {
+    background-color: #628efe;
+    width: 140px;
+    height: 43px;
+    color: white;
+    font-size: 16px;
+    border-color: white;
+    font-weight: bold;
+    border-radius: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+#mid_line {
+    border-bottom: 1px solid black;
+    margin-top: 54px;
+    margin-bottom: 54px;
+}
+
+th,
+td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    border-bottom: 1px solid black;
+    border-top: 3px solid #777777;
+}
+td {
+    border-bottom: 1px dashed black;
+}
+
+.no {
+    width: 85px;
+}
+
+.title {
+    width: 588px;
+}
+
+.author {
+    width: 192px;
+}
+
+.time {
+    width: 85px;
+}
+
+tr:not(:last-child) {
+    margin-bottom: 54px;
+}
+.post-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;  /* 이 코드는 자식 요소들을 세로 방향으로 정렬합니다. */
+}
