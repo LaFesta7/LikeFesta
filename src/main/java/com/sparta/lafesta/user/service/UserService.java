@@ -1,11 +1,9 @@
 package com.sparta.lafesta.user.service;
 
 import com.sparta.lafesta.common.s3.S3UploadService;
-import com.sparta.lafesta.common.s3.entity.FestivalFileOnS3;
 import com.sparta.lafesta.common.s3.entity.FileOnS3;
 import com.sparta.lafesta.common.s3.entity.UserFileOnS3;
 import com.sparta.lafesta.common.s3.repository.UserFileRepository;
-import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.user.dto.SignupRequestDto;
 import com.sparta.lafesta.user.entity.User;
 import com.sparta.lafesta.user.entity.UserRoleEnum;
