@@ -21,6 +21,13 @@ body {
     border-radius: 10px;
 }
 
+body.background {
+    background-image: url("../images/background/img-7.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
 .login-box h2 {
     margin: 0 0 30px;
     padding: 0;
