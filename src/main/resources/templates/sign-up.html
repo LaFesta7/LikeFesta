@@ -17,7 +17,6 @@
     <input type="text" id="username" name="username" required><br>
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" required><br>
-    <!-- 닉네임 입력 추가 -->
     <label for="nickname">Nickname:</label>
     <input type="text" id="nickname" name="nickname" required><br>
     <label for="email">Email:</label>
@@ -31,6 +30,15 @@
         <button type="button" id="confirmButton">인증확인</button>
         <p id="timer">3:00</p>
     </div>
+    <br>
+    <label for="admin">관리자:</label>
+    <input type="checkbox" id="admin" name="admin">
+    <div id="adminTokenContainer" style="display: none;">
+        <label for="adminToken">관리자 토큰:</label>
+        <input type="text" id="adminToken" name="adminToken">
+    </div>
+    <label for="organizer">주최자:</label>
+    <input type="checkbox" id="organizer" name="organizer">
     <br>
     <button type="button" id="submitButton" disabled>회원가입</button>
 </form>
@@ -59,6 +67,18 @@
     const passwordInput = document.getElementById('password');
     const nicknameInput = document.getElementById('nickname');
     const emailInput = document.getElementById('email');
+    const adminCheckbox = document.getElementById('admin');
+    const adminTokenContainer = document.getElementById('adminTokenContainer');
+    const adminTokenInput = document.getElementById('adminToken');
+    const organizerCheckbox = document.getElementById('organizer');
+
+    adminCheckbox.addEventListener('change', () => {
+        if (adminCheckbox.checked) {
+            adminTokenContainer.style.display = 'block';
+        } else {
+            adminTokenContainer.style.display = 'none';
+        }
+    });
 
     const timerElement = document.getElementById('timer');
 
@@ -82,7 +102,6 @@
                 startCountdown(); // 타이머 시작
                 const responseData = await response.json();
                 console.log(responseData.statusMessage);
-                alert(responseData.statusMessage);
             } else {
                 verificationContainer.style.display = 'none';
                 sendVerificationButton.style.display = 'block';
@@ -136,7 +155,10 @@
                 username: usernameInput.value,
                 password: passwordInput.value,
                 email: emailInput.value,
-                nickname: nicknameInput.value
+                nickname: nicknameInput.value,
+                admin: adminCheckbox.checked,
+                adminToken: adminTokenInput.value,
+                organizer: organizerCheckbox.checked
             })
         });
 
