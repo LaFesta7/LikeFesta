@@ -1,5 +1,7 @@
 package com.sparta.lafesta.user.entity;
 
+import com.sparta.lafesta.common.s3.entity.FestivalFileOnS3;
+import com.sparta.lafesta.common.s3.entity.UserFileOnS3;
 import com.sparta.lafesta.follow.entity.FestivalFollow;
 import com.sparta.lafesta.follow.entity.UserFollow;
 import jakarta.persistence.*;
@@ -51,6 +53,9 @@ public class User {
 
     @OneToMany(mappedBy = "followingFestivalUser", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<FestivalFollow> followedFestivals = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true) //todo 이후 프론트 전달 방식과 관련해서 개선필요해 보임
+    private List<UserFileOnS3> userFileOnS3s = new ArrayList<>();
 
     public User(String username, String password, String email, UserRoleEnum role, String nickname, Boolean organizerRequest) {
         this.username = username;
