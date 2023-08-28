@@ -1,14 +1,15 @@
 package com.sparta.lafesta.festival.service;
 
 
+import com.sparta.lafesta.common.exception.UnauthorizedException;
 import com.sparta.lafesta.common.s3.S3UploadService;
 import com.sparta.lafesta.common.s3.entity.FestivalFileOnS3;
 import com.sparta.lafesta.common.s3.entity.FileOnS3;
-import com.sparta.lafesta.common.exception.UnauthorizedException;
+import com.sparta.lafesta.common.s3.repository.FestivalFileRepository;
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
 import com.sparta.lafesta.festival.entity.Festival;
-import com.sparta.lafesta.common.s3.repository.FestivalFileRepository;
+import com.sparta.lafesta.festival.event.FestivalCreatedEventPublisher;
 import com.sparta.lafesta.festival.repository.FestivalRepository;
 import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
 import com.sparta.lafesta.like.festivalLike.repository.FestivalLikeRepository;
@@ -22,12 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -45,6 +46,9 @@ public class FestivalServiceImpl implements FestivalService {
 
     //Like
     private final FestivalLikeRepository festivalLikeRepository;
+
+    // 알림
+    private final FestivalCreatedEventPublisher eventPublisher;
 
     @Autowired
     private TransactionTemplate transactionTemplate;
@@ -69,6 +73,10 @@ public class FestivalServiceImpl implements FestivalService {
         if (files != null) {
             uploadFiles(files, festival);
         }
+
+        // 이벤트 발생 -> 알림 생성
+        eventPublisher.publishFestivalCreatedEvent(festival);
+
         return new FestivalResponseDto(festival);
     }
 
