@@ -65,7 +65,7 @@ public class MailService {
         MimeMessage message = mailSender.createMimeMessage();
 
         message.addRecipients(MimeMessage.RecipientType.TO, receiver); //받는 사람
-        message.setSubject("LaFesta 이메일 인증 코드입니다."); //제목
+        message.setSubject("[LaFesta] 이메일 인증 코드입니다."); //제목
 
     Context context = new Context();
     context.setVariable("ePw", ePw);

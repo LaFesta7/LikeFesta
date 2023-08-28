@@ -8,15 +8,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler({IllegalArgumentException.class})
+    @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiResponseDto> handleException(IllegalArgumentException ex) {
-        ApiResponseDto apiException = new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
-        return new ResponseEntity<>(
-
-                apiException,
-
-                HttpStatus.BAD_REQUEST
-        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), ex.getMessage()));
     }
 
     @ExceptionHandler(NotFoundException.class)
