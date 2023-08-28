@@ -44,6 +44,9 @@ public class Festival extends Timestamped {
     @Column(name = "reservation_open_date", nullable = false)
     private LocalDateTime reservationOpenDate;
 
+    @Column(name = "reservation_place", nullable = false)
+    private String reservationPlace;
+
     @Column(name = "official_link", nullable = false)
     private String officialLink;
 
