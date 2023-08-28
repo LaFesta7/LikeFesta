@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Getter
 public class NotificationResponseDto {
     private Long id;
-    private String editor;
     private String title;
     private String detail;
     private String timeSinceCreated;
@@ -17,9 +16,8 @@ public class NotificationResponseDto {
 
     public NotificationResponseDto(Notification notification) {
         this.id = notification.getId();
-        this.title = notification.getTitle() + " 게시 안내";
-        this.editor = notification.getEditor();
-        this.detail = "팔로우 하신 " + getEditor() + "님께서 " + getTitle() + "을/를 게시했습니다.";
+        this.title = notification.getTitle();
+        this.detail = notification.getDetail();
         this.timeSinceCreated = Duration.between(notification.getCreatedAt(), LocalDateTime.now()).toString();
         this.read = notification.getRead();
     }

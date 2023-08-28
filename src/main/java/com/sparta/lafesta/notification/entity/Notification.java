@@ -20,8 +20,8 @@ public class Notification {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "editor", nullable = false)
-    private String editor;
+    @Column(name = "detail", nullable = false)
+    private String detail;
 
     @Column(name = "createdAt", nullable = false)
     private LocalDateTime createdAt;
@@ -37,10 +37,10 @@ public class Notification {
     @Column(nullable = false)
     private LocalDateTime expirationTime;
 
-    public Notification(String title, String editor, LocalDateTime createdAt, User follower) {
+    public Notification(String title, String detail, LocalDateTime createdAt, User follower) {
         this.follower = follower;
         this.title = title;
-        this.editor = editor;
+        this.detail = detail;
         this.createdAt = createdAt;
         this.read = false;
         this.expirationTime = LocalDateTime.now().plusDays(7);

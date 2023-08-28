@@ -6,6 +6,7 @@ import com.sparta.lafesta.festival.service.FestivalServiceImpl;
 import com.sparta.lafesta.notification.dto.NotificationResponseDto;
 import com.sparta.lafesta.notification.dto.ReminderDto;
 import com.sparta.lafesta.notification.entity.Notification;
+import com.sparta.lafesta.notification.event.ReminderSendEmailEventPublisher;
 import com.sparta.lafesta.notification.repository.NotificationRepository;
 import com.sparta.lafesta.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -24,28 +25,31 @@ public class NotificationService {
     private final MailService mailService;
     private final FestivalServiceImpl festivalService;
 
+    // 알림
+    private final ReminderSendEmailEventPublisher eventPublisher;
+
     // 매일 오전 9시마다 리마인더 알림 메일 발송
     @Scheduled(cron = "0 0 9 * * *")
     public void sendFestivalReminder() {
         // 페스티벌 오픈 당일, 1일 전, 7일 전 리마인더
         List<ReminderDto> festivalOpenReminders = festivalService.getFestivalOpenReminders();
-        formNotificationMail(festivalOpenReminders);
+        sendReminderNotification(festivalOpenReminders);
 
         // 페스티벌 예매 오픈 당일, 1일 전 리마인더
         List<ReminderDto> reservationOpenReminders = festivalService.getReservationOpenReminders();
-        formNotificationMail(reservationOpenReminders);
+        sendReminderNotification(reservationOpenReminders);
 
         // 페스티벌 1일 후 리뷰 독려 리마인더
         List<ReminderDto> reviewEncouragementReminders = festivalService.getReviewEncouragementReminders();
-        formNotificationMail(reviewEncouragementReminders);
+        sendReminderNotification(reviewEncouragementReminders);
     }
 
-    // 알림 메일 서식 담아 메일 보내기
-    public void formNotificationMail(List<ReminderDto> reminders) {
+    // 알림 메일 서식 담아 메일 보내기 + 웹 알림 보내기
+    public void sendReminderNotification(List<ReminderDto> reminders) {
         String htmlTemplate = "notification-email.html";
-        if (reminders.size() != 0) {
+        if (reminders.size() > 0) {
             for (ReminderDto reminder : reminders) {
-                if (reminder.getFestivalFollowUsersEmail().size() != 0) {
+                if (reminder.getFestivalFollowUsers().size() != 0) {
                     String mailTitle = reminder.getMailTitle();
                     String mailContent = reminder.getMailContent();
                     String festivalTitle = reminder.getFestivalTitle();
@@ -53,11 +57,14 @@ public class NotificationService {
                     String festivalLocate = reminder.getFestivalLocate();
                     String reservationOpenDate = reminder.getReservationOpenDate();
                     String reservationPlace = reminder.getReservationPlace();
-                    List<String> festivalFollowUsersEmail = reminder.getFestivalFollowUsersEmail();
+                    List<User> festivalFollowUsers = reminder.getFestivalFollowUsers();
 
-                    for (String toEmail : festivalFollowUsersEmail) {
+                    for (User toUser : festivalFollowUsers) {
+                        String toEmail = toUser.getEmail();
                         mailService.sendNotificationEmail(toEmail, mailTitle, mailContent, festivalTitle, festivalOpenDate, festivalLocate, reservationOpenDate, reservationPlace, htmlTemplate);
                     }
+
+                    eventPublisher.publishReminderSendEmailEvent(reminder);
                 }
             }
         }
