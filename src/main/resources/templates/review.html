@@ -7,13 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>LAFESTA 리뷰작성</title>
 
-    <link href="../../../../../Likefesta_front/css/slides.min.css" rel="stylesheet" type="text/css">
+    <link href="../static/css/slides.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" as="font" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
-    <link rel="stylesheet" href="../../../../../Likefesta_front/css/slides.css">
+    <link rel="stylesheet" href="../static/css/slides.css">
 
-    <script src="../../../../../Likefesta_front/js/slides.js"></script>
-    <script src="../../../../../Likefesta_front/js/jquery.min.js"></script>
-    <script src="../../../../../Likefesta_front/js/plugins.js"></script>
+    <script src="../static/js/slides.js"></script>
+    <script src="../static/js/jquery.min.js"></script>
+    <script src="../static/js/plugins.js"></script>
 
     <style>
         body {
@@ -64,12 +64,10 @@
         .post-form button:hover {
             background-color: #0056b3;
         }
-
     </style>
-
 </head>
 
-<body class="background" style="background-image:url(../../../../../Likefesta_front/assets/img/background/img-12.jpeg)">
+<body class="background" style="background-image:url(../static/images/background/img-12.jpeg)">
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
     <symbol id="logo" viewBox="0 0 212 62"><title>lafesta logo</title>
@@ -79,7 +77,7 @@
 
 <div class="left">
     <a href="index.html" title="Slides Framework">
-        <img src="../../../../../Likefesta_front/assets/img/logo-s1.png" width="270" height="240" alt="lafesta logo">
+        <img src="../static/images/logo-s1.png" width="270" height="240" alt="lafesta logo">
     </a>
 </div>
 
@@ -87,26 +85,24 @@
 <div class="post-form">
     <form action="#" method="post" enctype="multipart/form-data">
         <div>
-            <label for="title">제목:</label>
+            <label for="title">제목</label>
             <input type="text" id="title" name="title" required>
         </div>
 
         <div>
-            <label for="content">내용:</label>
+            <label for="content">내용</label>
             <textarea id="content" name="content" rows="4" required></textarea>
         </div>
 
         <div>
-            <label for="file">첨부파일:</label>
+            <label for="file">첨부파일</label>
             <input type="file" id="file" name="file">
         </div>
 
         <div>
-            <button type="submit">글작성완료</button>
+            <button type="submit">작성완료</button>
         </div>
     </form>
 </div>
-<!-- 추가 끝 -->
-
 </body>
 </html>

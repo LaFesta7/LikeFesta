@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>페스티벌 포스트 신청</title>
-    <link rel="stylesheet" href="../../../../../Likefesta_front/css/festival-2.css">
+    <link rel="stylesheet" href="../static/css/festival-2.css">
 </head>
+
 <body>
 <form action="/submit-festival" method="post" enctype="multipart/form-data">
     <label for="festival-name">페스티벌 이름</label>
@@ -28,7 +30,7 @@
     <label for="festival-image">페스티벌 이미지</label>
     <input type="file" id="festival-image" name="festival-image" accept="image/*" required><br><br>
 
-    <label for="festival-link">페스티벌 웹사이트/링크</label>
+    <label for="festival-link">페스티벌 사이트링크</label>
     <input type="url" id="festival-link" name="festival-link" required><br><br>
 
     <input type="submit" value="페스티벌 신청">

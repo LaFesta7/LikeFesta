@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>페스티벌 포스트 수정</title>
-    <link rel="stylesheet" href="../../../../../Likefesta_front/css/festival-3.css">
+    <link rel="stylesheet" href="../static/css/festival-3.css">
 </head>
+
 <body>
 <form action="/update-festival" method="post" enctype="multipart/form-data">
     <label for="festival-name">페스티벌 이름</label>
@@ -27,7 +29,7 @@
 
     <label for="festival-image">페스티벌 이미지</label>
     <input type="file" id="festival-image" name="festival-image" accept="image/*"><br>
-    <img src="../../../../../Likefesta_front/assets/img/best1.jpg" alt="현재 이미지" width="200"><br><br>
+    <img src="../static/images/best1.jpg" alt="현재 이미지" width="200"><br><br>
 
     <label for="festival-link">페스티벌 웹사이트/링크</label>
     <input type="url" id="festival-link" name="festival-link" value="http://waterbombfestival.com/" required><br><br>
