@@ -59,16 +59,19 @@ public class Festival extends Timestamped {
     @OneToMany(mappedBy = "festival", orphanRemoval = true)
     private List<FestivalLike> festivalLikes = new ArrayList<>();
 
-    public Festival(FestivalRequestDto requestDto, User user) {
-        this.title = requestDto.getTitle();
-        this.location = requestDto.getLocation();
-        this.content = requestDto.getContent();
-        this.openDate = requestDto.getOpenDate();
-        this.endDate = requestDto.getEndDate();
-        this.reservationOpenDate = requestDto.getReservationOpenDate();
-        this.officialLink = requestDto.getOfficialLink();
-        this.user = user;
-    }
+  @OneToMany(mappedBy = "festival", cascade = CascadeType.PERSIST, orphanRemoval = true)
+  private List<FestivalTag> tags;
+
+  public Festival(FestivalRequestDto requestDto, User user) {
+    this.title = requestDto.getTitle();
+    this.location = requestDto.getLocation();
+    this.content = requestDto.getContent();
+    this.openDate = requestDto.getOpenDate();
+    this.endDate = requestDto.getEndDate();
+    this.reservationOpenDate = requestDto.getReservationOpenDate();
+    this.officialLink = requestDto.getOfficialLink();
+    this.user = user;
+  }
 
     public void modify(FestivalRequestDto requestDto) {
         this.title = requestDto.getTitle();
