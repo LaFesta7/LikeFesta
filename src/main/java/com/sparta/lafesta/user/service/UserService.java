@@ -62,6 +62,9 @@ public class UserService {
                 throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
             }
             role = UserRoleEnum.ADMIN;
+            if (requestDto.isOrganizer()) {
+                throw new IllegalArgumentException("관리자나 주최자 한 ROLE로만 가입 가능합니다.");
+            }
         }
         if (requestDto.isOrganizer()) {
             organizerRequest = true;
@@ -76,9 +79,10 @@ public class UserService {
             throw new IllegalArgumentException("이메일 인증이 완료되지 않았습니다.");
         }
 
-        // 사용자 등록
+        // 사용자 등록 및 회원가입 완료된 인증코드 삭제
         User user = new User(username, password, email, role, nickname, organizerRequest);
         userRepository.save(user);
+        verificationCodeRepository.delete(verificationCode);
     }
 
     // 인증 메일 발송 후 코드 DB 임시 저장하기
