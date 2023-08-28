@@ -1,19 +1,9 @@
 @charset "UTF-8";
 /*
-
-   _____ _       _              _____  _____ _____
-  / ___/| (•)   | |           / ____// ____/ ____/  v 4.0.5
- | (___ | |_  __| | ___ ____ | |    | (___| (___
-  \___ \| | |/ _` |/ _ / __/ | |     \___ \ ___ \
-  ____) | | | (_| |  __\__ \ | |____ ____) |___) |
- /_____/|_|_|\__,_|\___/___/  \_____/_____/_____/
-
-
-
 Distributed by https://freehtml5.co/
 Original design by https://designmodo.com/slides/
-
 */
+
 /* CSS RESET */
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, hr, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
   border: 0;
@@ -12333,5 +12323,3 @@ p.remind-43 {
   clear: both;
   display: table;
 }
-
-/*# sourceMappingURL=slides.css.map */
