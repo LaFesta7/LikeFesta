@@ -18,11 +18,15 @@ public class ViewController {
     }
 
     @GetMapping("/api/users/sign-up")
-    public String signUp() {return "signup";}
+    public String signUp() {
+        return "signup";
+    }
 
     @GetMapping("/api/users/login-page")
     public String login(Model model) {
         model.addAttribute("kakaoUrl", kakaoService.getKakaoLogin());
         return "login";
     }
+
+
 }

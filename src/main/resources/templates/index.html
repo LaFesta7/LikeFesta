@@ -26,13 +26,13 @@
 <nav class="panel top">
     <div class="sections desktop">
         <div class="left">
-            <a href="#" title="Slides Framework">
-                <img src="/static/images/logo-s1.png" width="270" height="240" alt="lafesta logo">
+            <a href="/" title="Slides Framework">
+                <img src="/images/logo-s1.png" width="270" height="240" alt="lafesta logo">
             </a>
         </div>
         <div class="center">
             <ul class="menu">
-                <li><a href="#">Home</a></li>
+                <li><a href="/">Home</a></li>
                 <li><a href="#videos">Festival Map</a></li>
                 <li><a href="#features">Festival</a></li>
                 <li><a href="#case">Ranking</a></li>
@@ -41,14 +41,14 @@
             </ul>
         </div>
         <div class="right">
-            <a class="button blue gradient" href="/login.html">Login</a>
+            <a class="button blue gradient" href="/api/users/login-page">Login</a>
             <form method="get" action="http://localhost:8080/api/users/logout">
                 <button class="button green gradient" type="submit">Logout</button>
             </form>
         </div>
     </div>
     <div class="sections compact hidden">
-        <div class="left"><a href="#" title="Slides Framework"></a></div>
+        <div class="left"><a href="/" title="Slides Framework"></a></div>
         <div class="right">
             <span class="button actionButton sidebarTrigger" data-sidebar-id="1">
                 <svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#menu"></use></svg>
@@ -60,13 +60,13 @@
 <!-- 상단 바 -->
 <nav class="sidebar" data-sidebar-id="1">
     <div class="content">
-        <a href="#" class="logo">
+        <a href="/" class="logo">
             <svg width="37" height="30">
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" src=""></use>
+                <use xmlns:xlink="http://www.w3.org/1999/xlink" src="/"></use>
             </svg>
         </a>
         <ul class="mainMenu margin-top-3">
-            <li><a href="#">Home</a></li>
+            <li><a href="/">Home</a></li>
             <li><a href="#lafestamap">Festival Map</a></li>
             <li><a href="#festival">Festival</a></li>
             <li><a href="#rank">Ranking</a></li>
