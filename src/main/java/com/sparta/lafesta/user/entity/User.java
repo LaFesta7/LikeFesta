@@ -4,6 +4,7 @@ import com.sparta.lafesta.common.s3.entity.FestivalFileOnS3;
 import com.sparta.lafesta.common.s3.entity.UserFileOnS3;
 import com.sparta.lafesta.follow.entity.FestivalFollow;
 import com.sparta.lafesta.follow.entity.UserFollow;
+import com.sparta.lafesta.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -73,6 +74,14 @@ public class User {
         this.role = role;
         this.nickname = nickname;
         this.kakaoId =kakaoId;
+    }
+
+    public User(SignupRequestDto requestDto) {
+        this.username = requestDto.getUsername();
+        this.password = requestDto.getPassword();
+        this.email = requestDto.getEmail();
+        this.role = UserRoleEnum.USER;
+        this.nickname = requestDto.getNickname();
     }
 
     public void approveOrganizer() {
