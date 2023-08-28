@@ -40,13 +40,20 @@
                 <li><a href="#download">My Page</a></li>
             </ul>
         </div>
-        <div class="right"><a class="button blue gradient" href="../templates/login.html">Login</a>
-            <a class="button green gradient" href="" target="_blank">Logout</a></div>
+        <div class="right">
+            <a class="button blue gradient" href="../templates/login.html">Login</a>
+            <form method="get" action="http://localhost:8080/api/users/logout">
+                <button class="button green gradient" type="submit">Logout</button>
+            </form>
+        </div>
     </div>
     <div class="sections compact hidden">
         <div class="left"><a href="#" title="Slides Framework"></a></div>
-        <div class="right"><span class="button actionButton sidebarTrigger" data-sidebar-id="1"><svg><use
-                xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#menu"></use></svg></span</div>
+        <div class="right">
+            <span class="button actionButton sidebarTrigger" data-sidebar-id="1">
+                <svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#menu"></use></svg>
+            </span>
+        </div>
     </div>
 </nav>
 
