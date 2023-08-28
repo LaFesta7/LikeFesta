@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FestivalRepository extends JpaRepository<Festival, Long> {
-    List<Festival> findAllByOrderByCreatedAtDesc();
-
     Optional<Festival> findByFestivalFollowers(FestivalFollow festivalFollow);
 
     List<Festival> findAllByOpenDateBetween(LocalDateTime startOfDay, LocalDateTime endOfDay);

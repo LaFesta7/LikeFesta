@@ -12,6 +12,7 @@ import com.sparta.lafesta.review.service.ReviewServiceImpl;
 import com.sparta.lafesta.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -46,10 +47,10 @@ public class CommentServiceImpl implements CommentService {
     // 댓글 전체 조회
     @Override
     @Transactional(readOnly = true)
-    public List<CommentResponseDto> selectComments(Long reviewId, User user) {
+    public List<CommentResponseDto> selectComments(Long reviewId, User user, Pageable pageable) {
         // user 권한 확인 예외처리 추후 추가 작성 예정
         Review review = reviewService.findReview(reviewId);
-        return commentRepository.findAllByReviewOrderByCreatedAtDesc(review).stream()
+        return commentRepository.findAllByReview(review, pageable).stream()
                 .map(CommentResponseDto::new).collect(Collectors.toList());
     }
 

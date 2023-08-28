@@ -41,8 +41,7 @@ public class FestivalController {
     @GetMapping("/festivals")
     @Operation(summary = "페스티벌 전체 조회", description = "페스티벌을 전체 조회합니다.")
     public ResponseEntity<List<FestivalResponseDto>> selectFestivals(
-        @RequestParam String sort,
-        @PageableDefault(size=10, sort="id", direction = Direction.ASC) Pageable pageable
+        @Parameter(description = "festival 페이징 처리에 필요한 기본 설정")@PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable
     ) {
         List<FestivalResponseDto> results = festivalService.selectFestivals(pageable);
         return ResponseEntity.ok().body(results);
