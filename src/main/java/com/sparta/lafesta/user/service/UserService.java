@@ -15,6 +15,7 @@ import com.sparta.lafesta.user.repository.UserRepository;
 import com.sparta.lafesta.user.repository.VerificationCodeRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -45,6 +46,7 @@ public class UserService {
     private final String USER_FOLDER_NAME = "user";
 
     // ADMIN_TOKEN
+    @Getter
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
 
