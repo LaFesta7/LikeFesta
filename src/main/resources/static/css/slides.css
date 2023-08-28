@@ -1558,7 +1558,7 @@ html:not(.mobile) .slide.video .background[style] {
   left: 0;
   height: 100%;
   width: 100%;
-  background: url("../../../../../../Likefesta_front/assets/svg/video-icon.svg") no-repeat;
+  background: url("static/svg/video-icon.svg") no-repeat;
   background-position: center center;
   transition: 0.5s;
 }
@@ -3047,20 +3047,7 @@ html.mobile .showForMobileInline {
           transform: translateY(-100%) translateX(-50%);
 }
 
-/*                   \                           /
-    .           ,                              o
-     *                 ¤     ~            ..
-        ______  __  __          _       *
-       |  ___/ / _// _|   *    | |        
-       | |___ | |_| |_ ___  ___| |_ ____
-    .  |  __/ |  _|  _/ _ \/ __| __/ __/
-   ¯   | |____| | | ||  __| (__| |_\__ \    ¨
-  ´    |_____/|_| |_| \___|\___/\__/___/   '
-                                 ¸         §
-   ¸.*         ¤        *         .           .
-                      .            °            /
-.*/
-/* DEFAULT */
+
 .slide.before {
   -webkit-transform: translate3d(0, -50%, 0);
           transform: translate3d(0, -50%, 0);
@@ -7299,7 +7286,7 @@ p.remind-43 {
   top: 0;
   width: 100%;
   height: 100%;
-  background: url("../../../../../../Likefesta_front/assets/svg/video-icon.svg") no-repeat;
+  background: url("static/svg/video-icon.svg") no-repeat;
   background-size: 54px;
   background-position: center center;
   transition: 0.35s;

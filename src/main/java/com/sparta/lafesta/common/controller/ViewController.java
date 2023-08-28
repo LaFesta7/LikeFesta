@@ -14,11 +14,11 @@ public class ViewController {
 
     @GetMapping("/")
     public String home() {
-        return "main";
+        return "index";
     }
 
     @GetMapping("/api/users/sign-up")
-    public String signUp() {return "sign-up";}
+    public String signUp() {return "signup";}
 
     @GetMapping("/api/users/login-page")
     public String login(Model model) {

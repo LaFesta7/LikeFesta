@@ -22,7 +22,7 @@ body {
 }
 
 body.background {
-    background-image: url("../images/background/img-7.jpg");
+    background-image: url("/images/background/img-7.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;

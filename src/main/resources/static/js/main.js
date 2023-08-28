@@ -18,12 +18,12 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-// // 초기에 두 버튼을 숨기기 위한 스타일을 추가합니다.
-// var styleElement = document.createElement("style");
-// styleElement.innerHTML = `
-//     .button[href='login.html'],
-//     .button[href=''] {
-//         display: none;
-//     }
-// `;
-// document.head.appendChild(styleElement);
+// 초기에 두 버튼을 숨기기 위한 스타일을 추가합니다.
+var styleElement = document.createElement("style");
+styleElement.innerHTML = `
+    .button[href='login.html'],
+    .button[href=''] {
+        display: none;
+    }
+`;
+document.head.appendChild(styleElement);
