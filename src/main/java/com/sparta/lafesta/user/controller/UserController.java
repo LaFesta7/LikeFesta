@@ -2,8 +2,12 @@ package com.sparta.lafesta.user.controller;
 
 import com.sparta.lafesta.common.dto.ApiResponseDto;
 import com.sparta.lafesta.common.jwt.JwtUtil;
+import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.email.service.MailService;
+import com.sparta.lafesta.user.dto.SelectUserResponseDto;
 import com.sparta.lafesta.user.dto.SignupRequestDto;
+import com.sparta.lafesta.user.dto.UserPasswordRequestDto;
+import com.sparta.lafesta.user.dto.UserProfileRequestDto;
 import com.sparta.lafesta.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -72,5 +78,65 @@ public class UserController {
         cookie.setPath("/");
         response.addCookie(cookie);
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "로그아웃이 완료되었습니다."));
+    }
+
+
+    @GetMapping("/user/profile")
+    @ResponseBody
+    public ResponseEntity<ApiResponseDto> getUserProfile(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response) {
+
+        try {
+            return ResponseEntity.status(200).body(userService.getUserProfile(userDetails.getUser(), response));
+        }catch (IllegalArgumentException ex){
+            response.setStatus(400);
+            return ResponseEntity.status(400).body(new ApiResponseDto(ex.getMessage(), response.getStatus()));
+        }
+
+    }
+    // 프로필 수정
+    @PatchMapping("/users/{userId}/info")
+    public ResponseEntity<ApiResponseDto> modifyUserProfile(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserProfileRequestDto requestDto, HttpServletResponse response) {
+        try {
+            return ResponseEntity.status(201).body(userService.modifyUserProfile(userDetails.getUser(), requestDto, response));
+        } catch (IllegalAccessException ex) {
+            response.setStatus(400);
+            return ResponseEntity.status(400).body(new ApiResponseDto());
+        }
+    }
+
+    // 회원 이름 변경
+    @GetMapping("/users/{userId}/info/username")
+    public String modifyUsername(Model model, Authentication authentication){
+        UserDetails userDetails = (UserDetails)authentication.getPrincipal();
+        SelectUserResponseDto member = userService.(userDetails.getUsername());
+        model.addAttribute("member", member);
+
+        return "/user/modifyUsername";
+    }
+
+
+
+    // 비밀번호 수정
+    @PutMapping("/users/{userId}/info/pw")
+    public ResponseEntity<ApiResponseDto> modifyUserPassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserPasswordRequestDto requestDto, HttpServletResponse response) {
+        try {
+            return ResponseEntity.status(201).body(userService.modifyUserPassword(userDetails.getUser(), requestDto, response));
+        } catch (IllegalArgumentException ex) {
+            response.setStatus(400);
+            return ResponseEntity.status(400).body(new ApiResponseDto(ex.getMessage(), response.getStatus()));
+        }
+    }
+
+    // 유저 탈퇴
+    @DeleteMapping("/users/{userId}/withdrawal")
+    public String userWithdrawal(@RequestParam String password, Model model, Authentication authentication){
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        boolean result = userService.withdrawl(userDetails.getUsername(), password);
+        try {
+            return "redirect:/logout";
+        } catch (IllegalArgumentException e) {
+            new IllegalArgumentException("비밀번호가 맞지 않습니다");
+            return "/users/{userId}/withdrawal";
+        }
     }
 }

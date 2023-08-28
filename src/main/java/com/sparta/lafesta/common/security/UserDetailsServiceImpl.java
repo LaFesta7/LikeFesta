@@ -21,4 +21,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return new UserDetailsImpl(user);
     }
+
+    // 회원 탈퇴
+    // 비밀번호를 검사 후 , 맞으면 회원 삭제
+    // 틀릴 경우 false
+    public boolean withdrawl(String email, String password) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("이메일이 존재하지 않습니다."));
+
+        if (passwordEncoder.mathches(password, user.getPassword())) {
+            userRepository.delete(user);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

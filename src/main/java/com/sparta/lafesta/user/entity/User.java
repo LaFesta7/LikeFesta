@@ -2,6 +2,7 @@ package com.sparta.lafesta.user.entity;
 
 import com.sparta.lafesta.follow.entity.FestivalFollow;
 import com.sparta.lafesta.follow.entity.UserFollow;
+import com.sparta.lafesta.user.dto.UserPasswordRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -78,5 +79,16 @@ public class User {
     public User kakaoIdUpdate(Long kakaoId) { // kakaoId를 받아서 업데이트
         this.kakaoId = kakaoId;
         return this;
+    }
+    public User modifyPassword(String modifyPassword){
+        this.password=modifyPassword;
+        return this;
+    }
+
+    // 프로필 수정 시,
+    // 이메일, 닉네임 수정
+    public void modifyProfile(UserPasswordRequestDto requestDto){
+        this.email = requestDto.getEmail();
+        this.nickname = requestDto.getNickname();
     }
 }
