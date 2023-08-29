@@ -3,7 +3,7 @@ package com.sparta.lafesta.tag.service;
 import com.sparta.lafesta.common.dto.ApiResponseDto;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
 import com.sparta.lafesta.festival.entity.Festival;
-import com.sparta.lafesta.festival.repository.FestivalRepository;
+import com.sparta.lafesta.festival.service.FestivalServiceImpl;
 import com.sparta.lafesta.tag.dto.TagRequestDto;
 import com.sparta.lafesta.tag.dto.TagResponseDto;
 import com.sparta.lafesta.tag.entity.FestivalTag;
@@ -13,7 +13,6 @@ import com.sparta.lafesta.tag.repository.TagRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +25,7 @@ public class TagServiceImpl implements TagService {
 
   private final TagRepository tagRepository;
   private final FestivalTagRepository festivalTagRepository;
-  private final FestivalRepository festivalRepository;
+  private final FestivalServiceImpl festivalService;
 
   //태그 생성
   @Override
@@ -49,7 +48,7 @@ public class TagServiceImpl implements TagService {
   @Transactional(readOnly = true)
   public List<TagResponseDto> selectTags() {
     return tagRepository.findAllBy().stream()
-        .map(TagResponseDto::new).collect(Collectors.toList());
+        .map(TagResponseDto::new).toList();
   }
 
   //태그 수정
@@ -76,8 +75,7 @@ public class TagServiceImpl implements TagService {
   @Transactional
   public ResponseEntity<ApiResponseDto> createFestivalTag(Long festivalId, Long tagId) {
     //태그를 추가할 페스티벌 조회
-    Festival festival = festivalRepository.findById(festivalId)
-        .orElseThrow(() -> new IllegalArgumentException("해당 페스티벌이 없습니다."));
+    Festival festival = festivalService.findFestival(festivalId);
 
     //추가할 태그 조회
     Tag tag = tagRepository.findById(tagId)
@@ -105,8 +103,7 @@ public class TagServiceImpl implements TagService {
 
     List<FestivalResponseDto> tagedFestivals = new ArrayList<>();
     for (FestivalTag festivalTag : festivalTags) {
-      Festival tagedFestival = festivalRepository.findByTags(festivalTag)
-          .orElseThrow(() -> new IllegalArgumentException("해당 페스티벌이 없습니다."));
+      Festival tagedFestival = festivalService.findFestivalByTag(festivalTag);
 
       FestivalResponseDto festivalResponseDto = new FestivalResponseDto(tagedFestival);
       tagedFestivals.add(festivalResponseDto);
@@ -118,8 +115,7 @@ public class TagServiceImpl implements TagService {
   @Override
   @Transactional
   public ResponseEntity<ApiResponseDto> deleteFestivalTag(Long festivalId, Long tagId) {
-    Festival festival = festivalRepository.findById(festivalId)
-        .orElseThrow(() -> new IllegalArgumentException("해당 페스티벌이 없습니다."));
+    Festival festival = festivalService.findFestival(festivalId);
 
     Tag tag = tagRepository.findById(tagId)
         .orElseThrow(() -> new IllegalArgumentException("해당 태그가 없습니다."));
