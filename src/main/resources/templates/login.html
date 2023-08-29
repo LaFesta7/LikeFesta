@@ -11,7 +11,6 @@
 
     <script src="/js/jquery.min.js"></script>
     <script src="/js/slides.js"></script>
-    <script src="/js/jquery.min.js"></script>
     <script src="/js/slides.min.js" type="text/javascript"></script>
 
     <link rel="stylesheet" href="/css/login.css">
@@ -58,7 +57,7 @@
         </a>
 
         <br>
-        <a id="login-kakao-btn" th:attr="onclick='location.href=\'' + ${kakaoUrl} + '\''">
+        <a id="login-kakao-btn" onclick="loginWithKakao()">
             <span></span>
             <span></span>
             <span></span>
@@ -67,6 +66,37 @@
         </a>
     </form>
 </div>
+
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        // 토큰 삭제
+        Cookies.remove('Authorization', {path: '/'});
+    });
+
+    const kakaoAppKey = [[${kakaoAppKey}]];
+    Kakao.init(kakaoAppKey);
+
+    function loginWithKakao() {
+        Kakao.Auth.login({
+            success: function (authObj) {
+                Kakao.API.request({
+                    url: '/v2/user/me',
+                    success: function (res) {
+                        console.log(res);
+                    },
+                    fail: function (error) {
+                        console.error(error);
+                    }
+                });
+            },
+            fail: function (err) {
+                console.error(err);
+            }
+        });
+    }
+</script>
+</body>
 
 <script>
     $(document).ready(function () {
@@ -89,7 +119,7 @@
 
         $.ajax({
             type: "POST",
-            url: `/api/users/kakao/login`,
+            url: `/api/users/login`,
             contentType: "application/json",
             data: JSON.stringify({username: username, password: password}),
         })
@@ -106,9 +136,8 @@
             })
             .fail(function (jqXHR, textStatus) {
                 alert("Login Fail");
-                window.location.href = host + '/api/users/kakao/login?error'
+                window.location.href = host + '/api/users/login-page'
             });
     }
 </script>
-</body>
 </html>

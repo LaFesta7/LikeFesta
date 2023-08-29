@@ -42,8 +42,8 @@
             </ul>
         </div>
         <div class="right">
-            <a class="button blue gradient" href="/api/users/login-page">Login</a>
-            <form method="get" action="http://localhost:8080/api/users/logout">
+            <a id="loginButton" class="button blue gradient" href="/api/users/login-page">Login</a>
+            <form id="logoutForm" method="get" action="http://localhost:8080/api/users/logout">
                 <button class="button green gradient" type="submit">Logout</button>
             </form>
         </div>
@@ -88,8 +88,13 @@
                             <h1 class="ae-1 fromLeft">모든 축제의 시작과 끝 LAFESTA</h1>
                             <p class="ae-2 fromLeft"><span class="opacity-8">라페스타와 함께 당신의 매일을 축제와 함께하세요.</span>
                             </p>
-                            <a class="button blue gradient ae-3 fromCenter cropLeft" href="/api/users/festivals-map">축제 찾으러가기</a><a
+                            <a class="button blue gradient ae-3 fromCenter cropLeft" href="/api/users/festivals-map">축제
+                                찾으러가기</a><a
                                 class="button white ae-4 fromCenter" href="/">축제참여 인증하기</a>
+                        </li>
+                        <li class="col-6-12">
+                            <img class="ae-4" width="605" src="/images/logo6.png" alt="iPhones Thumbnail"
+                                 data-action="zoom"/>
                         </li>
                     </ul>
                 </div>
@@ -106,7 +111,7 @@
             <div class="wrap">
                 <div class="fix-10-12">
                     <h1 class="ae-1">
-                        머 넣지...</h1>
+                        추후 추가 수정</h1>
                 </div>
             </div>
         </div>
@@ -114,20 +119,12 @@
     <div class="background" style="background-image:url(/images/background/img-15.jpg)"></div>
 </section>
 
+<!--페스티벌 랭킹-->
 <div class="popup autoplay" data-popup-id="60-1">
-    <div class="close">
-        <svg>
-            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#close"></use>
-        </svg>
-    </div>
     <div class="content">
         <div class="container">
             <div class="wrap">
                 <div class="fix-10-12">
-                    <div th:each="festival : ${festivals}">
-                        <h2 th:text="${festival.name}"></h2>
-                        <p th:text="${festival.description}"></p>
-                    </div>
                 </div>
             </div>
         </div>
@@ -135,19 +132,11 @@
 </div>
 
 <div class="popup autoplay" data-popup-id="60-2">
-    <div class="close">
-        <svg>
-            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#close"></use>
-        </svg>
-    </div>
     <div class="content">
         <div class="container">
             <div class="wrap">
                 <div class="fix-10-12">
-                    <div class="embedVideo popupContent">
-                        <iframe src="https://player.vimeo.com/video/101231747?color=ff0179&portrait=0" frameborder="0"
-                                webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -155,19 +144,11 @@
 </div>
 
 <div class="popup autoplay" data-popup-id="60-3">
-    <div class="close">
-        <svg>
-            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#close"></use>
-        </svg>
-    </div>
     <div class="content">
         <div class="container">
             <div class="wrap">
                 <div class="fix-10-12">
-                    <div class="embedVideo popupContent">
-                        <iframe src="https://player.vimeo.com/video/101231747?color=ff0179&portrait=0" frameborder="0"
-                                webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -192,9 +173,16 @@
                                     <th class="time">날짜</th>
                                 </tr>
                                 </thead>
-                                <tbody id="festival-table-body">
-                                <!-- 나머지 행들도 동일하게 추가 -->
-                                </tbody>
+                                <thead>
+                                <div th:each="festival : ${festivals}">
+                                    <h2 th:text="${festival.name}"></h2>
+                                    <p th:text="${festival.description}"></p>
+                                    <p th:text="${festival.location}"></p>
+                                    <p th:text="${festival.open_date}"></p>
+                                    <p th:text="${festival.end_date}"></p>
+                                    <p th:text="${festival.official_link}"></p>
+                                </div>
+                                </thead>
                             </table>
                         </div>
                     </ul>
@@ -208,44 +196,41 @@
                         <a href="?page=6">(쪽수설정)</a>
                     </div>
                 </div>
-                <!-- 게시판 영역 끝 -->
             </div>
         </div>
     </div>
     <div class="background" style="background-image:url(/images/background/img-7.jpg)"></div>
+
 </section>
+
 <script>
     const festivalTableBody = document.getElementById('festival-table-body');
     const pagination = document.getElementById('pagination');
 
-    // Fetch festivals and populate the table
-    fetch('/festivals')
-        .then(response => response.json())
-        .then(data => {
-            let festivalRows = '';
+    // fetch('/festivals')
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         let festivalRows = '';
+    //
+    //         data.forEach((festival, index) => {
+    //             festivalRows += `
+    //                     <tr>
+    //                         <td>${index + 1}</td>
+    //                         <td>${festival.name}</td>
+    //                         <td>${festival.location}</td>
+    //                         <td>${festival.date}</td>
+    //                     </tr>`;
+    //         });
+    //         festivalTableBody.innerHTML = festivalRows;
+    //     })
+    //     .catch(error => console.error('Error fetching festivals:', error));
 
-            data.forEach((festival, index) => {
-                festivalRows += `
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${festival.name}</td>
-                            <td>${festival.location}</td>
-                            <td>${festival.date}</td>
-                        </tr>`;
-            });
-
-            festivalTableBody.innerHTML = festivalRows;
-        })
-        .catch(error => console.error('Error fetching festivals:', error));
-
-    // Generate pagination links
-    const totalPages = 6; // Replace with the actual number of pages
+    const totalPages = 6;
     let paginationLinks = '';
 
     for (let page = 1; page <= totalPages; page++) {
         paginationLinks += `<a href="?page=${page}">${page}</a>`;
     }
-
     pagination.innerHTML = paginationLinks;
 </script>
 
