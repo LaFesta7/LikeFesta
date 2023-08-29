@@ -29,10 +29,10 @@ public class Badge {
     @Enumerated(value = EnumType.STRING)
     private BadgeConditionEnum conditionEnum;
 
-    @Column(name = "condition_first_day", nullable = false)
+    @Column(name = "condition_first_day")
     private LocalDate conditionFirstDay;
 
-    @Column(name = "condition_last_day", nullable = false)
+    @Column(name = "condition_last_day")
     private LocalDate conditionLastDay;
 
     @Column(name = "condition_standard", nullable = false)

@@ -9,6 +9,9 @@ import com.sparta.lafesta.badge.entity.UserBadge;
 import com.sparta.lafesta.badge.repository.BadgeRepository;
 import com.sparta.lafesta.badge.repository.UserBadgeRepository;
 import com.sparta.lafesta.common.exception.NotFoundException;
+import com.sparta.lafesta.festival.entity.Festival;
+import com.sparta.lafesta.festival.repository.FestivalRepository;
+import com.sparta.lafesta.review.entity.Review;
 import com.sparta.lafesta.review.repostiroy.ReviewRepository;
 import com.sparta.lafesta.user.entity.User;
 import com.sparta.lafesta.user.service.UserService;
@@ -16,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +29,7 @@ import java.util.List;
 public class BadgeServiceImpl implements BadgeService {
     private final BadgeRepository badgeRepository;
     private final UserBadgeRepository userBadgeRepository;
+    private final FestivalRepository festivalRepository;
     private final ReviewRepository reviewRepository;
     private final UserService userService;
     private final AdminService adminService;
@@ -80,7 +86,22 @@ public class BadgeServiceImpl implements BadgeService {
         List<Badge> badges = badgeRepository.findAll();
         for (Badge badge : badges) {
             if(badge.getConditionEnum() == BadgeConditionEnum.FESTIVAL) {
-                Long festivalCount = reviewRepository.countByUser(user);
+                int festivalCount = 0;
+
+                if (badge.getConditionFirstDay() == null && badge.getConditionLastDay() == null) {
+                    festivalCount = reviewRepository.countByUser(user);
+                } else {
+                    // QueryDSL 등 개선 필요
+                    List<Review> reviews = reviewRepository.findAllByUser(user);
+                    LocalDateTime startDay = badge.getConditionFirstDay().atStartOfDay();
+                    LocalDateTime endDay = badge.getConditionLastDay().atTime(LocalTime.MAX);
+                    List<Festival> festivals = festivalRepository.findAllByOpenDateBetween(startDay, endDay);
+                    for (Review review : reviews) {
+                        Festival festival = review.getFestival();
+                        if (festivals.contains(festival)) festivalCount++;
+                    }
+                }
+
                 if (badge.getConditionStandard() <= festivalCount) {
                     createUserBadge(user, badge);
                 }
