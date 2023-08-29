@@ -1,7 +1,7 @@
 package com.sparta.lafesta.admin.controller;
 
 import com.sparta.lafesta.admin.dto.OrganizerResponseDto;
-import com.sparta.lafesta.admin.service.AdminServiceImpl;
+import com.sparta.lafesta.admin.service.AdminService;
 import com.sparta.lafesta.common.dto.ApiResponseDto;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.festivalRequest.dto.FestivaRequestlResponseDto;
@@ -24,7 +24,7 @@ import java.util.List;
 @RequestMapping("/api/admin")
 @Tag(name = "관리자 기능 관련 API", description = "관리자 기능 관련 API 입니다.")
 public class AdminController {
-    private final AdminServiceImpl adminService;
+    private final AdminService adminService;
 
     @GetMapping("/users/organizer-requests")
     @Operation(summary = "주최사 가입 인증 요청 목록 조회", description = "주최사 가입 인증 요청한 목록을 전체 조회합니다.")

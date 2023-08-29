@@ -23,13 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class KakaoLoginController {
     private final KakaoService kakaoService;
 
-    @GetMapping("/users/login-page") // 카카오 로그인 페이지
-    @Operation(summary = "카카오 로그인 기능", description = "카카오 로그인 페이지로 이동하여서 sns 로그인 기능을 수행합니다.")
-    public String login(Model model) {
-        model.addAttribute("kakaoUrl", kakaoService.getKakaoLogin());
-        return "login"; // 임시로 확인 할 html 페이지를 작성했습니다.
-    }
-
     @GetMapping("/users/kakao/callback") // 카카오 로그인 완료 후 리다이렉트 주소
     @Operation(summary = "카카오 로그인 완료 후 기능", description = "카카오 로그인이 끝난 이후 토큰을 발급하고 메인 페이지로 리다이렉트 합니다.")
     public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException { 

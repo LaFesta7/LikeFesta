@@ -12,5 +12,6 @@ public class FestivalRequestRequestDto {
     private LocalDateTime openDate;
     private LocalDateTime endDate;
     private LocalDateTime reservationOpenDate;
+    private String reservationPlace;
     private String officialLink;
 }

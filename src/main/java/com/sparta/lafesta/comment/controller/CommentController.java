@@ -2,7 +2,7 @@ package com.sparta.lafesta.comment.controller;
 
 import com.sparta.lafesta.comment.dto.CommentRequestDto;
 import com.sparta.lafesta.comment.dto.CommentResponseDto;
-import com.sparta.lafesta.comment.service.CommentServiceImpl;
+import com.sparta.lafesta.comment.service.CommentService;
 import com.sparta.lafesta.common.dto.ApiResponseDto;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +10,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "페스티벌 리뷰 댓글 관련 API", description = "페스티벌 리뷰 댓글 관련 API 입니다.")
 public class CommentController {
-    private final CommentServiceImpl commentService;
+    private final CommentService commentService;
 
     @PostMapping("/festivals/{festivalId}/reviews/{reviewId}/comments")
     @Operation(summary = "페스티벌 리뷰 댓글 작성", description = "@PathVariable을 통해 reviewId를 받아와, 해당 위치에 페스티벌 리뷰에 댓글을 작성합니다. Dto를 통해 정보를 받아와 댓글을 생성할 때 해당 정보를 저장합니다.")
@@ -39,9 +42,10 @@ public class CommentController {
     @Operation(summary = "페스티벌 리뷰 댓글 전체 조회", description = "페스티벌 리뷰 댓글을 전체 조회합니다.")
     public ResponseEntity<List<CommentResponseDto>> selectComments(
             @Parameter(name = "reviewId", description = "댓글을 조회할 review의 id", in = ParameterIn.PATH) @PathVariable Long reviewId,
-            @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "comment 페이징 처리에 필요한 기본 설정")@PageableDefault(size=20, sort="createdAt", direction = Direction.DESC) Pageable pageable
     ) {
-        List<CommentResponseDto> results = commentService.selectComments(reviewId, userDetails.getUser());
+        List<CommentResponseDto> results = commentService.selectComments(reviewId, userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(results);
     }
 
