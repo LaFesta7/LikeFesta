@@ -1,8 +1,11 @@
 package com.sparta.lafesta.tag.service;
 
+import com.sparta.lafesta.common.dto.ApiResponseDto;
+import com.sparta.lafesta.festival.dto.FestivalResponseDto;
 import com.sparta.lafesta.tag.dto.TagRequestDto;
 import com.sparta.lafesta.tag.dto.TagResponseDto;
 import java.util.List;
+import org.springframework.http.ResponseEntity;
 
 public interface TagService {
 
@@ -14,11 +17,11 @@ public interface TagService {
 
   void deleteTag(Long tagId);
 
-//  TagResponseDto createFestivalTag(TagRequestDto requestDto);
-//
-//  List<TagResponseDto> selectFestivalTags(TagRequestDto requestDto);
-//
+  ResponseEntity<ApiResponseDto> createFestivalTag(Long festivalId, Long tagId);
+
+  List<FestivalResponseDto> selectFestivalTags(String tag);
+
 //  TagResponseDto modifyFestivalTag(TagRequestDto requestDto);
-//
-//  void deleteFestivalTag(TagRequestDto requestDto);
+
+  ResponseEntity<ApiResponseDto> deleteFestivalTag(Long festivalId, Long tagId);
 }

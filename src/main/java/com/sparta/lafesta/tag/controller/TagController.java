@@ -1,6 +1,7 @@
 package com.sparta.lafesta.tag.controller;
 
 import com.sparta.lafesta.common.dto.ApiResponseDto;
+import com.sparta.lafesta.festival.dto.FestivalResponseDto;
 import com.sparta.lafesta.tag.dto.TagRequestDto;
 import com.sparta.lafesta.tag.dto.TagResponseDto;
 import com.sparta.lafesta.tag.service.TagServiceImpl;
@@ -59,23 +60,27 @@ public class TagController {
     return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "태그 삭제 완료"));
   }
 
-  @PostMapping("/festivals/{festivalId}/tags")
-  public void createFestivalTag() {
-
+  @PostMapping("/festivals/{festivalId}/tags/{tagId}")
+  public ResponseEntity<ApiResponseDto> createFestivalTag(
+      @PathVariable Long festivalId,
+      @PathVariable Long tagId
+  ) {
+    return tagservice.createFestivalTag(festivalId, tagId);
   }
 
   @GetMapping("/festivals/tags")
-  public void selectFestivalTags(@RequestParam("tag") String tag) {
-
-  }
-
-  @PatchMapping("/festivals/{festivalId}/tags/{tagId}")
-  public void modifyFestivalTag() {
-
+  public ResponseEntity<List<FestivalResponseDto>> selectFestivalTags(
+      @RequestParam String tag
+  ) {
+    List<FestivalResponseDto> results = tagservice.selectFestivalTags(tag);
+    return ResponseEntity.ok().body(results);
   }
 
   @DeleteMapping("/festivals/{festivalId}/tags/{tagId}")
-  public void deleteFetivalTag() {
-
+  public ResponseEntity<ApiResponseDto> deleteFetivalTag(
+      @PathVariable Long festivalId,
+      @PathVariable Long tagId
+  ) {
+    return tagservice.deleteFestivalTag(festivalId, tagId);
   }
 }

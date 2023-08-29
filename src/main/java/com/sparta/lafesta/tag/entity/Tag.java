@@ -23,7 +23,7 @@ public class Tag {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "title", nullable = false)
+  @Column(name = "title", nullable = false, unique = true)
   private String title;
 
   @OneToMany(mappedBy = "tag", cascade = CascadeType.PERSIST, orphanRemoval = true)
