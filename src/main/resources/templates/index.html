@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
@@ -88,7 +89,7 @@
                             <p class="ae-2 fromLeft"><span class="opacity-8">라페스타와 함께 당신의 매일을 축제와 함께하세요.</span>
                             </p>
                             <a class="button blue gradient ae-3 fromCenter cropLeft" href="/api/users/festivals-map">축제 찾으러가기</a><a
-                                class="button white ae-4 fromCenter">축제참여 인증하기</a>
+                                class="button white ae-4 fromCenter" href="/">축제참여 인증하기</a>
                         </li>
                     </ul>
                 </div>
@@ -123,9 +124,9 @@
         <div class="container">
             <div class="wrap">
                 <div class="fix-10-12">
-                    <div class="embedVideo popupContent">
-                        <iframe src="https://player.vimeo.com/video/101231747?color=ff0179&portrait=0" frameborder="0"
-                                webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                    <div th:each="festival : ${festivals}">
+                        <h2 th:text="${festival.name}"></h2>
+                        <p th:text="${festival.description}"></p>
                     </div>
                 </div>
             </div>
@@ -191,62 +192,14 @@
                                     <th class="time">날짜</th>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>워터밤</td>
-                                    <td>잠실</td>
-                                    <td>08.24~08.26</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>월디페</td>
-                                    <td>서울랜드</td>
-                                    <td>07.23~07.25</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>한화 불꽃놀이</td>
-                                    <td>여의도</td>
-                                    <td>10.14</td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>랄랄라 축제</td>
-                                    <td>우리집</td>
-                                    <td>매일</td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>랄랄라 축제</td>
-                                    <td>우리집</td>
-                                    <td>매일</td>
-                                </tr>
-                                <tr>
-                                    <td>6</td>
-                                    <td>랄랄라 축제</td>
-                                    <td>우리집</td>
-                                    <td>매일</td>
-                                </tr>
-                                <tr>
-                                    <td>7</td>
-                                    <td>랄랄라 축제</td>
-                                    <td>우리집</td>
-                                    <td>매일</td>
-                                </tr>
-                                <tr>
-                                    <td>8</td>
-                                    <td>랄랄라 축제</td>
-                                    <td>우리집</td>
-                                    <td>매일</td>
-                                </tr>
+                                <tbody id="festival-table-body">
                                 <!-- 나머지 행들도 동일하게 추가 -->
                                 </tbody>
                             </table>
                         </div>
                     </ul>
                     <!-- 페이지 네비게이션 -->
-                    <div class="pagination">
+                    <div class="pagination" id="pagination">
                         <a href="?page=1">1</a>
                         <a href="?page=2">2</a>
                         <a href="?page=3">3</a>
@@ -261,6 +214,40 @@
     </div>
     <div class="background" style="background-image:url(/images/background/img-7.jpg)"></div>
 </section>
+<script>
+    const festivalTableBody = document.getElementById('festival-table-body');
+    const pagination = document.getElementById('pagination');
+
+    // Fetch festivals and populate the table
+    fetch('/festivals')
+        .then(response => response.json())
+        .then(data => {
+            let festivalRows = '';
+
+            data.forEach((festival, index) => {
+                festivalRows += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${festival.name}</td>
+                            <td>${festival.location}</td>
+                            <td>${festival.date}</td>
+                        </tr>`;
+            });
+
+            festivalTableBody.innerHTML = festivalRows;
+        })
+        .catch(error => console.error('Error fetching festivals:', error));
+
+    // Generate pagination links
+    const totalPages = 6; // Replace with the actual number of pages
+    let paginationLinks = '';
+
+    for (let page = 1; page <= totalPages; page++) {
+        paginationLinks += `<a href="?page=${page}">${page}</a>`;
+    }
+
+    pagination.innerHTML = paginationLinks;
+</script>
 
 <!-- 랭킹 페이지 -->
 <section class="slide fade-6 kenBurns" data-name="case">

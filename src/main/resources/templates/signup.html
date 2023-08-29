@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <title>LAFESTA</title>
 
     <link rel="stylesheet" href="/css/login.css">
     <link href="/css/slides.min.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" as="font"
-          href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
+    <link rel="stylesheet" as="font" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons" />
     <link rel="stylesheet" href="/css/slides.css">
 
     <script src="/js/slides.js"></script>
@@ -19,8 +19,7 @@
     <script src="/js/plugins.js"></script>
 </head>
 
-<body class="background" style="background-image:url(/images/background/img-11.jpeg)"></body>
-
+<body class="background" style="background-image:url(/images/background/img-11.jpeg)">
 <div class="left">
     <a href="/" title="Slides Framework">
         <img src="/images/logo-s1.png" width="270" height="240" alt="lafesta logo">
@@ -29,31 +28,31 @@
 
 <div class="login-box">
     <h2>LFESTA Sign Up</h2>
-    <form>
+    <form id="signupForm">
         <div class="user-box">
-            <input type="text" name="" required="">
+            <input type="text" id="username" name="username" required>
             <label>Username</label>
         </div>
         <div class="user-box">
-            <input type="password" name="" required="">
+            <input type="password" id="password" name="password" required>
             <label>Password</label>
         </div>
         <div class="user-box">
-            <input type="email" name="" required="">
-            <label>Email</label>
-            <button type="button" id="emailConfirmBtn">확인</button>
-        </div>
-        <!-- 이메일 인증키 입력칸 (기본적으로 숨김) -->
-        <div class="user-box" id="emailConfirmBox" style="display: none;">
-            <input type="text" name="emailConfirmKey" required="">
-            <label>이메일 인증키</label>
-            <button type="button" id="emailConfirmKeyBtn">확인</button>
-        </div>
-        <div class="user-box">
-            <input type="password" name="" required="">
+            <input type="text" id="nickname" name="nickname" required>
             <label>Nickname</label>
         </div>
-        <!-- 사용자 유형 선택 토글 -->
+        <div class="user-box">
+            <input type="email" id="email" name="email" required>
+            <label>Email</label>
+            <button type="button" id="sendVerification">인증메일 발송</button>
+        </div><br>
+        <!-- 이메일 인증키 입력칸 (기본적으로 숨김) -->
+        <div class="user-box" id="emailConfirmBox" style="display: none;">
+            <input type="text" id="verificationCode" name="verificationCode" required>
+            <label>인증코드</label><br>
+            <button type="button" id="confirmButton">인증확인</button>
+            <p id="timer">3:00</p>
+        </div><br>
         <div class="user-box">
             <select id="userType">
                 <option value="user">일반 사용자</option>
@@ -61,7 +60,13 @@
                 <option value="organizer">주최사</option>
             </select>
         </div>
-        <a href="#">
+        <!-- 관리자 인증키 입력칸 (기본적으로 숨김) -->
+        <div class="user-box" id="adminTokenContainer" style="display: none;">
+            <input type="text" id="adminToken" name="adminToken" required>
+            <label>Admin Token</label>
+            <button type="button" id="adminTokenButton">인증</button>
+        </div>
+        <a href="#" id="submitButton" disabled>
             <span></span>
             <span></span>
             <span></span>
@@ -73,13 +78,191 @@
 
 <script>
     $(document).ready(function () {
-        // 이메일 확인 버튼 클릭 이벤트
-        $("#emailConfirmBtn").click(function () {
-            // 여기에 이메일 인증 로직을 추가
 
-            // 인증키 입력칸을 표시
+        $("#emailConfirmBtn").click(function () {
+
             $("#emailConfirmBox").show();
         });
     });
+
+        const timerElement = document.getElementById('timer');
+
+        const sendVerificationButton = document.getElementById('sendVerification');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const nicknameInput = document.getElementById('nickname');
+        const emailInput = document.getElementById('email');
+        const verificationContainer = document.getElementById('verificationContainer');
+        const submitButton = document.getElementById('submitButton');
+
+        sendVerificationButton.addEventListener('click', async () => {
+            if (usernameInput.value && passwordInput.value && nicknameInput.value && emailInput.value) {
+                submitButton.disabled = false;
+                sendVerificationButton.style.display = 'none';
+                verificationContainer.style.display = 'block';
+                const response = await fetch('/api/users/sign-up/mail-confirm', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: emailInput.value
+                    })
+                });
+
+                if (response.ok) {
+                    startCountdown(); // 타이머 시작
+                    const responseData = await response.json();
+                    console.log(responseData.statusMessage);
+                } else {
+                    verificationContainer.style.display = 'none';
+                    sendVerificationButton.style.display = 'block';
+                    const responseData = await response.json();
+                    console.error(responseData.statusMessage);
+                    alert(responseData.statusMessage);
+                }
+            } else {
+                alert('모든 필드를 입력해주세요.');
+            }
+        });
+
+    confirmButton.addEventListener('click', async () => {
+        if (verificationCodeInput.value) {
+            // 인증 확인
+            const verifyResponse = await fetch('/api/users/sign-up/verify-code', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: emailInput.value,
+                    verificationCode: verificationCodeInput.value
+                })
+            });
+
+            if (verifyResponse.ok) {
+                clearInterval(countdownInterval); // 타이머 중지
+                const responseData = await verifyResponse.json();
+                console.log(responseData.statusMessage);
+                alert(responseData.statusMessage);
+                verificationContainer.style.display = 'none';
+                submitButton.disabled = false; // submitButton 활성화
+            } else {
+                const responseData = await verifyResponse.json();
+                console.error(responseData.statusMessage);
+                alert(responseData.statusMessage);
+            }
+        } else {
+            alert('인증 코드를 입력해주세요.');
+        }
+    });
+
+    submitButton.addEventListener('click', async () => {
+        const signupResponse = await fetch('/api/users/sign-up', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: usernameInput.value,
+                password: passwordInput.value,
+                email: emailInput.value,
+                nickname: nicknameInput.value,
+                admin: adminCheckbox.checked,
+                adminToken: adminTokenInput.value,
+                organizer: organizerCheckbox.checked
+            })
+        });
+
+        if (signupResponse.ok) {
+            const responseData = await signupResponse.json();
+            console.log('회원가입 성공');
+            alert(responseData.statusMessage);
+
+            // 회원가입 성공 시 로그인 페이지로 이동
+            window.location.href = '/api/users/login-page';
+        } else {
+            const responseData = await signupResponse.json();
+            console.error('회원가입 실패:', signupResponse.status);
+            alert(responseData.statusMessage);
+        }
+    });
+
+    // 타이머 시작 시간 (3분)
+    let countdownInterval;
+    let remainingTime = 180; // 3 * 60 (3분을 초로 환산)
+
+    function updateTimerDisplay() {
+        const minutes = Math.floor(remainingTime / 60);
+        const seconds = remainingTime % 60;
+        const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        timerElement.textContent = formattedTime;
+    }
+
+    function startCountdown() {
+        clearInterval(countdownInterval); // 기존의 카운트다운 인터벌을 초기화
+        remainingTime = 180; // 타이머를 다시 3분으로 초기화
+        updateTimerDisplay(); // 초기화한 타이머를 표시
+
+        countdownInterval = setInterval(() => {
+            if (remainingTime > 0) {
+                remainingTime--;
+                updateTimerDisplay();
+            } else {
+                clearInterval(countdownInterval);
+                showExpirationWarning();
+            }
+        }, 1000); // 1초마다 카운트다운
+    }
+
+    function showExpirationWarning() {
+        // 인증 코드 만료 경고창 보이기
+        alert('인증 코드가 만료되었습니다. 다시 인증 메일을 발송해주세요.');
+        verificationContainer.style.display = 'none';
+        sendVerificationButton.style.display = 'block';
+    }
+    const userTypeSelect = document.getElementById('userType');
+    userTypeSelect.addEventListener('change', function () {
+        if (this.value === 'admin') {
+            adminTokenContainer.style.display = 'block';
+        } else {
+            adminTokenContainer.style.display = 'none';
+        }
+    });
+
+    const adminTokenButton = document.getElementById('adminTokenButton');
+    const adminTokenInput = document.getElementById('adminToken');
+
+    adminTokenButton.addEventListener('click', async () => {
+        const token = adminTokenInput.value;
+
+        if (!token) {
+            alert('Please enter the admin token.');
+            return;
+        }
+
+        const response = await fetch('/api/verify-admin-token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                token: token
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            if (data.isValid) {
+                alert('Admin token is valid.');
+            } else {
+                alert('Invalid admin token.');
+            }
+        } else {
+            alert('There was an error verifying the admin token.');
+        }
+    });
 </script>
+</body>
+
 </html>
