@@ -90,7 +90,7 @@ public class NotificationService {
         if (!notification.getFollower().getId().equals(user.getId())) {
             throw new UnauthorizedException("해당 알림을 읽을 권한이 없습니다.");
         }
-        if (notification.getRead()) {
+        if (notification.getRd()) {
             throw new IllegalArgumentException("해당 알림은 이미 읽으셨습니다.");
         }
         notification.readNotification();

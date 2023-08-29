@@ -12,13 +12,13 @@ public class NotificationResponseDto {
     private String title;
     private String detail;
     private String timeSinceCreated;
-    private Boolean read;
+    private Boolean rd;
 
     public NotificationResponseDto(Notification notification) {
         this.id = notification.getId();
         this.title = notification.getTitle();
         this.detail = notification.getDetail();
         this.timeSinceCreated = Duration.between(notification.getCreatedAt(), LocalDateTime.now()).toString();
-        this.read = notification.getRead();
+        this.rd = notification.getRd();
     }
 }

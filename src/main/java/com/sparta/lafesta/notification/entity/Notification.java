@@ -26,8 +26,8 @@ public class Notification {
     @Column(name = "createdAt", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "`read`", nullable = false)
-    private Boolean read;
+    @Column(name = "rd", nullable = false)
+    private Boolean rd;
 
     // 알림 받을 follower
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,12 +42,12 @@ public class Notification {
         this.title = title;
         this.detail = detail;
         this.createdAt = createdAt;
-        this.read = false;
+        this.rd = false;
         this.expirationTime = LocalDateTime.now().plusDays(7);
     }
 
     public void readNotification() {
-        this.read = true;
+        this.rd = true;
         this.expirationTime = LocalDateTime.now().plusDays(3);
     }
 }
