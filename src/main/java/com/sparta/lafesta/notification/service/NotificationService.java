@@ -1,7 +1,7 @@
 package com.sparta.lafesta.notification.service;
 
 import com.sparta.lafesta.email.service.MailService;
-import com.sparta.lafesta.festival.service.FestivalServiceImpl;
+import com.sparta.lafesta.festival.service.FestivalService;
 import com.sparta.lafesta.notification.dto.ReminderDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,7 +14,7 @@ import java.util.List;
 public class NotificationService {
 
     private final MailService mailService;
-    private final FestivalServiceImpl festivalService;
+    private final FestivalService festivalService;
 
     // 매일 오전 9시마다 리마인더 알림 메일 발송
     @Scheduled(cron = "0 0 9 * * *")

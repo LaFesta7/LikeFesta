@@ -8,7 +8,7 @@ import com.sparta.lafesta.common.exception.UnauthorizedException;
 import com.sparta.lafesta.like.commentLike.entity.CommentLike;
 import com.sparta.lafesta.like.commentLike.repository.CommentLikeRepository;
 import com.sparta.lafesta.review.entity.Review;
-import com.sparta.lafesta.review.service.ReviewServiceImpl;
+import com.sparta.lafesta.review.service.ReviewService;
 import com.sparta.lafesta.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
-    private final ReviewServiceImpl reviewService;
+    private final ReviewService reviewService;
     private final CommentLikeRepository commentLikeRepository;
     @Autowired
     private TransactionTemplate transactionTemplate;
@@ -51,7 +51,7 @@ public class CommentServiceImpl implements CommentService {
         // user 권한 확인 예외처리 추후 추가 작성 예정
         Review review = reviewService.findReview(reviewId);
         return commentRepository.findAllByReview(review, pageable).stream()
-                .map(CommentResponseDto::new).collect(Collectors.toList());
+                .map(CommentResponseDto::new).toList();
     }
 
     // 댓글 내용 수정

@@ -6,13 +6,11 @@ import com.sparta.lafesta.festivalRequest.dto.FestivalRequestRequestDto;
 import com.sparta.lafesta.festivalRequest.entity.FestivalRequest;
 import com.sparta.lafesta.festivalRequest.repository.FestivalRequestRepository;
 import com.sparta.lafesta.user.entity.User;
-import com.sparta.lafesta.user.entity.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +35,7 @@ public class FestivalRequestServiceImpl implements FestivalRequestService {
     @Transactional(readOnly = true)
     public List<FestivaRequestlResponseDto> selectFestivalRequests() {
         return festivalRequestRepository.findAllByOrderByCreatedAtDesc().stream()
-                .map(FestivaRequestlResponseDto::new).collect(Collectors.toList());
+                .map(FestivaRequestlResponseDto::new).toList();
     }
 
     // 페스티벌 게시 요청글 상세 조회

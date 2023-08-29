@@ -2,12 +2,13 @@ package com.sparta.lafesta.review.service;
 
 import com.sparta.lafesta.review.dto.ReviewRequestDto;
 import com.sparta.lafesta.review.dto.ReviewResponseDto;
+import com.sparta.lafesta.review.entity.Review;
 import com.sparta.lafesta.user.entity.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import org.springframework.data.domain.Pageable;
 
 public interface ReviewService {
     /**
@@ -70,4 +71,11 @@ public interface ReviewService {
      * @return 좋아요 취소 결과
      */
     ReviewResponseDto deleteReviewLike(Long reviewId, User user);
+
+    /**
+     * 리뷰 가져오기
+     * @param reviewId 가져올 리뷰의 id
+     * @return 가져온 리뷰
+     */
+    Review findReview(Long reviewId);
 }
