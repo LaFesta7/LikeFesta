@@ -2,8 +2,10 @@ package com.sparta.lafesta.festival.service;
 
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
+import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.notification.dto.ReminderDto;
 import com.sparta.lafesta.user.entity.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -24,7 +26,7 @@ public interface FestivalService {
      * 전체 페스티벌 조회
      * @return 전체 페스티벌 조회 결과
      */
-    List<FestivalResponseDto> selectFestivals();
+    List<FestivalResponseDto> selectFestivals(Pageable pageable);
 
     /**
      * 페스티벌 상세 조회
@@ -85,4 +87,11 @@ public interface FestivalService {
      * @return 페스티벌 리뷰 독려 알림을 보낼 페스티벌 가져오기 결과
      */
     List<ReminderDto> getReviewEncouragementReminders();
+
+    /**
+     * id로 페스티벌 가져오기
+     * @param festivalId 가져올 페스티벌의 id
+     * @return 가져온 페스티벌
+     */
+    Festival findFestival(Long festivalId);
 }

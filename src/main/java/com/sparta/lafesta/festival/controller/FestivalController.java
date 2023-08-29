@@ -10,6 +10,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -40,8 +44,10 @@ public class FestivalController {
 
     @GetMapping("/festivals")
     @Operation(summary = "페스티벌 전체 조회", description = "페스티벌을 전체 조회합니다.")
-    public ResponseEntity<List<FestivalResponseDto>> selectFestivals() {
-        List<FestivalResponseDto> results = festivalService.selectFestivals();
+    public ResponseEntity<List<FestivalResponseDto>> selectFestivals(
+        @Parameter(description = "festival 페이징 처리에 필요한 기본 설정")@PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable
+    ) {
+        List<FestivalResponseDto> results = festivalService.selectFestivals(pageable);
         return ResponseEntity.ok().body(results);
     }
 

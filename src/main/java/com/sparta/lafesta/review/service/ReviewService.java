@@ -2,7 +2,9 @@ package com.sparta.lafesta.review.service;
 
 import com.sparta.lafesta.review.dto.ReviewRequestDto;
 import com.sparta.lafesta.review.dto.ReviewResponseDto;
+import com.sparta.lafesta.review.entity.Review;
 import com.sparta.lafesta.user.entity.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -26,7 +28,7 @@ public interface ReviewService {
      * @param user 권한 확인
      * @return 전체 리뷰 조회 결과
      */
-    List<ReviewResponseDto> selectReviews(Long festivalId, User user);
+    List<ReviewResponseDto> selectReviews(Long festivalId, User user, Pageable pageable);
 
     /**
      * 리뷰 상세 조회
@@ -69,4 +71,11 @@ public interface ReviewService {
      * @return 좋아요 취소 결과
      */
     ReviewResponseDto deleteReviewLike(Long reviewId, User user);
+
+    /**
+     * 리뷰 가져오기
+     * @param reviewId 가져올 리뷰의 id
+     * @return 가져온 리뷰
+     */
+    Review findReview(Long reviewId);
 }

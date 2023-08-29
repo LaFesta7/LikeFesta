@@ -18,6 +18,7 @@ import com.sparta.lafesta.notification.entity.FestivalReminderType;
 import com.sparta.lafesta.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -30,7 +31,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -84,9 +84,9 @@ public class FestivalServiceImpl implements FestivalService {
     // 페스티벌 전체 조회
     @Override
     @Transactional(readOnly = true)
-    public List<FestivalResponseDto> selectFestivals() {
-        return festivalRepository.findAllByOrderByCreatedAtDesc().stream()
-                .map(FestivalResponseDto::new).collect(Collectors.toList());
+    public List<FestivalResponseDto> selectFestivals(Pageable pageable) {
+        return festivalRepository.findAllBy(pageable).stream()
+                .map(FestivalResponseDto::new).toList();
     }
 
 
@@ -250,7 +250,7 @@ public class FestivalServiceImpl implements FestivalService {
                     } else {
                         festivalStream = Stream.empty();
                     }
-                    return festivalStream.collect(Collectors.toList());
+                    return festivalStream.toList();
                 })
                 .flatMap(List::stream)
                 .toList();
@@ -259,7 +259,7 @@ public class FestivalServiceImpl implements FestivalService {
                 .map(festival -> new ReminderDto(festival, type)).toList();
     }
 
-    // 페스티벌 id로 페스티벌 찾기
+    // id로 페스티벌 가져오기
     public Festival findFestival(Long festivalId) {
         return festivalRepository.findById(festivalId).orElseThrow(() ->
                 new IllegalArgumentException("선택한 페스티벌은 존재하지 않습니다.")
