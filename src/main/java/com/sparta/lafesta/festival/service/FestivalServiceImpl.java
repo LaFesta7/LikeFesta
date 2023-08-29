@@ -17,6 +17,7 @@ import com.sparta.lafesta.notification.entity.FestivalReminderType;
 import com.sparta.lafesta.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -77,8 +78,8 @@ public class FestivalServiceImpl implements FestivalService {
     // 페스티벌 전체 조회
     @Override
     @Transactional(readOnly = true)
-    public List<FestivalResponseDto> selectFestivals() {
-        return festivalRepository.findAllByOrderByCreatedAtDesc().stream()
+    public List<FestivalResponseDto> selectFestivals(Pageable pageable) {
+        return festivalRepository.findAllBy(pageable).stream()
                 .map(FestivalResponseDto::new).collect(Collectors.toList());
     }
 

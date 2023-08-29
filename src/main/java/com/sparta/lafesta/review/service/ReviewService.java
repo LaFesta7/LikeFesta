@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface ReviewService {
     /**
@@ -26,7 +27,7 @@ public interface ReviewService {
      * @param user 권한 확인
      * @return 전체 리뷰 조회 결과
      */
-    List<ReviewResponseDto> selectReviews(Long festivalId, User user);
+    List<ReviewResponseDto> selectReviews(Long festivalId, User user, Pageable pageable);
 
     /**
      * 리뷰 상세 조회
