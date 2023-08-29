@@ -1,14 +1,12 @@
 package com.sparta.lafesta.festival.dto;
 
 import com.sparta.lafesta.common.s3.dto.FileOnS3Dto;
-import com.sparta.lafesta.common.s3.entity.FestivalFileOnS3;
 import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.review.dto.ReviewResponseDto;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class FestivalResponseDto {
@@ -36,7 +34,7 @@ public class FestivalResponseDto {
         this.reservationPlace = festival.getReservationPlace();
         this.officialLink = festival.getOfficialLink();
         this.reviews = festival.getReviews().stream().
-                map(ReviewResponseDto::new).collect(Collectors.toList());
+                map(ReviewResponseDto::new).toList();
         this.files = festival.getFestivalFileOnS3s().stream().
                 map(FileOnS3Dto::new).toList();
         this.likeCnt = festival.getFestivalLikes().size();

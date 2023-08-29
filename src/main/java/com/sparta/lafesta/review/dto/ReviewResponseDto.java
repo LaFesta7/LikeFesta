@@ -6,7 +6,6 @@ import com.sparta.lafesta.review.entity.Review;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class ReviewResponseDto {
@@ -26,7 +25,7 @@ public class ReviewResponseDto {
         this.title = review.getTitle();
         this.content = review.getContent();
         this.comments = review.getComments().stream().
-                map(CommentResponseDto::new).collect(Collectors.toList());
+                map(CommentResponseDto::new).toList();
         this.files = review.getReviewFileOnS3s().stream().
                 map(FileOnS3Dto::new).toList();
         this.likeCnt = review.getReviewLikes().size();

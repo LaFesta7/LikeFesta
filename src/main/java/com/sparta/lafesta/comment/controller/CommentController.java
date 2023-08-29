@@ -2,7 +2,7 @@ package com.sparta.lafesta.comment.controller;
 
 import com.sparta.lafesta.comment.dto.CommentRequestDto;
 import com.sparta.lafesta.comment.dto.CommentResponseDto;
-import com.sparta.lafesta.comment.service.CommentServiceImpl;
+import com.sparta.lafesta.comment.service.CommentService;
 import com.sparta.lafesta.common.dto.ApiResponseDto;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "페스티벌 리뷰 댓글 관련 API", description = "페스티벌 리뷰 댓글 관련 API 입니다.")
 public class CommentController {
-    private final CommentServiceImpl commentService;
+    private final CommentService commentService;
 
     @PostMapping("/festivals/{festivalId}/reviews/{reviewId}/comments")
     @Operation(summary = "페스티벌 리뷰 댓글 작성", description = "@PathVariable을 통해 reviewId를 받아와, 해당 위치에 페스티벌 리뷰에 댓글을 작성합니다. Dto를 통해 정보를 받아와 댓글을 생성할 때 해당 정보를 저장합니다.")

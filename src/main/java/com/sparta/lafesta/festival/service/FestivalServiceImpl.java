@@ -30,7 +30,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -80,7 +79,7 @@ public class FestivalServiceImpl implements FestivalService {
     @Transactional(readOnly = true)
     public List<FestivalResponseDto> selectFestivals(Pageable pageable) {
         return festivalRepository.findAllBy(pageable).stream()
-                .map(FestivalResponseDto::new).collect(Collectors.toList());
+                .map(FestivalResponseDto::new).toList();
     }
 
 
@@ -244,7 +243,7 @@ public class FestivalServiceImpl implements FestivalService {
                     } else {
                         festivalStream = Stream.empty();
                     }
-                    return festivalStream.collect(Collectors.toList());
+                    return festivalStream.toList();
                 })
                 .flatMap(List::stream)
                 .toList();
@@ -253,7 +252,7 @@ public class FestivalServiceImpl implements FestivalService {
                 .map(festival -> new ReminderDto(festival, type)).toList();
     }
 
-    // 페스티벌 id로 페스티벌 찾기
+    // id로 페스티벌 가져오기
     public Festival findFestival(Long festivalId) {
         return festivalRepository.findById(festivalId).orElseThrow(() ->
                 new IllegalArgumentException("선택한 페스티벌은 존재하지 않습니다.")

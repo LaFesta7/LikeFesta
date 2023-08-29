@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class ReminderDto {
@@ -40,7 +39,7 @@ public class ReminderDto {
         this.festivalFollowUsersEmail = festival.getFestivalFollowers().stream()
                 .map(FestivalFollow::getFollowingFestivalUser)
                 .map(User::getEmail)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     // 타입별로 메일 제목 가져오기
