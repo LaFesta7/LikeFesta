@@ -39,7 +39,7 @@ public class ReminderDto {
         }
         this.festivalFollowUsers = festival.getFestivalFollowers().stream()
                 .map(FestivalFollow::getFollowingFestivalUser)
-                .collect(Collectors.toList());
+                .toList();
         this.festivalFollowUsersEmail = festivalFollowUsers.stream().map(User::getEmail).toList();
     }
 

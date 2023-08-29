@@ -2,9 +2,8 @@ package com.sparta.lafesta.notification.service;
 
 import com.sparta.lafesta.common.exception.UnauthorizedException;
 import com.sparta.lafesta.email.service.MailService;
-import com.sparta.lafesta.festival.service.FestivalServiceImpl;
-import com.sparta.lafesta.notification.dto.NotificationResponseDto;
 import com.sparta.lafesta.festival.service.FestivalService;
+import com.sparta.lafesta.notification.dto.NotificationResponseDto;
 import com.sparta.lafesta.notification.dto.ReminderDto;
 import com.sparta.lafesta.notification.entity.Notification;
 import com.sparta.lafesta.notification.event.ReminderSendEmailEventPublisher;
