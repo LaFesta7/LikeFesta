@@ -4,10 +4,12 @@ import com.sparta.lafesta.admin.service.AdminService;
 import com.sparta.lafesta.badge.dto.BadgeRequestDto;
 import com.sparta.lafesta.badge.dto.BadgeResponseDto;
 import com.sparta.lafesta.badge.entity.Badge;
+import com.sparta.lafesta.badge.entity.BadgeConditionEnum;
 import com.sparta.lafesta.badge.entity.UserBadge;
 import com.sparta.lafesta.badge.repository.BadgeRepository;
 import com.sparta.lafesta.badge.repository.UserBadgeRepository;
 import com.sparta.lafesta.common.exception.NotFoundException;
+import com.sparta.lafesta.review.repostiroy.ReviewRepository;
 import com.sparta.lafesta.user.entity.User;
 import com.sparta.lafesta.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import java.util.List;
 public class BadgeServiceImpl implements BadgeService {
     private final BadgeRepository badgeRepository;
     private final UserBadgeRepository userBadgeRepository;
+    private final ReviewRepository reviewRepository;
     private final UserService userService;
     private final AdminService adminService;
 
@@ -70,14 +73,31 @@ public class BadgeServiceImpl implements BadgeService {
         badgeRepository.delete(badge);
     }
 
-    // 유저에게 뱃지 추가
+    // 뱃지 추가 조건 확인
     @Override
     @Transactional
-    public void createUserBadge(Long userId, Long badgeId, User user) {
-        User addUser = userService.findUser(userId);
-        Badge badge = findBadge(badgeId);
-        UserBadge userBadge = new UserBadge(addUser, badge);
-        userBadgeRepository.save(userBadge);
+    public void checkBadgeCondition(User user) {
+        List<Badge> badges = badgeRepository.findAll();
+        for (Badge badge : badges) {
+            if(badge.getConditionEnum() == BadgeConditionEnum.FESTIVAL) {
+                Long festivalCount = reviewRepository.countByUser(user);
+                if (badge.getConditionStandard() <= festivalCount) {
+                    createUserBadge(user, badge);
+                }
+            }
+            // 리뷰 참여 - 페스티벌 참여 구분 합의 필요
+            // 태그 완료 후 추가 구현 필요
+        }
+    }
+
+    // 유저 뱃지 추가
+    @Override
+    @Transactional
+    public void createUserBadge(User user, Badge badge) {
+        if (userBadgeRepository.findByUserAndBadge(user, badge).isEmpty()) {
+            UserBadge userBadge = new UserBadge(user, badge);
+            userBadgeRepository.save(userBadge);
+        }
     }
 
     // 유저 뱃지 보유 목록 조회

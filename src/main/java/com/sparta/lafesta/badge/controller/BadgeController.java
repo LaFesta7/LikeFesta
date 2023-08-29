@@ -64,17 +64,6 @@ public class BadgeController {
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "뱃지를 삭제했습니다."));
     }
 
-    @PostMapping("/users/{userId}/badges/{badgeId}")
-    @Operation(summary = "유저 뱃지 추가", description = "userId, badgeId를 받아 해당 유저에게 해당 뱃지를 추가합니다.")
-    public ResponseEntity<ApiResponseDto> createUserBadge (
-            @Parameter(name = "userId", description = "추가할 user의 id", in = ParameterIn.PATH) @PathVariable Long userId,
-            @Parameter(name = "badgeId", description = "추가할 badge의 id", in = ParameterIn.PATH) @PathVariable Long badgeId,
-            @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
-        badgeService.createUserBadge(userId, badgeId, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "유저에게 뱃지를 추가했습니다."));
-    }
-
     @GetMapping("/users/{userId}/badges")
     @Operation(summary = "유저 뱃지 보유 목록 조회", description = "userId를 받아 해당 유저가 보유한 모든 뱃지를 조회합니다.")
     public ResponseEntity<List<BadgeResponseDto>> selectUserBadges (

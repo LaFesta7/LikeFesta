@@ -2,6 +2,7 @@ package com.sparta.lafesta.badge.service;
 
 import com.sparta.lafesta.badge.dto.BadgeRequestDto;
 import com.sparta.lafesta.badge.dto.BadgeResponseDto;
+import com.sparta.lafesta.badge.entity.Badge;
 import com.sparta.lafesta.user.entity.User;
 
 import java.util.List;
@@ -40,13 +41,17 @@ public interface BadgeService {
     void deleteBadge(Long badgeId, User user);
 
     /**
-     * 유저 뱃지 추가
-     * @param userId 추가할 유저 id
-     * @param badgeId 수정할 뱃지 id
-     * @param user       권한 확인
-     * @return 뱃지 추가 결과
+     * 유저 뱃지 조건 확인
+     * @param user 조건을 확인할 유저
      */
-    void createUserBadge(Long userId, Long badgeId, User user);
+    void checkBadgeCondition(User user);
+
+    /**
+     * 유저 뱃지 추가
+     * @param user 추가할 유저
+     * @param badge 추가할 뱃지
+     */
+    void createUserBadge(User user, Badge badge);
 
     /**
      * 유저 뱃지 보유 목록 조회

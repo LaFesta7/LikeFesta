@@ -1,5 +1,6 @@
 package com.sparta.lafesta.review.service;
 
+import com.sparta.lafesta.badge.service.BadgeService;
 import com.sparta.lafesta.common.exception.UnauthorizedException;
 import com.sparta.lafesta.common.s3.S3UploadService;
 import com.sparta.lafesta.common.s3.entity.FileOnS3;
@@ -41,6 +42,9 @@ public class ReviewServiceImpl implements ReviewService {
     //Like
     private final ReviewLikeRepository reviewLikeRepository;
 
+    // 뱃지
+    private final BadgeService badgeService;
+
     @Autowired
     private TransactionTemplate transactionTemplate;
 
@@ -55,6 +59,10 @@ public class ReviewServiceImpl implements ReviewService {
 
         Festival festival = festivalService.findFestival(festivalId);
 
+        // 한 페스티벌에 하나의 리뷰만 작성 가능
+        // -> 해당 페스티벌에 이미 작성한 리뷰가 있는지 확인
+        checkIfUserHasReviewedFestival(user, festival);
+
         //Review DB에 저장
         Review review = new Review(festival, requestDto, user);
         reviewRepository.save(review);
@@ -63,6 +71,9 @@ public class ReviewServiceImpl implements ReviewService {
         if (files != null) {
             uploadFiles(files, review);
         }
+
+        // 뱃지 조건 확인
+        badgeService.checkBadgeCondition(user);
 
         return new ReviewResponseDto(review);
     }
@@ -170,6 +181,14 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 위에서 커밋이 수행되었으므로 ReviewResponseDto에서 새로운 likeCnt를 가져올 수 있음
         return response;
+    }
+
+    // 해당 페스티벌에 이미 작성한 리뷰 존재하는지 확인
+    public void checkIfUserHasReviewedFestival(User user, Festival festival) {
+        boolean hasReviewed = reviewRepository.existsByUserAndFestival(user, festival);
+        if (hasReviewed) {
+            throw new IllegalArgumentException("해당 페스티벌에 대한 리뷰를 이미 작성하였습니다.");
+        }
     }
 
     // 리뷰 id로 리뷰 찾기
