@@ -3,12 +3,14 @@ package com.sparta.lafesta.badge.service;
 import com.sparta.lafesta.admin.service.AdminService;
 import com.sparta.lafesta.badge.dto.BadgeRequestDto;
 import com.sparta.lafesta.badge.dto.BadgeResponseDto;
+import com.sparta.lafesta.badge.dto.UserBadgeResponseDto;
 import com.sparta.lafesta.badge.entity.Badge;
 import com.sparta.lafesta.badge.entity.BadgeConditionEnum;
 import com.sparta.lafesta.badge.entity.UserBadge;
 import com.sparta.lafesta.badge.repository.BadgeRepository;
 import com.sparta.lafesta.badge.repository.UserBadgeRepository;
 import com.sparta.lafesta.common.exception.NotFoundException;
+import com.sparta.lafesta.common.exception.UnauthorizedException;
 import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.festival.repository.FestivalRepository;
 import com.sparta.lafesta.review.entity.Review;
@@ -21,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -124,15 +125,33 @@ public class BadgeServiceImpl implements BadgeService {
     // 유저 뱃지 보유 목록 조회
     @Override
     @Transactional(readOnly = true)
-    public List<BadgeResponseDto> selectUserBadges(Long userId, User user) {
+    public List<UserBadgeResponseDto> selectUserBadges(Long userId, User user) {
         User selectUser = userService.findUser(userId);
-        List<UserBadge> userBadges = userBadgeRepository.findAllByUser(selectUser);
-        List<BadgeResponseDto> badgeResponseDtos = new ArrayList<>();
-        for (UserBadge userBadge : userBadges) {
-            Badge badge = findBadgeByUserBadge(userBadge);
-            badgeResponseDtos.add(new BadgeResponseDto(badge));
+        List<UserBadgeResponseDto> userBadges = userBadgeRepository.findAllByUser(selectUser)
+                .stream().map(UserBadgeResponseDto::new).toList();
+        return userBadges;
+    }
+
+    // 유저 대표 뱃지 설정/해제
+    @Override
+    @Transactional
+    public UserBadgeResponseDto modifyUserBadgeRepresentative(Long userId, Long badgeId, User user) {
+        // 해당 유저가 맞는지 권한 확인
+        if (user.getId() != userId) {
+            throw new UnauthorizedException("해당 유저의 대표 뱃지를 설정/해제할 권한이 없습니다.");
         }
-        return badgeResponseDtos;
+
+        Badge badge = findBadge(badgeId);
+        UserBadge userBadge = findUserAndBadge(user, badge);
+
+        // 대표 뱃지는 3개가 넘지 않도록 설정
+        if (!userBadge.getRepresentative() && userBadgeRepository.countByUserAndRepresentative(user, true) >= 3) {
+            throw new IllegalArgumentException("대표 뱃지 설정은 3개까지 가능합니다.");
+        }
+
+        userBadge.modifyRepresentative();
+
+        return new UserBadgeResponseDto(userBadge);
     }
 
     // id로 뱃지 찾기
@@ -142,10 +161,10 @@ public class BadgeServiceImpl implements BadgeService {
         );
     }
 
-    // 유저뱃지로 뱃지 찾기
-    private Badge findBadgeByUserBadge(UserBadge userBadge) {
-        return badgeRepository.findByUserBadges(userBadge).orElseThrow(() ->
-                new NotFoundException("선택한 뱃지는 존재하지 않습니다.")
+    // 유저와 뱃지로 유저뱃지 찾기
+    private UserBadge findUserAndBadge(User user, Badge badge) {
+        return userBadgeRepository.findByUserAndBadge(user, badge).orElseThrow(() ->
+                new NotFoundException("선택한 뱃지는 보유하고 있지 않습니다.")
         );
     }
 }

@@ -17,6 +17,9 @@ public class UserBadge extends Timestamped {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "representative")
+    private Boolean representative;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -28,5 +31,14 @@ public class UserBadge extends Timestamped {
     public UserBadge(User user, Badge badge){
         this.user = user;
         this.badge = badge;
+        this.representative = false;
+    }
+
+    public void modifyRepresentative() {
+        this.representative = !representative;
+    }
+
+    public boolean isRepresentative() {
+        return representative;
     }
 }

@@ -2,6 +2,7 @@ package com.sparta.lafesta.badge.controller;
 
 import com.sparta.lafesta.badge.dto.BadgeRequestDto;
 import com.sparta.lafesta.badge.dto.BadgeResponseDto;
+import com.sparta.lafesta.badge.dto.UserBadgeResponseDto;
 import com.sparta.lafesta.badge.service.BadgeService;
 import com.sparta.lafesta.common.dto.ApiResponseDto;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
@@ -66,11 +67,22 @@ public class BadgeController {
 
     @GetMapping("/users/{userId}/badges")
     @Operation(summary = "유저 뱃지 보유 목록 조회", description = "userId를 받아 해당 유저가 보유한 모든 뱃지를 조회합니다.")
-    public ResponseEntity<List<BadgeResponseDto>> selectUserBadges (
+    public ResponseEntity<List<UserBadgeResponseDto>> selectUserBadges (
             @Parameter(name = "userId", description = "조회할 user의 id", in = ParameterIn.PATH) @PathVariable Long userId,
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        List<BadgeResponseDto> results = badgeService.selectUserBadges(userId, userDetails.getUser());
+        List<UserBadgeResponseDto> results = badgeService.selectUserBadges(userId, userDetails.getUser());
         return ResponseEntity.ok().body(results);
+    }
+
+    @PatchMapping("/users/{userId}/badges/{badgeId}")
+    @Operation(summary = "유저 대표 뱃지 설정/해제", description = "userId, badgeId를 받아 해당 유저가 보유한 뱃지 중 다른 사람에게 노출할 대표 뱃지를 설정/해제합니다.")
+    public ResponseEntity<UserBadgeResponseDto> modifyUserBadgeRepresentative (
+            @Parameter(name = "userId", description = "설정할 user의 id", in = ParameterIn.PATH) @PathVariable Long userId,
+            @Parameter(name = "badgeId", description = "설정할 badge의 id", in = ParameterIn.PATH) @PathVariable Long badgeId,
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        UserBadgeResponseDto result = badgeService.modifyUserBadgeRepresentative(userId, badgeId, userDetails.getUser());
+        return ResponseEntity.ok().body(result);
     }
 }

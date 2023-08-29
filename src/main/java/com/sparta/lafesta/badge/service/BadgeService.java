@@ -2,6 +2,7 @@ package com.sparta.lafesta.badge.service;
 
 import com.sparta.lafesta.badge.dto.BadgeRequestDto;
 import com.sparta.lafesta.badge.dto.BadgeResponseDto;
+import com.sparta.lafesta.badge.dto.UserBadgeResponseDto;
 import com.sparta.lafesta.badge.entity.Badge;
 import com.sparta.lafesta.user.entity.User;
 
@@ -59,5 +60,14 @@ public interface BadgeService {
      * @param user       권한 확인
      * @return 뱃지 보유 목록 조회 결과
      */
-    List<BadgeResponseDto> selectUserBadges(Long userId, User user);
+    List<UserBadgeResponseDto> selectUserBadges(Long userId, User user);
+
+    /**
+     * 유저 대표 뱃지 설정/해제
+     * @param userId 설정할 유저 id
+     * @param badgeId 설정할 뱃지 id
+     * @param user       권한 확인
+     * @return 대표 뱃지 목록
+     */
+    UserBadgeResponseDto modifyUserBadgeRepresentative(Long userId, Long badgeId, User user);
 }
