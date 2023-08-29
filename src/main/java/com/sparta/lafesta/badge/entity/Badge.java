@@ -25,18 +25,18 @@ public class Badge {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "cndtn", nullable = false)
+    @Column(name = "condition_enum", nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private BadgeConditionEnum cndtn;
+    private BadgeConditionEnum conditionEnum;
 
-    @Column(name = "first_day", nullable = false)
-    private LocalDate firstDay;
+    @Column(name = "condition_first_day", nullable = false)
+    private LocalDate conditionFirstDay;
 
-    @Column(name = "last_day", nullable = false)
-    private LocalDate lastDay;
+    @Column(name = "condition_last_day", nullable = false)
+    private LocalDate conditionLastDay;
 
-    @Column(name = "standard", nullable = false)
-    private Long standard;
+    @Column(name = "condition_standard", nullable = false)
+    private Long conditionStandard;
 
     @OneToMany(mappedBy = "badge", orphanRemoval = true)
     private List<UserBadge> userBadges = new ArrayList<>();
@@ -44,18 +44,18 @@ public class Badge {
     public Badge(BadgeRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.description = requestDto.getDescription();
-        this.cndtn = requestDto.getCndtn();
-        this.firstDay = requestDto.getFirstDay();
-        this.lastDay = requestDto.getLastDay();
-        this.standard = requestDto.getStandard();
+        this.conditionEnum = requestDto.getConditionEnum();
+        this.conditionFirstDay = requestDto.getConditionFirstDay();
+        this.conditionLastDay = requestDto.getConditionLastDay();
+        this.conditionStandard = requestDto.getConditionStandard();
     }
 
     public void modify(BadgeRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.description = requestDto.getDescription();
-        this.cndtn = requestDto.getCndtn();
-        this.firstDay = requestDto.getFirstDay();
-        this.lastDay = requestDto.getLastDay();
-        this.standard = requestDto.getStandard();
+        this.conditionEnum = requestDto.getConditionEnum();
+        this.conditionFirstDay = requestDto.getConditionFirstDay();
+        this.conditionLastDay = requestDto.getConditionLastDay();
+        this.conditionStandard = requestDto.getConditionStandard();
     }
 }

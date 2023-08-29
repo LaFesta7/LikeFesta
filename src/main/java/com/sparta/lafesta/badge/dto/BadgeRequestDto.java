@@ -10,13 +10,13 @@ import java.time.LocalDate;
 public class BadgeRequestDto {
     private String title;
     private String description;
-    private BadgeConditionEnum cndtn;
+    private BadgeConditionEnum conditionEnum;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate firstDay;
+    private LocalDate conditionFirstDay;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate lastDay;
+    private LocalDate conditionLastDay;
 
-    private Long standard;
+    private Long conditionStandard;
 }

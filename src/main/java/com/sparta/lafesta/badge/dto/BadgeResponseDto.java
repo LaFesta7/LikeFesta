@@ -11,18 +11,18 @@ public class BadgeResponseDto {
     private Long id;
     private String title;
     private String description;
-    private BadgeConditionEnum cndtn;
-    private LocalDate firstDay;
-    private LocalDate lastDay;
-    private Long standard;
+    private BadgeConditionEnum conditionEnum;
+    private LocalDate conditionFirstDay;
+    private LocalDate conditionLastDay;
+    private Long conditionStandard;
 
     public BadgeResponseDto(Badge badge) {
         this.id = badge.getId();
         this.title = badge.getTitle();
         this.description = badge.getDescription();
-        this.cndtn = badge.getCndtn();
-        this.firstDay = badge.getFirstDay();
-        this.lastDay = badge.getLastDay();
-        this.standard = badge.getStandard();
+        this.conditionEnum = badge.getConditionEnum();
+        this.conditionFirstDay = badge.getConditionFirstDay();
+        this.conditionLastDay = badge.getConditionLastDay();
+        this.conditionStandard = badge.getConditionStandard();
     }
 }
