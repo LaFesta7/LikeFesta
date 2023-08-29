@@ -12,13 +12,69 @@
 <p>이곳은 라페스타의 메인 페이지입니다.</p>
 
 <!-- 로그인 페이지로 이동하는 버튼 -->
-<a href="http://localhost:8080/api/users/login-page">
-    <button>로그인하러 가기</button>
-</a>
+<button id="loginButton" onclick="goLogin()">로그인</button>
 
 <!-- 로그아웃 버튼 -->
-<form method="get" action="http://localhost:8080/api/users/logout">
-    <button type="submit">로그아웃</button>
-</form>
+<button id="logoutButton" onclick="onLogout()">로그아웃</button>
 </body>
+
+<script>
+    const loginButton = document.getElementById('loginButton');
+    const logoutButton = document.getElementById('logoutButton');
+
+    // 쿠키에서 Authorization 값을 가져오는 함수
+    function getAuthorizationCookie() {
+        const cookies = document.cookie.split(';');
+        for (const cookie of cookies) {
+            const [name, value] = cookie.trim().split('=');
+            if (name === 'Authorization') {
+                return value;
+            }
+        }
+        return null;
+    }
+
+    // 로그인 상태에 따라 버튼을 보이거나 숨기는 함수
+    function updateLogButtonVisibility() {
+        const authorizationValue = getAuthorizationCookie();
+        if (authorizationValue) {
+            logoutButton.style.display = 'block'; // 로그인 상태면 로그아웃 버튼을 보이게 설정
+            loginButton.style.display = 'none';   // 로그인 상태면 로그인 버튼을 숨김
+        } else {
+            logoutButton.style.display = 'none';  // 로그아웃 상태면 로그아웃 버튼을 숨김
+            loginButton.style.display = 'block';  // 로그아웃 상태면 로그인 버튼을 보이게 설정
+        }
+    }
+
+    // 페이지가 로드되었을 때 버튼 상태 업데이트
+    window.addEventListener('load', updateLogButtonVisibility);
+
+    // 로그인
+    function goLogin() {
+        // 로그인 페이지로 이동
+        window.location.href = '/api/users/login-page';
+    }
+
+    // 로그아웃
+    async function onLogout() {
+        const response = await fetch('/api/users/logout', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const responseData = await response.json(); // await를 추가하여 데이터를 기다림
+            console.log('로그아웃');
+            alert(responseData.statusMessage);
+
+            // 로그아웃 성공 시 버튼 상태 업데이트
+            updateLogButtonVisibility();
+
+            // 로그아웃 성공 시 메인페이지로 이동
+            window.location.href = '/';
+        }
+    }
+</script>
 </html>

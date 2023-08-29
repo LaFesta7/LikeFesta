@@ -2,20 +2,24 @@ package com.sparta.lafesta.festival.service;
 
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
-import com.sparta.lafesta.notification.dto.FestivalReminderResponseDto;
+import com.sparta.lafesta.notification.dto.ReminderDto;
 import com.sparta.lafesta.user.entity.User;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 public interface FestivalService {
     /**
      * 페스티벌 생성
+     *
      * @param requestDto 생성할 페스티벌의 정보
-     * @param user 권한 확인
+     * @param files
+     * @param user       권한 확인
      * @return 페스티벌 추가 결과
      */
-    FestivalResponseDto createFestival(FestivalRequestDto requestDto, User user);
+    FestivalResponseDto createFestival(FestivalRequestDto requestDto, List<MultipartFile> files, User user) throws IOException;
 
     /**
      * 전체 페스티벌 조회
@@ -33,12 +37,14 @@ public interface FestivalService {
 
     /**
      * 페스티벌 수정
+     *
      * @param festivalId 수정할 페스티벌의 id
      * @param requestDto 수정할 정보
-     * @param user 권한 확인
+     * @param files
+     * @param user       권한 확인
      * @return 페스티벌 수정 결과
      */
-    FestivalResponseDto modifyFestival(Long festivalId, FestivalRequestDto requestDto, User user);
+    FestivalResponseDto modifyFestival(Long festivalId, FestivalRequestDto requestDto, List<MultipartFile> files, User user) throws IOException;
 
     /**
      * 페스티벌 삭제
@@ -64,8 +70,20 @@ public interface FestivalService {
     FestivalResponseDto deleteFestivalLike(Long festivalId, User user);
 
     /**
-     * 알림을 보낼 페스티벌 가져오기
-     * @return 알림을 보낼 페스티벌 가져오기 결과
+     * 페스티벌 오픈 알림을 보낼 페스티벌 가져오기
+     * @return 페스티벌 오픈 알림을 보낼 페스티벌 가져오기 결과
      */
-    List<FestivalReminderResponseDto> getFestivalReminders();
+    List<ReminderDto> getFestivalOpenReminders();
+
+    /**
+     * 페스티벌 예매 오픈 알림을 보낼 페스티벌 가져오기
+     * @return 페스티벌 예매 오픈 알림을 보낼 페스티벌 가져오기 결과
+     */
+    List<ReminderDto> getReservationOpenReminders();
+
+    /**
+     * 페스티벌 리뷰 독려 알림을 보낼 페스티벌 가져오기
+     * @return 페스티벌 리뷰 독려 알림을 보낼 페스티벌 가져오기 결과
+     */
+    List<ReminderDto> getReviewEncouragementReminders();
 }

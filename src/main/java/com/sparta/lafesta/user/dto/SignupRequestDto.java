@@ -25,8 +25,6 @@ public class SignupRequestDto {
     @Email
     private String email;
 
-    private int emailAuth = 0; // 이메일 인증 여부 확인, 1일 경우 회원가입 허용
-
     @NotBlank(message = "Nickname is required.")
     private String nickname;
 
