@@ -11,7 +11,7 @@ public class BadgeResponseDto {
     private Long id;
     private String title;
     private String description;
-    private BadgeConditionEnum condition;
+    private BadgeConditionEnum cndtn;
     private LocalDate firstDay;
     private LocalDate lastDay;
     private Long standard;
@@ -20,7 +20,7 @@ public class BadgeResponseDto {
         this.id = badge.getId();
         this.title = badge.getTitle();
         this.description = badge.getDescription();
-        this.condition = badge.getCondition();
+        this.cndtn = badge.getCndtn();
         this.firstDay = badge.getFirstDay();
         this.lastDay = badge.getLastDay();
         this.standard = badge.getStandard();

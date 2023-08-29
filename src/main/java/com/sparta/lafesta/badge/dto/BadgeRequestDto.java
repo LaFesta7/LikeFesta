@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public class BadgeRequestDto {
     private String title;
     private String description;
-    private BadgeConditionEnum condition;
+    private BadgeConditionEnum cndtn;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate firstDay;
