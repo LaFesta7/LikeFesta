@@ -28,5 +28,11 @@ public class ViewController {
         return "login";
     }
 
+    @GetMapping("/api/users/festivals-map")
+    public String festivalsMap() {
+        return "kakaomap";
+    }
+
+
 
 }
