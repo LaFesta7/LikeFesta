@@ -77,6 +77,7 @@ public class BadgeServiceImpl implements BadgeService {
         User addUser = userService.findUser(userId);
         Badge badge = findBadge(badgeId);
         UserBadge userBadge = new UserBadge(addUser, badge);
+        userBadgeRepository.save(userBadge);
     }
 
     // 유저 뱃지 보유 목록 조회
