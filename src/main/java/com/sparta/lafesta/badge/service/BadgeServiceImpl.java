@@ -49,6 +49,7 @@ public class BadgeServiceImpl implements BadgeService {
 
     // 뱃지 수정
     @Override
+    @Transactional
     public BadgeResponseDto modifyBadge(Long badgeId, BadgeRequestDto requestDto, User user) {
         // 관리자 권한 확인
         adminService.checkAdminRole(user);
@@ -60,6 +61,7 @@ public class BadgeServiceImpl implements BadgeService {
 
     // 뱃지 삭제
     @Override
+    @Transactional
     public void deleteBadge(Long badgeId, User user) {
         // 관리자 권한 확인
         adminService.checkAdminRole(user);
@@ -70,6 +72,7 @@ public class BadgeServiceImpl implements BadgeService {
 
     // 유저에게 뱃지 추가
     @Override
+    @Transactional
     public void createUserBadge(Long userId, Long badgeId, User user) {
         User addUser = userService.findUser(userId);
         Badge badge = findBadge(badgeId);
@@ -78,6 +81,7 @@ public class BadgeServiceImpl implements BadgeService {
 
     // 유저 뱃지 보유 목록 조회
     @Override
+    @Transactional(readOnly = true)
     public List<BadgeResponseDto> selectUserBadges(Long userId, User user) {
         User selectUser = userService.findUser(userId);
         List<UserBadge> userBadges = userBadgeRepository.findAllByUser(selectUser);
