@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="/css/slides.css">
         <link rel="stylesheet" href="/css/mapStyle.css">
 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
         <script src="/js/slides.js"></script>
         <script src="/js/jquery.min.js"></script>
         <script src="/js/plugins.js"></script>
@@ -90,7 +91,7 @@
     // 지도에 마커를 표시합니다.
     marker.setMap(map);
 
-    var iwContent = '<div style="padding:5px;">워터밤 페스티벌<br><a href="http://localhost:8080/" style="color:blue" target="_blank">페스티벌 보기</a> <a href="https://map.kakao.com/link/to/워터밤 페스티벌,37.51928,127.12737" style="color:blue" target="_blank">길찾기</a></div>',
+    var iwContent = '<div style="padding:5px;">워터밤 페스티벌<br><a href="/api/users/fest" style="color:blue" target="_blank">페스티벌 보기</a> <a href="https://map.kakao.com/link/to/워터밤 페스티벌,37.51928,127.12737" style="color:blue" target="_blank">길찾기</a></div>',
         iwPosition = new kakao.maps.LatLng(33.450701, 126.570667); //인포윈도우 표시 위치입니다 37.51928,127.12737
 
     // 인포윈도우를 생성합니다
@@ -297,5 +298,6 @@
             el.className = 'on';
         }
     }
+
 </script>
 </html>

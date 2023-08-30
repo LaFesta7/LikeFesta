@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -8,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <title>LAFESTA LOGIN</title>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
     <script src="/js/jquery.min.js"></script>
     <script src="/js/slides.js"></script>
     <script src="/js/slides.min.js" type="text/javascript"></script>
@@ -32,11 +31,11 @@
     <h2>LFESTA Login</h2>
     <form>
         <div class="user-box">
-            <input type="text" name="" required="">
+            <input type="text" id="username" name="" required="">
             <label>Username</label>
         </div>
         <div class="user-box">
-            <input type="password" name="" required="">
+            <input type="password" id="password" name="" required="">
             <label>Password</label>
         </div>
         <div id="login-failed" style="display:none" class="alert alert-danger" role="alert">로그인에 실패하였습니다.</div>
@@ -48,7 +47,7 @@
             Login
         </a>
         <br>
-        <a href="/api/users/sign-up" id="login-id-btn" onclick="location.href='/api/users/sign-up'">
+        <a href="/api/users/sign-up" id="login-id-btn">
             <span></span>
             <span></span>
             <span></span>
@@ -68,10 +67,6 @@
 </div>
 
 <script th:inline="javascript">
-    $(document).ready(function () {
-        // 토큰 삭제
-        Cookies.remove('Authorization', {path: '/'});
-    });
 
     const href = location.href;
     const queryString = href.substring(href.indexOf("?") + 1)
@@ -94,19 +89,24 @@
         })
             .done(function (res, status, xhr) {
                 const token = xhr.getResponseHeader('Authorization');
-
-                Cookies.set('Authorization', token, {path: '/'})
-
-                $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-                    jqXHR.setRequestHeader('Authorization', token);
-                });
-
+                Cookies.set('Authorization', token, {path: '/'});
                 window.location.href = host;
             })
             .fail(function (jqXHR, textStatus) {
-                alert("Login Fail");
+                alert("로그인에 실패하였습니다.");
                 window.location.href = host + '/api/users/login-page'
             });
     }
+    $(document).ready(function () {
+        // 토큰을 체크
+        const token = Cookies.get('Authorization');
+
+        if(token) {
+            // 사용자가 이미 로그인했으면, http://localhost:8080/ 로 리디렉션
+            window.location.href = 'http://localhost:8080/';
+        }
+
+    });
+
 </script>
-</html>
+</body>
