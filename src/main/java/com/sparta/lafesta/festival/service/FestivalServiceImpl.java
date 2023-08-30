@@ -15,6 +15,7 @@ import com.sparta.lafesta.like.festivalLike.repository.FestivalLikeRepository;
 import com.sparta.lafesta.notification.dto.ReminderDto;
 import com.sparta.lafesta.notification.entity.FestivalReminderType;
 import com.sparta.lafesta.tag.dto.TagRequestDto;
+import com.sparta.lafesta.tag.entity.FestivalTag;
 import com.sparta.lafesta.tag.entity.Tag;
 import com.sparta.lafesta.tag.service.TagServiceImpl;
 import com.sparta.lafesta.user.entity.User;
@@ -126,6 +127,11 @@ public class FestivalServiceImpl implements FestivalService {
     }
     //페스티벌 정보 변경
     festival.modify(requestDto);
+
+    //이전 태그 정보 삭제
+    deleteFestivalTag(festival);
+    //새로운 태그 생성 및 추가
+    createFestivalTag(festival, requestDto.getTagList());
 
     return new FestivalResponseDto(festival);
   }
@@ -321,13 +327,24 @@ public class FestivalServiceImpl implements FestivalService {
 
 
   //태그 생성 및 추가
-  public void createFestivalTag(Festival festival, List<TagRequestDto> tags) {
+  private void createFestivalTag(Festival festival, List<TagRequestDto> tags) {
     for (TagRequestDto tag : tags) {
       //존재하는 태그인지 확인 -> 없으면 생성 / 존재하는 태그면 가져오기
       Tag checkedTag = tagService.checkTag(tag);
 
       //태그 중복 확인 & 태그 페스티벌 연관관계 생성
       tagService.connectTag(festival, checkedTag);
+    }
+  }
+
+  //예전 페스티벌 태그 정보 삭제
+  private void deleteFestivalTag(Festival festival) {
+    //페스티벌과 태그 연관관계 삭제
+    List<FestivalTag> festivalTags = tagService.findFestivalTagsByFestival(festival);
+    for (FestivalTag festivalTag : festivalTags) {
+      tagService.deleteFestivalTag(festivalTag);
+      //사용되지 않는 태그는 삭제
+      tagService.deleteUnusedTag(festivalTag.getTag());
     }
   }
 }

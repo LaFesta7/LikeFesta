@@ -12,4 +12,6 @@ public interface FestivalTagRepository extends JpaRepository<FestivalTag, Long> 
   Optional<FestivalTag> findByTagAndFestival(Tag tag, Festival festival);
 
   List<FestivalTag> findAllByTag(Tag tag);
+
+  List<FestivalTag> findAllByFestival(Festival festival);
 }

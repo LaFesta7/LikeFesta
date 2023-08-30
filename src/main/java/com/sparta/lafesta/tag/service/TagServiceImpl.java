@@ -117,10 +117,7 @@ public class TagServiceImpl implements TagService {
     festivalTagRepository.delete(festivalTag);
 
     //사용되지 않는 태그는 삭제
-    List<FestivalTag> usedTag = festivalTagRepository.findAllByTag(tag);
-    if (usedTag.isEmpty()) {
-      tagRepository.delete(tag);
-    }
+    deleteUnusedTag(tag);
 
     return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(),
         "'" + tag.getTitle() + "' 태그를 '" + festival.getTitle() + "'에서 제외했습니다."));
@@ -160,15 +157,33 @@ public class TagServiceImpl implements TagService {
   }
 
   //id로 페스티벌 가져오기
-  public Festival findFestival(Long festivalId) {
+  private Festival findFestival(Long festivalId) {
     return festivalRepository.findById(festivalId).orElseThrow(() ->
         new IllegalArgumentException("선택한 페스티벌은 존재하지 않습니다.")
     );
   }
 
   //태그로 페스티벌 찾기
-  public Festival findFestivalByTag(FestivalTag festivalTag) {
+  private Festival findFestivalByTag(FestivalTag festivalTag) {
     return festivalRepository.findByTags(festivalTag)
         .orElseThrow(() -> new IllegalArgumentException("해당 페스티벌이 없습니다."));
+  }
+
+  //페스티벌로 페스티벌 태그 연관관계 찾기
+  public List<FestivalTag> findFestivalTagsByFestival(Festival festival) {
+    return festivalTagRepository.findAllByFestival(festival);
+  }
+
+  //페스티벌 태그 삭제
+  public void deleteFestivalTag(FestivalTag festivalTag) {
+    festivalTagRepository.delete(festivalTag);
+  }
+
+  //사용되지 않는 태그는 삭제
+  public void deleteUnusedTag(Tag tag) {
+    List<FestivalTag> usedTag = festivalTagRepository.findAllByTag(tag);
+    if (usedTag.isEmpty()) {
+      tagRepository.delete(tag);
+    }
   }
 }

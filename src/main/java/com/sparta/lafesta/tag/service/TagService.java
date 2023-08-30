@@ -36,19 +36,11 @@ public interface TagService {
    */
   void deleteTag(Long tagId, User user);
 
-//  /**
-//   * 페스티벌 태그 추가
-//   *
-//   * @param festivalId 태그를 추가할 페스티벌의 정보
-//   * @param tagId      추가될 태그의 정보
-//   * @return 페스티벌 태그 추가 결과
-//   */
-//  ResponseEntity<ApiResponseDto> createFestivalTag(Long festivalId, Long tagId);
-
   /**
    * 페스티벌 태그별 조회
    *
-   * @param tag 조회할 태그의 정보
+   * @param tag  조회할 태그의 정보
+   * @param user 권한 확인을 위한 유저 정보
    * @return 태그별 페스티벌 조회 결과
    */
   List<FestivalResponseDto> selectFestivalTags(String tag, User user);
