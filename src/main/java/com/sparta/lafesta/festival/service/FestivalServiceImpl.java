@@ -14,7 +14,9 @@ import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
 import com.sparta.lafesta.like.festivalLike.repository.FestivalLikeRepository;
 import com.sparta.lafesta.notification.dto.ReminderDto;
 import com.sparta.lafesta.notification.entity.FestivalReminderType;
-import com.sparta.lafesta.tag.entity.FestivalTag;
+import com.sparta.lafesta.tag.dto.TagRequestDto;
+import com.sparta.lafesta.tag.entity.Tag;
+import com.sparta.lafesta.tag.service.TagServiceImpl;
 import com.sparta.lafesta.user.entity.User;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -50,6 +52,9 @@ public class FestivalServiceImpl implements FestivalService {
   @Autowired
   private TransactionTemplate transactionTemplate;
 
+  //Tag
+  private final TagServiceImpl tagService;
+
 
   // 페스티벌 등록
   @Override
@@ -64,12 +69,15 @@ public class FestivalServiceImpl implements FestivalService {
     Festival festival = new Festival(requestDto, user);
 
     //festival DB 저장
-    festivalRepository.save(festival);
+    Festival savedFestival = festivalRepository.save(festival);
 
     // 첨부파일업로드 -> 이후 업로드된 파일의 url주소를 festival객체에 담아줄 예정.
     if (files != null) {
       uploadFiles(files, festival);
     }
+
+    //태그 생성 및 추가
+    createFestivalTag(savedFestival, requestDto.getTagList());
 
     return new FestivalResponseDto(festival);
   }
@@ -311,9 +319,15 @@ public class FestivalServiceImpl implements FestivalService {
     return festivalLikeRepository.findByUserAndFestival(user, festival).orElse(null);
   }
 
-  //태그로 페스티벌 찾기
-  public Festival findFestivalByTag(FestivalTag festivalTag) {
-    return festivalRepository.findByTags(festivalTag)
-        .orElseThrow(() -> new IllegalArgumentException("해당 페스티벌이 없습니다."));
+
+  //태그 생성 및 추가
+  public void createFestivalTag(Festival festival, List<TagRequestDto> tags) {
+    for (TagRequestDto tag : tags) {
+      //존재하는 태그인지 확인 -> 없으면 생성 / 존재하는 태그면 가져오기
+      Tag checkedTag = tagService.checkTag(tag);
+
+      //태그 중복 확인 & 태그 페스티벌 연관관계 생성
+      tagService.connectTag(festival, checkedTag);
+    }
   }
 }

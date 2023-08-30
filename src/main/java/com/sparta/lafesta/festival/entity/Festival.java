@@ -71,6 +71,8 @@ public class Festival extends Timestamped {
     @OneToMany(mappedBy = "festival", orphanRemoval = true) //todo 이후 프론트 전달 방식과 관련해서 개선필요해 보임
     private List<FestivalFileOnS3> festivalFileOnS3s = new ArrayList<>();
 
+  @OneToMany(mappedBy = "festival", cascade = CascadeType.PERSIST, orphanRemoval = true)
+  private List<FestivalTag> tags = new ArrayList<>();
 
     ////생성자 - 약속된 형태로만 생성가능하도록 합니다.
 

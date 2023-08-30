@@ -1,15 +1,17 @@
 package com.sparta.lafesta.tag.service;
 
 import com.sparta.lafesta.common.dto.ApiResponseDto;
+import com.sparta.lafesta.common.exception.UnauthorizedException;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
 import com.sparta.lafesta.festival.entity.Festival;
-import com.sparta.lafesta.festival.service.FestivalServiceImpl;
+import com.sparta.lafesta.festival.repository.FestivalRepository;
 import com.sparta.lafesta.tag.dto.TagRequestDto;
 import com.sparta.lafesta.tag.dto.TagResponseDto;
 import com.sparta.lafesta.tag.entity.FestivalTag;
 import com.sparta.lafesta.tag.entity.Tag;
 import com.sparta.lafesta.tag.repository.FestivalTagRepository;
 import com.sparta.lafesta.tag.repository.TagRepository;
+import com.sparta.lafesta.user.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,28 +27,18 @@ public class TagServiceImpl implements TagService {
 
   private final TagRepository tagRepository;
   private final FestivalTagRepository festivalTagRepository;
-  private final FestivalServiceImpl festivalService;
+  private final FestivalRepository festivalRepository;
 
-  //태그 생성
-  @Override
-  @Transactional
-  public TagResponseDto createTag(TagRequestDto requestDto) {
-    Tag tag = new Tag(requestDto);
-
-    //태그 중복 방지
-    Optional<Tag> checkTag = tagRepository.findByTitle(tag.getTitle());
-    if (checkTag.isPresent()) {
-      throw new IllegalArgumentException("이미 존재하는 태그입니다.");
-    }
-
-    tagRepository.save(tag);
-    return new TagResponseDto(tag);
-  }
 
   //태그 전체 조회
   @Override
   @Transactional(readOnly = true)
-  public List<TagResponseDto> selectTags() {
+  public List<TagResponseDto> selectTags(User user) {
+    //회원 확인
+    if (user == null) {
+      throw new IllegalArgumentException("로그인 해주세요");
+    }
+
     return tagRepository.findAllBy().stream()
         .map(TagResponseDto::new).toList();
   }
@@ -54,7 +46,12 @@ public class TagServiceImpl implements TagService {
   //태그 수정
   @Override
   @Transactional
-  public TagResponseDto modifyTag(Long tagId, TagRequestDto requestDto) {
+  public TagResponseDto modifyTag(Long tagId, TagRequestDto requestDto, User user) {
+    //관리자만 태그 수정 가능
+    if (!user.getRole().getAuthority().equals("ROLE_ADMIN")) {
+      throw new UnauthorizedException("관리자만 태그를 수정할 수 있습니다.");
+    }
+
     Tag tag = findTag(tagId);
 
     tag.modify(requestDto);
@@ -64,38 +61,26 @@ public class TagServiceImpl implements TagService {
   //태그 삭제
   @Override
   @Transactional
-  public void deleteTag(Long tagId) {
+  public void deleteTag(Long tagId, User user) {
+    //관리자만 태그 삭제 가능
+    if (!user.getRole().getAuthority().equals("ROLE_ADMIN")) {
+      throw new UnauthorizedException("관리자만 태그를 삭제할 수 있습니다.");
+    }
+
     Tag tag = findTag(tagId);
 
     tagRepository.delete(tag);
   }
 
-  //페스티벌 태그 추가
-  @Override
-  @Transactional
-  public ResponseEntity<ApiResponseDto> createFestivalTag(Long festivalId, Long tagId) {
-    //태그를 추가할 페스티벌 조회
-    Festival festival = festivalService.findFestival(festivalId);
-
-    //추가할 태그 조회
-    Tag tag = tagRepository.findById(tagId)
-        .orElseThrow(() -> new IllegalArgumentException("해당 태그가 없습니다."));
-
-    //중복 태그 예외 발생
-    if (festivalTagRepository.findByTagAndFestival(tag, festival).isPresent()) {
-      throw new IllegalArgumentException("이미 태그되었습니다.");
-    }
-
-    festivalTagRepository.save(new FestivalTag(tag, festival));
-
-    return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(),
-        "태그 성공. 페스티벌 이름: '" + festival.getTitle() + "', 태그 이름: '" + tag.getTitle() + "'"));
-  }
-
   //페스티벌 태그별 조회
   @Override
   @Transactional(readOnly = true)
-  public List<FestivalResponseDto> selectFestivalTags(String title) {
+  public List<FestivalResponseDto> selectFestivalTags(String title, User user) {
+    //회원 확인
+    if (user == null) {
+      throw new IllegalArgumentException("로그인 해주세요");
+    }
+
     Tag tag = tagRepository.findByTitle(title)
         .orElseThrow(() -> new IllegalArgumentException("해당 태그가 없습니다."));
 
@@ -103,7 +88,7 @@ public class TagServiceImpl implements TagService {
 
     List<FestivalResponseDto> tagedFestivals = new ArrayList<>();
     for (FestivalTag festivalTag : festivalTags) {
-      Festival tagedFestival = festivalService.findFestivalByTag(festivalTag);
+      Festival tagedFestival = findFestivalByTag(festivalTag);
 
       FestivalResponseDto festivalResponseDto = new FestivalResponseDto(tagedFestival);
       tagedFestivals.add(festivalResponseDto);
@@ -111,11 +96,16 @@ public class TagServiceImpl implements TagService {
     return tagedFestivals;
   }
 
-  //페스티벌 태그 삭제
+  //페스티벌 태그 삭제 - 페스티벌과 맞지 않는 태그를 관리자가 임의로 삭제가능
   @Override
   @Transactional
-  public ResponseEntity<ApiResponseDto> deleteFestivalTag(Long festivalId, Long tagId) {
-    Festival festival = festivalService.findFestival(festivalId);
+  public ResponseEntity<ApiResponseDto> deleteFestivalTag(Long festivalId, Long tagId, User user) {
+    //관리자만 삭제 가능
+    if (!user.getRole().getAuthority().equals("ROLE_ADMIN")) {
+      throw new UnauthorizedException("관리자만 태그를 삭제할 수 있습니다.");
+    }
+
+    Festival festival = findFestival(festivalId);
 
     Tag tag = tagRepository.findById(tagId)
         .orElseThrow(() -> new IllegalArgumentException("해당 태그가 없습니다."));
@@ -126,6 +116,8 @@ public class TagServiceImpl implements TagService {
 
     festivalTagRepository.delete(festivalTag);
 
+    //사용되지 않는 태그는 삭제
+
     return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(),
         "'" + tag.getTitle() + "' 태그를 '" + festival.getTitle() + "'에서 제외했습니다."));
   }
@@ -135,5 +127,44 @@ public class TagServiceImpl implements TagService {
   private Tag findTag(Long tagId) {
     return tagRepository.findById(tagId).orElseThrow(() ->
         new IllegalArgumentException("선택한 태그는 존재하지 않습니다."));
+  }
+
+
+  //존재하는 태그인지 확인 -> 없으면 생성 / 존재하는 태그면 가져오기
+  public Tag checkTag(TagRequestDto requestDto) {
+    Optional<Tag> checkTag = tagRepository.findByTitle(requestDto.getTitle());
+    //이미 존재하는 태그인지 확인
+    if (checkTag.isPresent()) {
+      return checkTag
+          .orElseThrow(() -> new IllegalArgumentException("해당 태그가 없습니다."));
+    } else {
+      //태그 생성
+      Tag tag = new Tag(requestDto);
+      return tagRepository.save(tag);
+    }
+  }
+
+  //태그 중복 확인 & 태그 페스티벌 연관관계 생성
+  public void connectTag(Festival festival, Tag tag) {
+    //중복 확인
+    if (festivalTagRepository.findByTagAndFestival(tag, festival).isPresent()) {
+      throw new IllegalArgumentException("중복되는 태그입니다.");
+    }
+    //연관관계 생성
+    festivalTagRepository.save(new FestivalTag(tag, festival));
+    return;
+  }
+
+  //id로 페스티벌 가져오기
+  public Festival findFestival(Long festivalId) {
+    return festivalRepository.findById(festivalId).orElseThrow(() ->
+        new IllegalArgumentException("선택한 페스티벌은 존재하지 않습니다.")
+    );
+  }
+
+  //태그로 페스티벌 찾기
+  public Festival findFestivalByTag(FestivalTag festivalTag) {
+    return festivalRepository.findByTags(festivalTag)
+        .orElseThrow(() -> new IllegalArgumentException("해당 페스티벌이 없습니다."));
   }
 }

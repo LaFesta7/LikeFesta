@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -28,7 +29,7 @@ public class Tag {
   private String title;
 
   @OneToMany(mappedBy = "tag", cascade = CascadeType.PERSIST, orphanRemoval = true)
-  private List<FestivalTag> festivals;
+  private List<FestivalTag> festivals = new ArrayList<>();
 
   public Tag(TagRequestDto requestDto) {
     this.title = requestDto.getTitle();
