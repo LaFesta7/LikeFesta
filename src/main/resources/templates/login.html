@@ -57,7 +57,7 @@
         </a>
 
         <br>
-        <a id="login-kakao-btn" onclick="loginWithKakao()">
+        <a id="login-kakao-btn"  th:attr="onclick='location.href=\'' + ${kakaoUrl} + '\''">
             <span></span>
             <span></span>
             <span></span>
@@ -67,38 +67,7 @@
     </form>
 </div>
 
-<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 <script th:inline="javascript">
-    $(document).ready(function () {
-        // 토큰 삭제
-        Cookies.remove('Authorization', {path: '/'});
-    });
-
-    const kakaoAppKey = [[${kakaoAppKey}]];
-    Kakao.init(kakaoAppKey);
-
-    function loginWithKakao() {
-        Kakao.Auth.login({
-            success: function (authObj) {
-                Kakao.API.request({
-                    url: '/v2/user/me',
-                    success: function (res) {
-                        console.log(res);
-                    },
-                    fail: function (error) {
-                        console.error(error);
-                    }
-                });
-            },
-            fail: function (err) {
-                console.error(err);
-            }
-        });
-    }
-</script>
-</body>
-
-<script>
     $(document).ready(function () {
         // 토큰 삭제
         Cookies.remove('Authorization', {path: '/'});

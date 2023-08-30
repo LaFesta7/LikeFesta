@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ViewController {
     private final KakaoService kakaoService;
 
-    @Value("${kakaoAppKey}")
-    private String kakaoAppKey;
-
     @GetMapping("/")
     public String home() {
         return "index";
@@ -44,7 +41,6 @@ public class ViewController {
     public String login(Model model) {
             String kakaoUrl = kakaoService.getKakaoLogin();
             model.addAttribute("kakaoUrl", kakaoUrl);
-            model.addAttribute("kakaoAppKey", kakaoAppKey);
             return "login";
     }
 }
