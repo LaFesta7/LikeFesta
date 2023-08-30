@@ -2,14 +2,7 @@ package com.sparta.lafesta.tag.entity;
 
 import com.sparta.lafesta.badge.entity.BadgeTag;
 import com.sparta.lafesta.tag.dto.TagRequestDto;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +27,7 @@ public class Tag {
     @OneToMany(mappedBy = "tag", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<FestivalTag> festivals = new ArrayList<>();
 
-    @OneToMany(mappedBy = "tag")
+    @OneToMany(mappedBy = "tag", orphanRemoval = true)
     private List<BadgeTag> badgeTags = new ArrayList<>();
 
     public Tag(TagRequestDto requestDto) {

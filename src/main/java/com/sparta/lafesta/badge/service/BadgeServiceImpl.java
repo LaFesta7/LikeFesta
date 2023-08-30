@@ -100,8 +100,13 @@ public class BadgeServiceImpl implements BadgeService {
         // 뱃지가 존재하면 해당 뱃지를 존재하지 않으면 새로운 태그를 생성해 연관관계 저장
         for (TagRequestDto tagRequestDto : requestDto.getConditionTags()) {
             Tag tag = tagService.checkTag(tagRequestDto);
-            BadgeTag badgeTag = new BadgeTag(badge, tag);
-            badgeTagRepository.save(badgeTag);
+
+            //중복 확인
+            if (badgeTagRepository.findByBadgeAndTag(badge, tag).isPresent()) {
+                throw new IllegalArgumentException("중복되는 태그입니다.");
+            }
+            //연관관계 생성
+            badgeTagRepository.save(new BadgeTag(badge, tag));
         }
     }
 
@@ -174,6 +179,9 @@ public class BadgeServiceImpl implements BadgeService {
             }
 
             // 장르별 빈도수
+            if (conditionEnum == BadgeConditionEnum.TAG) {
+                checkBadgeTagFrequency(user, badge, reviews, startDay, endDay);
+            }
         }
 
     }
@@ -214,6 +222,24 @@ public class BadgeServiceImpl implements BadgeService {
             }
         }
     }
+
+    // 태그와 연관지어 장르별 빈도 수에 따른 뱃지 추가
+    @Transactional
+    public void checkBadgeTagFrequency(User user, Badge badge, List<Review> reviews, LocalDateTime startDay, LocalDateTime endDay) {
+        List<Festival> festivals = festivalRepository.findAllByOpenDateBetween(startDay, endDay);
+        List<Tag> tags = badge.getBadgeTags().stream().map(BadgeTag::getTag).toList();
+
+        long matchingFestivalCount = festivals.stream()
+                .filter(festival -> reviews.stream()
+                        .allMatch(review -> review.getFestival().equals(festival)
+                                && festival.getTags().containsAll(tags)))
+                .count();
+
+        if (matchingFestivalCount >= badge.getConditionStandard()) {
+            createUserBadge(user, badge);
+        }
+    }
+
 
     // 유저 뱃지 추가
     @Override

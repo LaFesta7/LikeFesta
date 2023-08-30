@@ -19,7 +19,7 @@ public class BadgeTag {
     @JoinColumn(name = "badge_id")
     private Badge badge;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tag_id")
     private Tag tag;
 
