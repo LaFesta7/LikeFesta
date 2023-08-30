@@ -7,6 +7,7 @@ import com.sparta.lafesta.badge.dto.UserBadgeResponseDto;
 import com.sparta.lafesta.badge.entity.Badge;
 import com.sparta.lafesta.badge.entity.BadgeConditionEnum;
 import com.sparta.lafesta.badge.entity.UserBadge;
+import com.sparta.lafesta.badge.event.UserBadgeCreatedEventPublisher;
 import com.sparta.lafesta.badge.repository.BadgeRepository;
 import com.sparta.lafesta.badge.repository.UserBadgeRepository;
 import com.sparta.lafesta.common.exception.NotFoundException;
@@ -34,6 +35,9 @@ public class BadgeServiceImpl implements BadgeService {
     private final ReviewRepository reviewRepository;
     private final UserService userService;
     private final AdminService adminService;
+
+    // 알림
+    private final UserBadgeCreatedEventPublisher eventPublisher;
 
     // 뱃지 생성
     @Override
@@ -107,7 +111,7 @@ public class BadgeServiceImpl implements BadgeService {
                     createUserBadge(user, badge);
                 }
             }
-            // 리뷰 참여 - 페스티벌 참여 구분 합의 필요
+
             // 태그 완료 후 추가 구현 필요
         }
     }
@@ -119,6 +123,8 @@ public class BadgeServiceImpl implements BadgeService {
         if (userBadgeRepository.findByUserAndBadge(user, badge).isEmpty()) {
             UserBadge userBadge = new UserBadge(user, badge);
             userBadgeRepository.save(userBadge);
+            // 이벤트 발생 -> 알림 생성
+            eventPublisher.publishUserBadgeCreatedEvent(userBadge);
         }
     }
 
