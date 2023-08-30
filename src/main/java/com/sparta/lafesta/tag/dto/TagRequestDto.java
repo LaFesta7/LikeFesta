@@ -5,5 +5,5 @@ import lombok.Getter;
 @Getter
 public class TagRequestDto {
 
-  private String title;
+    private String title;
 }

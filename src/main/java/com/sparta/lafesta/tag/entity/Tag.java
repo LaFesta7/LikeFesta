@@ -9,8 +9,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,21 +23,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Tag {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column(name = "title", nullable = false, unique = true)
-  private String title;
+    @Column(name = "title", nullable = false, unique = true)
+    private String title;
 
-  @OneToMany(mappedBy = "tag", cascade = CascadeType.PERSIST, orphanRemoval = true)
-  private List<FestivalTag> festivals = new ArrayList<>();
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<FestivalTag> festivals = new ArrayList<>();
 
-  public Tag(TagRequestDto requestDto) {
-    this.title = requestDto.getTitle();
-  }
+    public Tag(TagRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+    }
 
-  public void modify(TagRequestDto requestDto) {
-    this.title = requestDto.getTitle();
-  }
+    public void modify(TagRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+    }
 }

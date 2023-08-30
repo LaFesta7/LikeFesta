@@ -6,11 +6,11 @@ import lombok.Getter;
 @Getter
 public class TagResponseDto {
 
-  private Long id;
-  private String title;
+    private Long id;
+    private String title;
 
-  public TagResponseDto(Tag tag) {
-    this.id = tag.getId();
-    this.title = tag.getTitle();
-  }
+    public TagResponseDto(Tag tag) {
+        this.id = tag.getId();
+        this.title = tag.getTitle();
+    }
 }
