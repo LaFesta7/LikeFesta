@@ -116,6 +116,10 @@ public class FestivalServiceImpl implements FestivalService {
       List<MultipartFile> files, User user) throws IOException {
     Festival festival = findFestival(festivalId);
 
+    if (user.getRole().getAuthority().equals("ROLE_USER")) {
+      throw new UnauthorizedException("일반 유저는 페스티벌 글을 수정할 수 없습니다.");
+    }
+
     // 주최사는 본인이 작성한 글만 수정 가능
     if (user.getRole().getAuthority().equals("ROLE_ORGANIZER") && !festival.getUser().getId()
         .equals(user.getId())) {
