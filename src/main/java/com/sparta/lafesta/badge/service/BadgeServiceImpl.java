@@ -30,8 +30,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -116,35 +119,68 @@ public class BadgeServiceImpl implements BadgeService {
         badgeRepository.delete(badge);
     }
 
-    // 뱃지 추가 조건 확인
+    // 뱃지 조건 확인 후 추가
     @Override
     @Transactional
     public void checkBadgeCondition(User user) {
         List<Badge> badges = badgeRepository.findAll();
         for (Badge badge : badges) {
-            if (badge.getConditionEnum() == BadgeConditionEnum.FESTIVAL) {
-                int festivalCount = 0;
+            BadgeConditionEnum conditionEnum = badge.getConditionEnum();
+            LocalDateTime startDay = badge.getConditionFirstDay().atStartOfDay();
+            LocalDateTime endDay = badge.getConditionLastDay().atTime(LocalTime.MAX);
 
-                if (badge.getConditionFirstDay() == null && badge.getConditionLastDay() == null) {
-                    festivalCount = reviewRepository.countByUser(user);
-                } else {
-                    // QueryDSL 등 개선 필요
-                    List<Review> reviews = reviewRepository.findAllByUser(user);
-                    LocalDateTime startDay = badge.getConditionFirstDay().atStartOfDay();
-                    LocalDateTime endDay = badge.getConditionLastDay().atTime(LocalTime.MAX);
-                    List<Festival> festivals = festivalRepository.findAllByOpenDateBetween(startDay, endDay);
-                    for (Review review : reviews) {
-                        Festival festival = review.getFestival();
-                        if (festivals.contains(festival)) festivalCount++;
-                    }
-                }
+            List<Review> reviews = reviewRepository.findAllByUser(user);
 
-                if (badge.getConditionStandard() <= festivalCount) {
-                    createUserBadge(user, badge);
-                }
+            // 빈도수
+            if (conditionEnum == BadgeConditionEnum.FREQUENCY) {
+                checkBadgeFrequency(user, badge, reviews, startDay, endDay);
             }
 
-            // 태그 완료 후 추가 구현 필요
+            // 꾸준함
+            if (conditionEnum == BadgeConditionEnum.STEADY) {
+                checkBadgeSteady(user, badge, reviews, startDay, endDay);
+            }
+
+        }
+
+        // 태그 완료 후 추가 구현 필요
+
+    }
+
+    // 빈도 수에 따른 뱃지 추가
+    @Transactional
+    public void checkBadgeFrequency(User user, Badge badge, List<Review> reviews, LocalDateTime startDay, LocalDateTime endDay) {
+        List<Festival> festivals = festivalRepository.findAllByOpenDateBetween(startDay, endDay);
+        long festivalCount = reviews.stream().map(Review::getFestival).filter(festivals::contains).count();
+
+        if (badge.getConditionStandard() <= festivalCount) {
+            createUserBadge(user, badge);
+        }
+    }
+
+    // 꾸준함에 따른 뱃지 추가
+    @Transactional
+    public void checkBadgeSteady(User user, Badge badge, List<Review> reviews, LocalDateTime startDay, LocalDateTime endDay) {
+        Map<Integer, List<Festival>> festivalsByYear = reviews.stream()
+                .map(Review::getFestival)
+                .filter(festival -> festival.getOpenDate().isAfter(startDay) && festival.getOpenDate().isBefore(endDay))
+                .collect(Collectors.groupingBy(festival -> festival.getOpenDate().getYear()));
+
+        int consecutiveYears = 0;
+        int targetYears = badge.getConditionStandard();
+
+        int currentYear = Year.now().getValue();
+        for (int year = currentYear; year >= currentYear - targetYears + 1; year--) {
+            List<Festival> festivals = festivalsByYear.get(year);
+            if (festivals != null && festivals.size() >= 1) {
+                consecutiveYears++;
+                if (consecutiveYears >= targetYears) {
+                    createUserBadge(user, badge);
+                    break;
+                }
+            } else {
+                consecutiveYears = 0;
+            }
         }
     }
 

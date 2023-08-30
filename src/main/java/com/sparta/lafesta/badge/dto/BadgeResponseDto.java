@@ -16,7 +16,7 @@ public class BadgeResponseDto {
     private BadgeConditionEnum conditionEnum;
     private LocalDate conditionFirstDay;
     private LocalDate conditionLastDay;
-    private Long conditionStandard;
+    private int conditionStandard;
     private List<FileOnS3Dto> files;
 
     public BadgeResponseDto(Badge badge) {

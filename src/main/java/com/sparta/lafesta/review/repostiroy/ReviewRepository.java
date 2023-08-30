@@ -14,7 +14,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     boolean existsByUserAndFestival(User user, Festival festival);
 
-    int countByUser(User user);
-
     List<Review> findAllByUser(User user);
 }

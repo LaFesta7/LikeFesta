@@ -37,7 +37,7 @@ public class Badge {
     private LocalDate conditionLastDay;
 
     @Column(name = "condition_standard", nullable = false)
-    private Long conditionStandard;
+    private int conditionStandard;
 
     @OneToMany(mappedBy = "badge", orphanRemoval = true)
     private List<UserBadge> userBadges = new ArrayList<>();
@@ -49,8 +49,8 @@ public class Badge {
         this.title = requestDto.getTitle();
         this.description = requestDto.getDescription();
         this.conditionEnum = requestDto.getConditionEnum();
-        this.conditionFirstDay = requestDto.getConditionFirstDay();
-        this.conditionLastDay = requestDto.getConditionLastDay();
+        this.conditionFirstDay = requestDto.getConditionFirstDay() == null? LocalDate.parse("1900-01-01") : requestDto.getConditionFirstDay();
+        this.conditionLastDay = requestDto.getConditionLastDay() == null? LocalDate.parse("2999-12-31") : requestDto.getConditionLastDay();
         this.conditionStandard = requestDto.getConditionStandard();
     }
 
@@ -58,8 +58,8 @@ public class Badge {
         this.title = requestDto.getTitle();
         this.description = requestDto.getDescription();
         this.conditionEnum = requestDto.getConditionEnum();
-        this.conditionFirstDay = requestDto.getConditionFirstDay();
-        this.conditionLastDay = requestDto.getConditionLastDay();
+        this.conditionFirstDay = requestDto.getConditionFirstDay() == null? LocalDate.parse("1900-01-01") : requestDto.getConditionFirstDay();
+        this.conditionLastDay = requestDto.getConditionLastDay() == null? LocalDate.parse("2999-12-31") : requestDto.getConditionLastDay();
         this.conditionStandard = requestDto.getConditionStandard();
     }
 }

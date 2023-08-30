@@ -23,7 +23,7 @@ public class UserBadgeCreatedEventListener implements ApplicationListener<UserBa
     public void onApplicationEvent(UserBadgeCreatedEvent event) {
         UserBadge userBadge = event.getUserBadge();
         String title = userBadge.getBadge().getTitle();
-        String detail = title + "뱃지를 획득했습니다.";
+        String detail = "'" + title + "' 뱃지를 획득했습니다.";
         LocalDateTime createdAt = userBadge.getCreatedAt();
         User user = userBadge.getUser();
         Notification notification = new Notification(title, detail, createdAt, user);

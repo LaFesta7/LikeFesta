@@ -18,5 +18,5 @@ public class BadgeRequestDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate conditionLastDay;
 
-    private Long conditionStandard;
+    private int conditionStandard;
 }
