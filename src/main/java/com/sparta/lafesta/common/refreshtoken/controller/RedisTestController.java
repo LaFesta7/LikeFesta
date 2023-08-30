@@ -24,4 +24,18 @@ public class RedisTestController {
         redisTestService.createByTemplate();
     }
 
+    @GetMapping("/redis/test-get-template")
+    public String testGetByTemp() {
+        return redisTestService.getRedis();
+    }
+
+    @GetMapping("/redis/test-modify-template")
+    public void testModifyByTemp() {
+        redisTestService.modify();
+    }
+
+    @GetMapping("/redis/test-delete-template")
+    public void testDeleteByTemp() {
+        redisTestService.delete();
+    }
 }
