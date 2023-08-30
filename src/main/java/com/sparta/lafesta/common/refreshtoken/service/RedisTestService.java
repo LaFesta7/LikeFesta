@@ -21,14 +21,16 @@ public class RedisTestService {
     private static final int LIMIT_TIME = 7 * 24 * 60 * 60; //일 * 시 * 분 * 초
 
 
+    int i = 0;
 
     public RefreshTokenResponseDto createByRepository() {
 
+        i++;
 
-        var responseDto =RefreshTokenResponseDto.builder()
-                                .username("username")
-                                .refreshToken("testToken")
-                                .build();
+        var responseDto = RefreshTokenResponseDto.builder()
+                .username("username " + i)
+                .refreshToken("testToken " + i)
+                .build();
 
         return refreshTokenRedisRepository.save(responseDto);
 
