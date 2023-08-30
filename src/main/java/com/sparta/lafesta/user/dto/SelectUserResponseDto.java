@@ -17,6 +17,7 @@ public class SelectUserResponseDto {
     private UserRoleEnum role;
     private List<FileOnS3Dto> files;
     private List<UserBadgeResponseDto> representativeBadges;
+    private List<UserBadgeResponseDto> badges;
 
     public SelectUserResponseDto(User user){
         this.id = user.getId();
@@ -27,5 +28,6 @@ public class SelectUserResponseDto {
                 map(FileOnS3Dto::new).toList();
         this.representativeBadges = user.getUserBadges().stream()
                 .filter(UserBadge::isRepresentative).map(UserBadgeResponseDto::new).toList();
+        this.badges = user.getUserBadges().stream().map(UserBadgeResponseDto::new).toList();
     }
 }
