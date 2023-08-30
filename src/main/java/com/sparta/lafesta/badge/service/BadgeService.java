@@ -21,6 +21,13 @@ public interface BadgeService {
     BadgeResponseDto createBadge(BadgeRequestDto requestDto, List<MultipartFile> files, User user) throws IOException;
 
     /**
+     * 뱃지-태그 연관관계 저장
+     * @param badge 뱃지 정보
+     * @param requestDto 뱃지 생성 정보
+     */
+    void createBadgeTags(Badge badge, BadgeRequestDto requestDto);
+
+    /**
      * 뱃지 전체 조회
      * @param user       권한 확인
      * @return 뱃지 전체 조회 결과

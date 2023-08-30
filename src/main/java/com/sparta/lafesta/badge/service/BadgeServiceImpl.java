@@ -6,9 +6,11 @@ import com.sparta.lafesta.badge.dto.BadgeResponseDto;
 import com.sparta.lafesta.badge.dto.UserBadgeResponseDto;
 import com.sparta.lafesta.badge.entity.Badge;
 import com.sparta.lafesta.badge.entity.BadgeConditionEnum;
+import com.sparta.lafesta.badge.entity.BadgeTag;
 import com.sparta.lafesta.badge.entity.UserBadge;
 import com.sparta.lafesta.badge.event.UserBadgeCreatedEventPublisher;
 import com.sparta.lafesta.badge.repository.BadgeRepository;
+import com.sparta.lafesta.badge.repository.BadgeTagRepository;
 import com.sparta.lafesta.badge.repository.UserBadgeRepository;
 import com.sparta.lafesta.common.exception.NotFoundException;
 import com.sparta.lafesta.common.exception.UnauthorizedException;
@@ -20,6 +22,9 @@ import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.festival.repository.FestivalRepository;
 import com.sparta.lafesta.review.entity.Review;
 import com.sparta.lafesta.review.repostiroy.ReviewRepository;
+import com.sparta.lafesta.tag.dto.TagRequestDto;
+import com.sparta.lafesta.tag.entity.Tag;
+import com.sparta.lafesta.tag.service.TagService;
 import com.sparta.lafesta.user.entity.User;
 import com.sparta.lafesta.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -40,11 +45,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BadgeServiceImpl implements BadgeService {
     private final BadgeRepository badgeRepository;
+    private final BadgeTagRepository badgeTagRepository;
     private final UserBadgeRepository userBadgeRepository;
     private final FestivalRepository festivalRepository;
     private final ReviewRepository reviewRepository;
     private final UserService userService;
     private final AdminService adminService;
+    private final TagService tagService;
 
     //S3
     private final S3UploadService s3UploadService;
@@ -65,12 +72,37 @@ public class BadgeServiceImpl implements BadgeService {
         Badge badge = new Badge(requestDto);
         badgeRepository.save(badge);
 
+        // 뱃지 연관 태그 저장
+        if (requestDto.getConditionEnum() == BadgeConditionEnum.TAG) {
+            createBadgeTags(badge, requestDto);
+        } else {
+            if (requestDto.getConditionTags() != null) {
+                throw new IllegalArgumentException("FREQUENCY와 STEADY는 태그를 선택할 수 없습니다.");
+            }
+        }
+
         // 첨부파일 업로드
         if (files != null) {
             uploadFiles(files, badge);
         }
 
         return new BadgeResponseDto(badge);
+    }
+
+    // 뱃지-태그 연관관계 저장
+    @Override
+    @Transactional
+    public void createBadgeTags(Badge badge, BadgeRequestDto requestDto) {
+        if (requestDto.getConditionTags() == null) {
+            throw new IllegalArgumentException("태그를 추가해주세요.");
+        }
+
+        // 뱃지가 존재하면 해당 뱃지를 존재하지 않으면 새로운 태그를 생성해 연관관계 저장
+        for (TagRequestDto tagRequestDto : requestDto.getConditionTags()) {
+            Tag tag = tagService.checkTag(tagRequestDto);
+            BadgeTag badgeTag = new BadgeTag(badge, tag);
+            badgeTagRepository.save(badgeTag);
+        }
     }
 
     // 뱃지 전체 조회
@@ -131,7 +163,7 @@ public class BadgeServiceImpl implements BadgeService {
 
             List<Review> reviews = reviewRepository.findAllByUser(user);
 
-            // 빈도수
+            // 전체 빈도수
             if (conditionEnum == BadgeConditionEnum.FREQUENCY) {
                 checkBadgeFrequency(user, badge, reviews, startDay, endDay);
             }
@@ -141,13 +173,12 @@ public class BadgeServiceImpl implements BadgeService {
                 checkBadgeSteady(user, badge, reviews, startDay, endDay);
             }
 
+            // 장르별 빈도수
         }
-
-        // 태그 완료 후 추가 구현 필요
 
     }
 
-    // 빈도 수에 따른 뱃지 추가
+    // 전체 빈도 수에 따른 뱃지 추가
     @Transactional
     public void checkBadgeFrequency(User user, Badge badge, List<Review> reviews, LocalDateTime startDay, LocalDateTime endDay) {
         List<Festival> festivals = festivalRepository.findAllByOpenDateBetween(startDay, endDay);

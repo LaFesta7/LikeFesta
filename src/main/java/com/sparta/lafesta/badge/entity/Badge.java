@@ -39,6 +39,9 @@ public class Badge {
     @Column(name = "condition_standard", nullable = false)
     private int conditionStandard;
 
+    @OneToMany(mappedBy = "badge")
+    private List<BadgeTag> conditionTags = new ArrayList<>();
+
     @OneToMany(mappedBy = "badge", orphanRemoval = true)
     private List<UserBadge> userBadges = new ArrayList<>();
 

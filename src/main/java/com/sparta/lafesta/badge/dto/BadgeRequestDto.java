@@ -1,10 +1,12 @@
 package com.sparta.lafesta.badge.dto;
 
 import com.sparta.lafesta.badge.entity.BadgeConditionEnum;
+import com.sparta.lafesta.tag.dto.TagRequestDto;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 public class BadgeRequestDto {
@@ -19,4 +21,6 @@ public class BadgeRequestDto {
     private LocalDate conditionLastDay;
 
     private int conditionStandard;
+
+    private List<TagRequestDto> conditionTags;
 }

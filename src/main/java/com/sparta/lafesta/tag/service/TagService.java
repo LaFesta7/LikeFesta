@@ -4,6 +4,7 @@ import com.sparta.lafesta.common.dto.ApiResponseDto;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
 import com.sparta.lafesta.tag.dto.TagRequestDto;
 import com.sparta.lafesta.tag.dto.TagResponseDto;
+import com.sparta.lafesta.tag.entity.Tag;
 import com.sparta.lafesta.user.entity.User;
 
 import java.util.List;
@@ -56,4 +57,12 @@ public interface TagService {
      * @return 태그 삭제 결과
      */
     ResponseEntity<ApiResponseDto> deleteFestivalTag(Long festivalId, Long tagId, User user);
+
+    /**
+     * 존재하는 태그인지 확인 -> 없으면 생성 / 존재하는 태그면 가져오기
+     *
+     * @param requestDto 태그 생성 요청 정보
+     * @return 태그 반환 결과
+     */
+    Tag checkTag(TagRequestDto requestDto);
 }

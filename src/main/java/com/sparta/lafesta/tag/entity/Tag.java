@@ -1,5 +1,6 @@
 package com.sparta.lafesta.tag.entity;
 
+import com.sparta.lafesta.badge.entity.BadgeTag;
 import com.sparta.lafesta.tag.dto.TagRequestDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -32,6 +33,9 @@ public class Tag {
 
     @OneToMany(mappedBy = "tag", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<FestivalTag> festivals = new ArrayList<>();
+
+    @OneToMany(mappedBy = "tag")
+    private List<BadgeTag> badgeTags = new ArrayList<>();
 
     public Tag(TagRequestDto requestDto) {
         this.title = requestDto.getTitle();
