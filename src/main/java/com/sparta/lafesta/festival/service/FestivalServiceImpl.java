@@ -15,14 +15,11 @@ import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
 import com.sparta.lafesta.like.festivalLike.repository.FestivalLikeRepository;
 import com.sparta.lafesta.notification.dto.ReminderDto;
 import com.sparta.lafesta.notification.entity.FestivalReminderType;
+import com.sparta.lafesta.tag.dto.TagRequestDto;
+import com.sparta.lafesta.tag.entity.FestivalTag;
+import com.sparta.lafesta.tag.entity.Tag;
+import com.sparta.lafesta.tag.service.TagServiceImpl;
 import com.sparta.lafesta.user.entity.User;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -33,9 +30,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
 @Service
 @RequiredArgsConstructor
 public class FestivalServiceImpl implements FestivalService {
+
     //CRUD
     private final FestivalRepository festivalRepository;
 
@@ -53,12 +59,15 @@ public class FestivalServiceImpl implements FestivalService {
     @Autowired
     private TransactionTemplate transactionTemplate;
 
+    //Tag
+    private final TagServiceImpl tagService;
 
 
     // 페스티벌 등록
     @Override
     @Transactional
-    public FestivalResponseDto createFestival(FestivalRequestDto requestDto, List<MultipartFile> files, User user) throws IOException {
+    public FestivalResponseDto createFestival(FestivalRequestDto requestDto,
+                                              List<MultipartFile> files, User user) throws IOException {
 
         // 허가되지 않은 주최사, 일반 사용자 접근 시 예외처리
         if (user.getRole().getAuthority().equals("ROLE_USER")) {
@@ -67,12 +76,15 @@ public class FestivalServiceImpl implements FestivalService {
         Festival festival = new Festival(requestDto, user);
 
         //festival DB 저장
-        festivalRepository.save(festival);
+        Festival savedFestival = festivalRepository.save(festival);
 
         // 첨부파일업로드 -> 이후 업로드된 파일의 url주소를 festival객체에 담아줄 예정.
         if (files != null) {
             uploadFiles(files, festival);
         }
+
+        //태그 생성 및 추가
+        createFestivalTag(savedFestival, requestDto.getTagList());
 
         // 이벤트 발생 -> 알림 생성
         eventPublisher.publishFestivalCreatedEvent(festival);
@@ -98,20 +110,26 @@ public class FestivalServiceImpl implements FestivalService {
         return new FestivalResponseDto(findFestival(festivalId));
     }
 
-
     // 페스티벌 내용 수정
     @Override
     @Transactional
-    public FestivalResponseDto modifyFestival(Long festivalId, FestivalRequestDto requestDto, List<MultipartFile> files, User user) throws IOException {
+    public FestivalResponseDto modifyFestival(Long festivalId, FestivalRequestDto requestDto,
+                                              List<MultipartFile> files, User user) throws IOException {
         Festival festival = findFestival(festivalId);
 
+        if (user.getRole().getAuthority().equals("ROLE_USER")) {
+            throw new UnauthorizedException("일반 유저는 페스티벌 글을 수정할 수 없습니다.");
+        }
+
         // 주최사는 본인이 작성한 글만 수정 가능
-        if (user.getRole().getAuthority().equals("ROLE_ORGANIZER") && !festival.getUser().getId().equals(user.getId())) {
+        if (user.getRole().getAuthority().equals("ROLE_ORGANIZER")
+                && !festival.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException("본인이 작성한 글만 수정할 수 있습니다.");
         }
 
         // 관리자는 관리자가 작성한 글만 수정 가능
-        if (user.getRole().getAuthority().equals("ROLE_ADMIN") && festival.getUser().getRole().getAuthority().equals("ROLE_ORGANIZER")) {
+        if (user.getRole().getAuthority().equals("ROLE_ADMIN")
+                && festival.getUser().getRole().getAuthority().equals("ROLE_ORGANIZER")) {
             throw new UnauthorizedException("주최사가 작성한 글은 관리자 권한으로 수정할 수 없습니다.");
         }
 
@@ -121,6 +139,11 @@ public class FestivalServiceImpl implements FestivalService {
         }
         //페스티벌 정보 변경
         festival.modify(requestDto);
+
+        //이전 태그 정보 삭제
+        deleteFestivalTag(festival);
+        //새로운 태그 생성 및 추가
+        createFestivalTag(festival, requestDto.getTagList());
 
         return new FestivalResponseDto(festival);
     }
@@ -141,7 +164,14 @@ public class FestivalServiceImpl implements FestivalService {
         //첨부파일  DB에서 삭제
         deleteFiles(festival);
 
+        List<FestivalTag> festivalTags = tagService.findFestivalTagsByFestival(festival);
+
         festivalRepository.delete(festival);
+
+        //연관된 태그 정리
+        for (FestivalTag festivalTag : festivalTags) {
+            tagService.deleteUnusedTag(festivalTag.getTag());
+        }
     }
 
 
@@ -312,5 +342,28 @@ public class FestivalServiceImpl implements FestivalService {
     // 페스티벌과 사용자로 좋아요 찾기
     private FestivalLike findFestivalLike(User user, Festival festival) {
         return festivalLikeRepository.findByUserAndFestival(user, festival).orElse(null);
+    }
+
+
+    //태그 생성 및 추가
+    private void createFestivalTag(Festival festival, List<TagRequestDto> tags) {
+        for (TagRequestDto tag : tags) {
+            //존재하는 태그인지 확인 -> 없으면 생성 / 존재하는 태그면 가져오기
+            Tag checkedTag = tagService.checkTag(tag);
+
+            //태그 중복 확인 & 태그 페스티벌 연관관계 생성
+            tagService.connectTag(festival, checkedTag);
+        }
+    }
+
+    //예전 페스티벌 태그 정보 삭제
+    private void deleteFestivalTag(Festival festival) {
+        List<FestivalTag> festivalTags = tagService.findFestivalTagsByFestival(festival);
+        for (FestivalTag festivalTag : festivalTags) {
+            //페스티벌과 태그 연관관계 삭제
+            tagService.deleteFestivalTag(festivalTag);
+            //사용되지 않는 태그는 삭제
+            tagService.deleteUnusedTag(festivalTag.getTag());
+        }
     }
 }

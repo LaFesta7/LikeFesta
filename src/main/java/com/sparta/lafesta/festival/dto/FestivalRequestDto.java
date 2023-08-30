@@ -1,12 +1,17 @@
 package com.sparta.lafesta.festival.dto;
 
+import com.sparta.lafesta.tag.dto.TagRequestDto;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
-
 @Getter
 public class FestivalRequestDto {
+
     private String title;
     private String location;
     private String content;
@@ -28,4 +33,6 @@ public class FestivalRequestDto {
 
 
     private String officialLink;
+
+    private List<TagRequestDto> tagList = new ArrayList<>();
 }
