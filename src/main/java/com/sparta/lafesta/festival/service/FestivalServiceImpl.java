@@ -115,7 +115,7 @@ public class FestivalServiceImpl implements FestivalService {
     public FestivalResponseDto modifyFestival(Long festivalId, FestivalRequestDto requestDto, List<MultipartFile> files, User user) throws IOException {
         Festival festival = findFestival(festivalId);
         // 주최사는 본인이 작성한 글만 수정 가능
-        if (user.getRole().getAuthority().equals("ROLE_ORGANIZER") && !festival.getUser().getId()                .equals(user.getId())) {
+        if (user.getRole().getAuthority().equals("ROLE_ORGANIZER") && !festival.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException("본인이 작성한 글만 수정할 수 있습니다.");
         }
 
