@@ -22,8 +22,7 @@ public interface FestivalService {
      * @param user       권한 확인
      * @return 페스티벌 추가 결과
      */
-    FestivalResponseDto createFestival(FestivalRequestDto requestDto, List<MultipartFile> files,
-                                       User user) throws IOException;
+    FestivalResponseDto createFestival(FestivalRequestDto requestDto, List<MultipartFile> files, User user) throws IOException;
 
     /**
      * 전체 페스티벌 조회
@@ -51,8 +50,7 @@ public interface FestivalService {
      * @param user       권한 확인
      * @return 페스티벌 수정 결과
      */
-    FestivalResponseDto modifyFestival(Long festivalId, FestivalRequestDto requestDto,
-                                       List<MultipartFile> files, User user) throws IOException;
+    FestivalResponseDto modifyFestival(Long festivalId, FestivalRequestDto requestDto, List<MultipartFile> files, User user) throws IOException;
 
     /**
      * 페스티벌 삭제
