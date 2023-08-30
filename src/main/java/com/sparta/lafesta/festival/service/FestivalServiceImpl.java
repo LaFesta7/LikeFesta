@@ -159,7 +159,14 @@ public class FestivalServiceImpl implements FestivalService {
     //첨부파일  DB에서 삭제
     deleteFiles(festival);
 
+    List<FestivalTag> festivalTags = tagService.findFestivalTagsByFestival(festival);
+
     festivalRepository.delete(festival);
+
+    //연관된 태그 정리
+    for (FestivalTag festivalTag : festivalTags) {
+      tagService.deleteUnusedTag(festivalTag.getTag());
+    }
   }
 
 
@@ -346,9 +353,9 @@ public class FestivalServiceImpl implements FestivalService {
 
   //예전 페스티벌 태그 정보 삭제
   private void deleteFestivalTag(Festival festival) {
-    //페스티벌과 태그 연관관계 삭제
     List<FestivalTag> festivalTags = tagService.findFestivalTagsByFestival(festival);
     for (FestivalTag festivalTag : festivalTags) {
+      //페스티벌과 태그 연관관계 삭제
       tagService.deleteFestivalTag(festivalTag);
       //사용되지 않는 태그는 삭제
       tagService.deleteUnusedTag(festivalTag.getTag());

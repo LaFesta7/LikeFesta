@@ -163,7 +163,7 @@ public class TagServiceImpl implements TagService {
     );
   }
 
-  //태그로 페스티벌 찾기
+  //페스티벌 태그로 페스티벌 찾기
   private Festival findFestivalByTag(FestivalTag festivalTag) {
     return festivalRepository.findByTags(festivalTag)
         .orElseThrow(() -> new IllegalArgumentException("해당 페스티벌이 없습니다."));
