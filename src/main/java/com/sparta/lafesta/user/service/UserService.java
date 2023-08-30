@@ -190,6 +190,7 @@ public class UserService {
         if (!fileOnS3s.isEmpty()) { // 파일이 있다면 실행
             for (UserFileOnS3 fileOnS3 : fileOnS3s) {
                 s3UploadService.deleteFile(fileOnS3.getKeyName());
+                userFileRepository.delete(fileOnS3);
             }
         }
     }
