@@ -1,5 +1,7 @@
 package com.sparta.lafesta.common.config;
 
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +13,9 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
+
     @Bean
-    @ConfigurationProperties(prefix = "spring.redis")
+    @ConfigurationProperties(prefix = "spring.data.redis")
     public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory();
     }
@@ -26,8 +29,4 @@ public class RedisConfig {
         return redisTemplate;
     }
 
-    @Bean
-    public static ConfigureRedisAction configureRedisAction() {
-        return ConfigureRedisAction.NO_OP;
-    }
 }
