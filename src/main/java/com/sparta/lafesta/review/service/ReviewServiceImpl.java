@@ -187,7 +187,7 @@ public class ReviewServiceImpl implements ReviewService {
         );
     }
 
-
+    // s3 업로드
     private void uploadFiles(List<MultipartFile> files, Review review) throws IOException {
         List<FileOnS3> fileOnS3s = new ArrayList<>();
         if (files != null) {
@@ -205,6 +205,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
+    // s3 삭제
     private void deleteFiles(Review review) {
         // 파일정보 불러오기
         List<ReviewFileOnS3> fileOnS3s = review.getReviewFileOnS3s();
@@ -213,10 +214,12 @@ public class ReviewServiceImpl implements ReviewService {
         if (!fileOnS3s.isEmpty()) { // 파일이 있다면 실행
             for (ReviewFileOnS3 fileOnS3 : fileOnS3s) {
                 s3UploadService.deleteFile(fileOnS3.getKeyName());
+                reviewFileRepository.delete(fileOnS3);
             }
         }
     }
 
+    // s3 수정
     private void modifyFiles(Review review, List<MultipartFile> files) throws IOException {
 
         // 기존 파일 삭제

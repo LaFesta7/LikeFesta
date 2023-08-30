@@ -266,7 +266,7 @@ public class FestivalServiceImpl implements FestivalService {
         );
     }
 
-
+    // s3 업로드
     private void uploadFiles(List<MultipartFile> files, Festival festival) throws IOException {
         List<FileOnS3> fileOnS3s = new ArrayList<>();
         if (files != null) {
@@ -284,6 +284,7 @@ public class FestivalServiceImpl implements FestivalService {
         }
     }
 
+    // s3 삭제
     private void deleteFiles(Festival festival) {
         // 파일정보 불러오기
         List<FestivalFileOnS3> fileOnS3s = festival.getFestivalFileOnS3s();
@@ -292,10 +293,12 @@ public class FestivalServiceImpl implements FestivalService {
         if (!fileOnS3s.isEmpty()) { // 파일이 있다면 실행
             for (FestivalFileOnS3 fileOnS3 : fileOnS3s) {
                 s3UploadService.deleteFile(fileOnS3.getKeyName());
+                festivalFileRepository.delete(fileOnS3);
             }
         }
     }
 
+    // s3 수정
     private void modifyFiles(Festival festival, List<MultipartFile> files) throws IOException {
 
         // 기존 파일 삭제
