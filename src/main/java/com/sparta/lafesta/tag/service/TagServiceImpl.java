@@ -117,6 +117,10 @@ public class TagServiceImpl implements TagService {
     festivalTagRepository.delete(festivalTag);
 
     //사용되지 않는 태그는 삭제
+    List<FestivalTag> usedTag = festivalTagRepository.findAllByTag(tag);
+    if (usedTag.isEmpty()) {
+      tagRepository.delete(tag);
+    }
 
     return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(),
         "'" + tag.getTitle() + "' 태그를 '" + festival.getTitle() + "'에서 제외했습니다."));
