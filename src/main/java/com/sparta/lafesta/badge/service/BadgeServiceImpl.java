@@ -38,7 +38,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Year;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -229,14 +228,19 @@ public class BadgeServiceImpl implements BadgeService {
     @Transactional
     public void checkBadgeTagFrequency(User user, Badge badge, List<Review> reviews, LocalDateTime startDay, LocalDateTime endDay) {
         List<Festival> festivals = festivalRepository.findAllByOpenDateBetween(startDay, endDay);
-        List<Tag> tags = badge.getBadgeTags().stream().map(BadgeTag::getTag).toList();
-        List<String> tagsStr = tags.stream().map(Tag::getTitle).toList();
+        List<Tag> badgeTags = badge.getBadgeTags().stream().map(BadgeTag::getTag).toList();
 
-        long matchingFestivalCount = festivals.stream()
-                .filter(festival -> reviews.stream()
-                        .allMatch(review -> review.getFestival().equals(festival)
-                                && festival.getTags().stream().map(FestivalTag::getTag).toList().containsAll(tags)))
-                .count();
+        int matchingFestivalCount = 0;
+        for (Festival festival : festivals) {
+            List<Tag> festivalTags = festival.getTags().stream().map(FestivalTag::getTag).toList();
+            for (Review review : reviews) {
+                if (review.getFestival().equals(festival)) {
+                    if (festivalTags.stream().anyMatch(badgeTags::contains)) {
+                        matchingFestivalCount++;
+                    }
+                }
+            }
+        }
 
         if (matchingFestivalCount >= badge.getConditionStandard()) {
             createUserBadge(user, badge);
