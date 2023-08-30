@@ -12,6 +12,10 @@ import com.sparta.lafesta.badge.repository.BadgeRepository;
 import com.sparta.lafesta.badge.repository.UserBadgeRepository;
 import com.sparta.lafesta.common.exception.NotFoundException;
 import com.sparta.lafesta.common.exception.UnauthorizedException;
+import com.sparta.lafesta.common.s3.S3UploadService;
+import com.sparta.lafesta.common.s3.entity.BadgeFileOnS3;
+import com.sparta.lafesta.common.s3.entity.FileOnS3;
+import com.sparta.lafesta.common.s3.repository.BadgeFileRepository;
 import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.festival.repository.FestivalRepository;
 import com.sparta.lafesta.review.entity.Review;
@@ -21,9 +25,12 @@ import com.sparta.lafesta.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,18 +43,30 @@ public class BadgeServiceImpl implements BadgeService {
     private final UserService userService;
     private final AdminService adminService;
 
+    //S3
+    private final S3UploadService s3UploadService;
+    private final BadgeFileRepository badgeFileRepository;
+    private final String BADGE_FOLDER_NAME = "badge";
+
     // 알림
     private final UserBadgeCreatedEventPublisher eventPublisher;
 
     // 뱃지 생성
     @Override
     @Transactional
-    public BadgeResponseDto createBadge(BadgeRequestDto requestDto, User user) {
+    public BadgeResponseDto createBadge(BadgeRequestDto requestDto, List<MultipartFile> files, User user) throws IOException {
         // 관리자 권한 확인
         adminService.checkAdminRole(user);
 
+        // 뱃지 DB 저장
         Badge badge = new Badge(requestDto);
         badgeRepository.save(badge);
+
+        // 첨부파일 업로드
+        if (files != null) {
+            uploadFiles(files, badge);
+        }
+
         return new BadgeResponseDto(badge);
     }
 
@@ -64,12 +83,20 @@ public class BadgeServiceImpl implements BadgeService {
     // 뱃지 수정
     @Override
     @Transactional
-    public BadgeResponseDto modifyBadge(Long badgeId, BadgeRequestDto requestDto, User user) {
+    public BadgeResponseDto modifyBadge(Long badgeId, BadgeRequestDto requestDto, List<MultipartFile> files, User user) throws IOException {
         // 관리자 권한 확인
         adminService.checkAdminRole(user);
 
         Badge badge = findBadge(badgeId);
+
+        //첨부파일 변경
+        if (files != null) {
+            modifyFiles(badge, files);
+        }
+
+        // 뱃지 정보 변경
         badge.modify(requestDto);
+
         return new BadgeResponseDto(badge);
     }
 
@@ -81,6 +108,11 @@ public class BadgeServiceImpl implements BadgeService {
         adminService.checkAdminRole(user);
 
         Badge badge = findBadge(badgeId);
+
+        //첨부파일 DB에서 삭제
+        deleteFiles(badge);
+
+        // 뱃지 DB 삭제
         badgeRepository.delete(badge);
     }
 
@@ -90,7 +122,7 @@ public class BadgeServiceImpl implements BadgeService {
     public void checkBadgeCondition(User user) {
         List<Badge> badges = badgeRepository.findAll();
         for (Badge badge : badges) {
-            if(badge.getConditionEnum() == BadgeConditionEnum.FESTIVAL) {
+            if (badge.getConditionEnum() == BadgeConditionEnum.FESTIVAL) {
                 int festivalCount = 0;
 
                 if (badge.getConditionFirstDay() == null && badge.getConditionLastDay() == null) {
@@ -159,6 +191,49 @@ public class BadgeServiceImpl implements BadgeService {
 
         return new UserBadgeResponseDto(userBadge);
     }
+
+    // S3 파일 업로드
+    private void uploadFiles(List<MultipartFile> files, Badge badge) throws IOException {
+        List<FileOnS3> fileOnS3s = new ArrayList<>();
+        if (files != null) {
+            fileOnS3s = s3UploadService.putObjects(files, BADGE_FOLDER_NAME, badge.getId());
+        }
+
+        // FielOnS3를 Festival로 변환
+        for (FileOnS3 fileOnS3 : fileOnS3s) {
+            //페스티벌 파일 S3 엔티티로 변환생성
+            BadgeFileOnS3 badgeFileOnS3 = new BadgeFileOnS3(fileOnS3);
+            //S3 엔티티에 페스티벌 연관관계 설정
+            badgeFileOnS3.setBadge(badge);
+            //DB저장
+            badgeFileRepository.save(badgeFileOnS3);
+        }
+    }
+
+    // s3 파일 수정
+    private void modifyFiles(Badge badge, List<MultipartFile> files) throws IOException {
+
+        // 기존 파일 삭제
+        deleteFiles(badge);
+
+        // 파일 등록
+        uploadFiles(files, badge);
+    }
+
+    // s3 파일 삭제
+    private void deleteFiles(Badge badge) {
+        // 파일정보 불러오기
+        List<BadgeFileOnS3> fileOnS3s = badge.getBadgeFileOnS3s();
+
+        // 파일 삭제 실행
+        if (!fileOnS3s.isEmpty()) { // 파일이 있다면 실행
+            for (BadgeFileOnS3 fileOnS3 : fileOnS3s) {
+                s3UploadService.deleteFile(fileOnS3.getKeyName());
+                badgeFileRepository.delete(fileOnS3);
+            }
+        }
+    }
+
 
     // id로 뱃지 찾기
     private Badge findBadge(Long badgeId) {

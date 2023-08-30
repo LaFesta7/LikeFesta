@@ -1,6 +1,7 @@
 package com.sparta.lafesta.badge.entity;
 
 import com.sparta.lafesta.badge.dto.BadgeRequestDto;
+import com.sparta.lafesta.common.s3.entity.BadgeFileOnS3;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -40,6 +41,9 @@ public class Badge {
 
     @OneToMany(mappedBy = "badge", orphanRemoval = true)
     private List<UserBadge> userBadges = new ArrayList<>();
+
+    @OneToMany(mappedBy = "badge", orphanRemoval = true)
+    private List<BadgeFileOnS3> badgeFileOnS3s = new ArrayList<>();
 
     public Badge(BadgeRequestDto requestDto) {
         this.title = requestDto.getTitle();
