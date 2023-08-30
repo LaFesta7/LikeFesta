@@ -18,11 +18,12 @@ public interface FestivalService {
      * 페스티벌 생성
      *
      * @param requestDto 생성할 페스티벌의 정보
-     * @param files
+     * @param files      생성할 첨부파일 정보
      * @param user       권한 확인
      * @return 페스티벌 추가 결과
      */
-    FestivalResponseDto createFestival(FestivalRequestDto requestDto, List<MultipartFile> files, User user) throws IOException;
+    FestivalResponseDto createFestival(FestivalRequestDto requestDto,
+                                       List<MultipartFile> files, User user) throws IOException;
 
     /**
      * 전체 페스티벌 조회
@@ -46,11 +47,12 @@ public interface FestivalService {
      *
      * @param festivalId 수정할 페스티벌의 id
      * @param requestDto 수정할 정보
-     * @param files
+     * @param files      수정할 첨부파일 정보
      * @param user       권한 확인
      * @return 페스티벌 수정 결과
      */
-    FestivalResponseDto modifyFestival(Long festivalId, FestivalRequestDto requestDto, List<MultipartFile> files, User user) throws IOException;
+    FestivalResponseDto modifyFestival(Long festivalId, FestivalRequestDto requestDto,
+                                       List<MultipartFile> files, User user) throws IOException;
 
     /**
      * 페스티벌 삭제

@@ -66,7 +66,8 @@ public class FestivalServiceImpl implements FestivalService {
     // 페스티벌 등록
     @Override
     @Transactional
-    public FestivalResponseDto createFestival(FestivalRequestDto requestDto, List<MultipartFile> files, User user) throws IOException {
+    public FestivalResponseDto createFestival(FestivalRequestDto requestDto,
+                                              List<MultipartFile> files, User user) throws IOException {
 
         // 허가되지 않은 주최사, 일반 사용자 접근 시 예외처리
         if (user.getRole().getAuthority().equals("ROLE_USER")) {
@@ -112,15 +113,18 @@ public class FestivalServiceImpl implements FestivalService {
     // 페스티벌 내용 수정
     @Override
     @Transactional
-    public FestivalResponseDto modifyFestival(Long festivalId, FestivalRequestDto requestDto, List<MultipartFile> files, User user) throws IOException {
+    public FestivalResponseDto modifyFestival(Long festivalId, FestivalRequestDto requestDto,
+                                              List<MultipartFile> files, User user) throws IOException {
         Festival festival = findFestival(festivalId);
         // 주최사는 본인이 작성한 글만 수정 가능
-        if (user.getRole().getAuthority().equals("ROLE_ORGANIZER") && !festival.getUser().getId().equals(user.getId())) {
+        if (user.getRole().getAuthority().equals("ROLE_ORGANIZER")
+                && !festival.getUser().getId().equals(user.getId())) {
             throw new UnauthorizedException("본인이 작성한 글만 수정할 수 있습니다.");
         }
 
         // 관리자는 관리자가 작성한 글만 수정 가능
-        if (user.getRole().getAuthority().equals("ROLE_ADMIN") && festival.getUser().getRole().getAuthority().equals("ROLE_ORGANIZER")) {
+        if (user.getRole().getAuthority().equals("ROLE_ADMIN")
+                && festival.getUser().getRole().getAuthority().equals("ROLE_ORGANIZER")) {
             throw new UnauthorizedException("주최사가 작성한 글은 관리자 권한으로 수정할 수 없습니다.");
         }
 
