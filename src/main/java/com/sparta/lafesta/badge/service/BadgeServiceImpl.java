@@ -23,6 +23,7 @@ import com.sparta.lafesta.festival.repository.FestivalRepository;
 import com.sparta.lafesta.review.entity.Review;
 import com.sparta.lafesta.review.repostiroy.ReviewRepository;
 import com.sparta.lafesta.tag.dto.TagRequestDto;
+import com.sparta.lafesta.tag.entity.FestivalTag;
 import com.sparta.lafesta.tag.entity.Tag;
 import com.sparta.lafesta.tag.service.TagService;
 import com.sparta.lafesta.user.entity.User;
@@ -37,6 +38,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -228,11 +230,12 @@ public class BadgeServiceImpl implements BadgeService {
     public void checkBadgeTagFrequency(User user, Badge badge, List<Review> reviews, LocalDateTime startDay, LocalDateTime endDay) {
         List<Festival> festivals = festivalRepository.findAllByOpenDateBetween(startDay, endDay);
         List<Tag> tags = badge.getBadgeTags().stream().map(BadgeTag::getTag).toList();
+        List<String> tagsStr = tags.stream().map(Tag::getTitle).toList();
 
         long matchingFestivalCount = festivals.stream()
                 .filter(festival -> reviews.stream()
                         .allMatch(review -> review.getFestival().equals(festival)
-                                && festival.getTags().containsAll(tags)))
+                                && festival.getTags().stream().map(FestivalTag::getTag).toList().containsAll(tags)))
                 .count();
 
         if (matchingFestivalCount >= badge.getConditionStandard()) {
