@@ -21,6 +21,7 @@ public class ReminderDto {
     private String festivalLocate;
     private String reservationOpenDate;
     private String reservationPlace;
+    private List<User> festivalFollowUsers;
     private List<String> festivalFollowUsersEmail;
 
     public ReminderDto(Festival festival, FestivalReminderType type) {
@@ -36,10 +37,10 @@ public class ReminderDto {
             this.reservationOpenDate = formFestivalDate(festival, FestivalReminderType.RESERVATION_OPEN);
             this.reservationPlace = festival.getReservationPlace();
         }
-        this.festivalFollowUsersEmail = festival.getFestivalFollowers().stream()
+        this.festivalFollowUsers = festival.getFestivalFollowers().stream()
                 .map(FestivalFollow::getFollowingFestivalUser)
-                .map(User::getEmail)
                 .toList();
+        this.festivalFollowUsersEmail = festivalFollowUsers.stream().map(User::getEmail).toList();
     }
 
     // 타입별로 메일 제목 가져오기
@@ -71,9 +72,9 @@ public class ReminderDto {
     // 페스티벌 오픈 - 메일 제목 만들기
     private String makeFestivalOpenMailTitle(Festival festival) {
         StringBuilder sb = new StringBuilder();
-        sb.append("' ");
+        sb.append("'");
         sb.append(festival.getTitle());
-        sb.append(" '");
+        sb.append("'");
         sb.append(" 개막 ");
         if (getDaysDifference(festival, FestivalReminderType.FESTIVAL_OPEN) > 0) {
             sb.append(getDaysDifference(festival, FestivalReminderType.FESTIVAL_OPEN));
@@ -87,7 +88,10 @@ public class ReminderDto {
     // 페스티벌 오픈 - 메일 내용 만들기
     private String makeFestivalOpenMailContent(Festival festival) {
         StringBuilder sb = new StringBuilder();
-        sb.append("팔로우 하신 페스티벌");
+        sb.append("팔로우 하신 ");
+        sb.append("'");
+        sb.append(festival.getTitle());
+        sb.append("'");
         sb.append(" 개막 ");
         if (getDaysDifference(festival, FestivalReminderType.FESTIVAL_OPEN) > 0) {
             sb.append(getDaysDifference(festival, FestivalReminderType.FESTIVAL_OPEN));
@@ -102,9 +106,9 @@ public class ReminderDto {
     // 예매 오픈 - 메일 제목 만들기
     private String makeReservationOpenMailTitle(Festival festival) {
         StringBuilder sb = new StringBuilder();
-        sb.append("' ");
+        sb.append("'");
         sb.append(festival.getTitle());
-        sb.append(" '");
+        sb.append("'");
         sb.append(" 예매 오픈 ");
         if (getDaysDifference(festival, FestivalReminderType.RESERVATION_OPEN) > 0) {
             sb.append(getDaysDifference(festival, FestivalReminderType.RESERVATION_OPEN));
@@ -118,7 +122,10 @@ public class ReminderDto {
     // 예매 오픈 - 메일 내용 만들기
     private String makeReservationOpenMailContent(Festival festival) {
         StringBuilder sb = new StringBuilder();
-        sb.append("팔로우 하신 페스티벌");
+        sb.append("팔로우 하신 ");
+        sb.append("'");
+        sb.append(festival.getTitle());
+        sb.append("'");
         sb.append(" 예매 오픈 ");
         if (getDaysDifference(festival, FestivalReminderType.RESERVATION_OPEN) > 0) {
             sb.append(getDaysDifference(festival, FestivalReminderType.RESERVATION_OPEN));
@@ -133,9 +140,9 @@ public class ReminderDto {
     // 리뷰 독려 - 메일 제목 만들기
     private String makeReviewEncouragementMailTitle(Festival festival) {
         StringBuilder sb = new StringBuilder();
-        sb.append("' ");
+        sb.append("'");
         sb.append(festival.getTitle());
-        sb.append(" '");
+        sb.append("'");
         sb.append(" 리뷰 작성 알림");
 
         return sb.toString();
@@ -144,7 +151,11 @@ public class ReminderDto {
     // 리뷰 독려 - 메일 내용 만들기
     private String makeReviewEncouragementMailContent(Festival festival) {
         StringBuilder sb = new StringBuilder();
-        sb.append("팔로우 하신 페스티벌에 다녀오셨나요? 리뷰를 작성해보세요!");
+        sb.append("팔로우 하신 ");
+        sb.append("'");
+        sb.append(festival.getTitle());
+        sb.append("'");
+        sb.append("에 다녀오셨나요? 리뷰를 작성해보세요!");
 
         return sb.toString();
     }

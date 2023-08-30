@@ -196,4 +196,15 @@ public class FollowService {
 
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), followedFestival.getTitle() + "을(를) 언팔로우 했습니다."));
     }
+
+    // 팔로우 유저 찾기
+    public List<User> findFollowers(User followedUser) {
+        List<UserFollow> followUsers = userFollowRepository.findAllByFollowedUser(followedUser);
+        List<User> followers = new ArrayList<>();
+        for (UserFollow follower : followUsers) {
+            User followerUser = userRepository.findByFollowers(follower).orElse(null);
+            followers.add(followerUser);
+        }
+        return followers;
+    }
 }

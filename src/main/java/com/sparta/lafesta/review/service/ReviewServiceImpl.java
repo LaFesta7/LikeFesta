@@ -13,6 +13,7 @@ import com.sparta.lafesta.like.reviewLike.repository.ReviewLikeRepository;
 import com.sparta.lafesta.review.dto.ReviewRequestDto;
 import com.sparta.lafesta.review.dto.ReviewResponseDto;
 import com.sparta.lafesta.review.entity.Review;
+import com.sparta.lafesta.review.event.ReviewCreatedEventPublisher;
 import com.sparta.lafesta.review.repostiroy.ReviewRepository;
 import com.sparta.lafesta.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,9 @@ public class ReviewServiceImpl implements ReviewService {
 
     //Like
     private final ReviewLikeRepository reviewLikeRepository;
+
+    // 알림
+    private final ReviewCreatedEventPublisher eventPublisher;
 
     // 뱃지
     private final BadgeService badgeService;
@@ -74,6 +78,9 @@ public class ReviewServiceImpl implements ReviewService {
 
         // 뱃지 조건 확인
         badgeService.checkBadgeCondition(user);
+
+        // 이벤트 발생 -> 알림 생성
+        eventPublisher.publishReviewCreatedEvent(review);
 
         return new ReviewResponseDto(review);
     }
