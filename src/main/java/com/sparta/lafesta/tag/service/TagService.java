@@ -65,4 +65,12 @@ public interface TagService {
      * @return 태그 반환 결과
      */
     Tag checkTag(TagRequestDto requestDto);
+
+    /**
+     * 태그 타이틀로 태그 가져오기
+     *
+     * @param title 태그 타이틀
+     * @return 태그 반환 결과
+     */
+    Tag findTagByTitle(String title);
 }

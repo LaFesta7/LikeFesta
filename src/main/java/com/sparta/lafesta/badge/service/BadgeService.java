@@ -45,6 +45,13 @@ public interface BadgeService {
     BadgeResponseDto modifyBadge(Long badgeId, BadgeRequestDto requestDto, List<MultipartFile> files, User user) throws IOException;
 
     /**
+     * 뱃지 태그 연관관계 수정
+     * @param badge 수정할 뱃지
+     * @param requestDto 뱃지 수정 정보
+     */
+    void modifyBadgeTags(Badge badge, BadgeRequestDto requestDto);
+
+    /**
      * 뱃지 삭제
      * @param badgeId 수정할 뱃지 id
      * @param user       권한 확인

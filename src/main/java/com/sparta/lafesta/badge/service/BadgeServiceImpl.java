@@ -138,7 +138,46 @@ public class BadgeServiceImpl implements BadgeService {
         // 뱃지 정보 변경
         badge.modify(requestDto);
 
+        // 뱃지 연관 태그 수정
+        if (requestDto.getConditionEnum() == BadgeConditionEnum.TAG) {
+            modifyBadgeTags(badge, requestDto);
+        } else {
+            if (requestDto.getConditionTags() != null) {
+                throw new IllegalArgumentException("FREQUENCY와 STEADY는 태그를 선택할 수 없습니다.");
+            }
+        }
+
         return new BadgeResponseDto(badge);
+    }
+
+    // 뱃지-태그 연관관계 수정
+    @Override
+    @Transactional
+    public void modifyBadgeTags(Badge badge, BadgeRequestDto requestDto) {
+        if (requestDto.getConditionTags() == null) {
+            throw new IllegalArgumentException("태그를 추가해주세요.");
+        }
+
+        // 연관관계가 존재하지 않을 경우에만 연관관계 생성 -> 태그가 없으면 새로 생성
+        for (TagRequestDto tagRequestDto : requestDto.getConditionTags()) {
+            Tag tag = tagService.checkTag(tagRequestDto);
+            if (badgeTagRepository.findByBadgeAndTag(badge, tag).isEmpty()) {
+                badgeTagRepository.save(new BadgeTag(badge, tag));
+            }
+
+        }
+
+        //사용되지 않는 태그는 삭제
+        List<String> beforeTags = badge.getBadgeTags().stream()
+                .map(BadgeTag::getTag).map(Tag::getTitle).toList();
+        List<String> requestTags = requestDto.getConditionTags().stream()
+                .map(TagRequestDto::getTitle).toList();
+        List<String> missingTags = beforeTags.stream()
+                .filter(tag -> !requestTags.contains(tag)).toList();
+        for (String tagTitls : missingTags) {
+            Tag missingTag = tagService.findTagByTitle(tagTitls);
+            badgeTagRepository.delete(findBadgeTag(badge,missingTag));
+        }
     }
 
     // 뱃지 삭제
@@ -346,6 +385,13 @@ public class BadgeServiceImpl implements BadgeService {
     private UserBadge findUserAndBadge(User user, Badge badge) {
         return userBadgeRepository.findByUserAndBadge(user, badge).orElseThrow(() ->
                 new NotFoundException("선택한 뱃지는 보유하고 있지 않습니다.")
+        );
+    }
+
+    // 뱃지와 태그로 뱃지태그 찾기
+    private BadgeTag findBadgeTag (Badge badge, Tag tag) {
+        return badgeTagRepository.findByBadgeAndTag(badge, tag).orElseThrow(() ->
+                new NotFoundException("선택한 뱃지태그는 존재하지 않습니다.")
         );
     }
 }

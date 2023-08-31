@@ -189,4 +189,11 @@ public class TagServiceImpl implements TagService {
             tagRepository.delete(tag);
         }
     }
+
+    @Override
+    public Tag findTagByTitle (String title) {
+        return tagRepository.findByTitle(title).orElseThrow(() ->
+                new IllegalArgumentException("선택한 태그는 존재하지 않습니다.")
+        );
+    }
 }
