@@ -168,10 +168,10 @@
                             <table>
                                 <thead>
                                 <tr>
-                                    <th class="no">No.</th>
-                                    <th class="title">Festival name</th>
-                                    <th class="author">Location</th>
-                                    <th class="time">Date</th>
+                                    <th class="no" scope="col">No.</th>
+                                    <th class="title" scope="col">Festival name</th>
+                                    <th class="author" scope="col">Location</th>
+                                    <th class="time" scope="col">Date</th>
                                 </tr>
                                 </thead>
                                 <tbody id="festival-table-body">
@@ -199,31 +199,7 @@
         </div>
     </div>
     <div class="background" style="background-image:url(/images/background/img-7.jpg)"></div>
-<<<<<<< HEAD
 </section>
-
-<script>
-    // ID가 'festival-table-body'인 tbody DOM 요소를 찾습니다.
-    const festivalTableBody = document.getElementById('festival-table-body');
-
-    // 페이지 네비게이션을 위한 로직
-=======
-
-</section>
-
-<script>
-    const festivalTableBody = document.getElementById('festival-table-body');
-    const pagination = document.getElementById('pagination');
-
->>>>>>> ec49edae74715bad199b5f56eecf3eda39b97bb3
-    const totalPages = 6;
-    let paginationLinks = '';
-
-    for (let page = 1; page <= totalPages; page++) {
-        paginationLinks += `<a href="?page=${page}">${page}</a>`;
-    }
-    pagination.innerHTML = paginationLinks;
-</script>
 
 <!-- 랭킹 페이지 -->
 <section class="slide fade-6 kenBurns" data-name="case">

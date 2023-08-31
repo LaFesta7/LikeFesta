@@ -11,3 +11,16 @@ $(document).ready(function () {
         $('#loginButton').hide();  // 로그인 버튼을 숨깁니다
     }
 });
+document.addEventListener("DOMContentLoaded", function() {
+    const FESTIVAL_TABLE_BODY = document.getElementById('festival-table-body');
+    const PAGINATION = document.getElementById('pagination');
+
+    const TOTAL_PAGES = 6;
+    let paginationLinks = '';
+
+    for (let page = 1; page <= TOTAL_PAGES; page++) {
+        paginationLinks += `<a href="?page=${page}">${page}</a>`;
+    }
+
+    PAGINATION.innerHTML = paginationLinks;
+});

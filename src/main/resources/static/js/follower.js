@@ -3,7 +3,7 @@ let userId = localStorage.getItem('userId');
 // 팔로우 목록을 불러오는 함수
 function loadFollowers() {
     $.ajax({
-        url: `/api/users/${userId}/follows/followings`,
+        url: `/api/users/'+${userId}+'/follows/followings`,
         type: 'GET',
         dataType: 'json',
         success: function(data) {
