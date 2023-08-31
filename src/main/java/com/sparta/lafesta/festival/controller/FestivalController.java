@@ -16,6 +16,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,12 +44,24 @@ public class FestivalController {
 
     @GetMapping("/festivals")
     @Operation(summary = "페스티벌 전체 조회", description = "페스티벌을 전체 조회합니다.")
-    public ResponseEntity<List<FestivalResponseDto>> selectFestivals(
-        @Parameter(description = "festival 페이징 처리에 필요한 기본 설정")@PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable
+    public Object selectFestivals(
+            @Parameter(description = "축제 페이지 처리에 필요한 기본 설정")
+            @PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable,
+            @RequestParam(value = "apiMode", required = false) Boolean apiMode,
+            Model model
     ) {
         List<FestivalResponseDto> results = festivalService.selectFestivals(pageable);
-        return ResponseEntity.ok().body(results);
+
+        if (Boolean.TRUE.equals(apiMode)) {
+            // apiMode가 true이면 ResponseEntity를 반환합니다.
+            return ResponseEntity.ok().body(results);
+        } else {
+            // 그렇지 않으면 모델을 채우고 뷰 이름을 반환합니다.
+            model.addAttribute("festivals", results);
+            return "festivalListPage";
+        }
     }
+
 
     @GetMapping("/festivals/{festivalId}")
     @Operation(summary = "페스티벌 상세 조회", description = "@PathVariable을 통해 festivalId 받아와, 해당 festival을 상세 조회합니다.")

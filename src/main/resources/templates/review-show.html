@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>LAFESTA Post</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
+  <link rel="stylesheet" href="/css/post-detail.css">
+
+  <script>
+    function deletePost() {
+      var r = confirm("포스트를 삭제하시겠습니까?");
+      if (r == true) {
+        window.location.href = "index.html";
+      }
+    }
+  </script>
+</head>
+<body>
+
+<div class="post-container">
+  <div class="post-header">
+    <div class="post-title">오늘부터 은비❤️팬클럽 1일차 후기</div>
+    <div class="post-meta">권진혁 2023.08.27</div>
+  </div>
+  <img src="/images/best2.jpg" alt="Review Image" class="post-image">
+  <div class="post-content">
+    왜 하필 내가 가기 전날에 나와서 사람 아쉽게 막 그렇게 그러냐;;
+    금요일 안간 내 잘못, 근데 표는 토요일이 더 비싸...억울해....
+  </div>
+  <div class="actions">
+    <div class="like-button">❤️ Like 100</div>
+    <div class="edit-delete">
+      <a href="review-edit.html" class="edit">Edit</a>
+      <button class="delete" onclick="deletePost()">Delete</button>
+    </div>
+  </div>
+  <div class="comments-section">
+    <div class="comment">
+      <div class="comment-author">김관호 매니저님</div>
+      <div class="comment-content">다음엔 워터밤 같이 가시죠~</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

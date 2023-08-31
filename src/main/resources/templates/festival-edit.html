@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>페스티벌 포스트 수정</title>
+    <link rel="stylesheet" href="/css/festival-3.css">
+</head>
+
+<body>
+<form action="/update-festival" method="post" enctype="multipart/form-data">
+    <label for="festival-name">페스티벌 이름</label>
+    <input type="text" id="festival-name" name="festival-name" value="워터밤 페스티벌" required><br><br>
+
+    <label for="start-date">시작 날짜</label>
+    <input type="date" id="start-date" name="start-date" value="2023-08-27" required><br><br>
+
+    <label for="end-date">종료 날짜</label>
+    <input type="date" id="end-date" name="end-date" value="2023-08-28" required><br><br>
+
+    <label for="festival-location">페스티벌 장소</label>
+    <input type="text" id="festival-location" name="festival-location" value="잠실 종합운동장" required><br><br>
+
+    <label for="festival-description">페스티벌 설명</label>
+    <textarea id="festival-description" name="festival-description" required>물총을 쏘면서 즐기는 국내 최대 규모의 워터 페스티벌! 한번도 안가본 사람은 있어도 한번만 간 사람은 없다는 바로 그 축제!</textarea><br><br>
+
+    <label for="festival-image">페스티벌 이미지</label>
+    <input type="file" id="festival-image" name="festival-image" accept="image/*"><br>
+    <img src="/images/best1.jpg" alt="현재 이미지" width="200"><br><br>
+
+    <label for="festival-link">페스티벌 웹사이트/링크</label>
+    <input type="url" id="festival-link" name="festival-link" value="http://waterbombfestival.com/" required><br><br>
+
+    <input type="submit" value="페스티벌 정보 수정">
+</form>
+</body>
+</html>
