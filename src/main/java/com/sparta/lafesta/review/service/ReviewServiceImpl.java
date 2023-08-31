@@ -190,14 +190,6 @@ public class ReviewServiceImpl implements ReviewService {
         return response;
     }
 
-    // 해당 페스티벌에 이미 작성한 리뷰 존재하는지 확인
-    public void checkIfUserHasReviewedFestival(User user, Festival festival) {
-        boolean hasReviewed = reviewRepository.existsByUserAndFestival(user, festival);
-        if (hasReviewed) {
-            throw new IllegalArgumentException("해당 페스티벌에 대한 리뷰를 이미 작성하였습니다.");
-        }
-    }
-
     //리뷰 랭킹 조회
     @Override
     @Transactional(readOnly = true)
@@ -209,6 +201,14 @@ public class ReviewServiceImpl implements ReviewService {
 
         return reviewRepository.findTop3Review().stream()
             .map(ReviewResponseDto::new).toList();
+    }
+
+    // 해당 페스티벌에 이미 작성한 리뷰 존재하는지 확인
+    public void checkIfUserHasReviewedFestival(User user, Festival festival) {
+        boolean hasReviewed = reviewRepository.existsByUserAndFestival(user, festival);
+        if (hasReviewed) {
+            throw new IllegalArgumentException("해당 페스티벌에 대한 리뷰를 이미 작성하였습니다.");
+        }
     }
 
     // 리뷰 id로 리뷰 찾기
