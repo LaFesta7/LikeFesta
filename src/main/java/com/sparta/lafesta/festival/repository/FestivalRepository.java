@@ -25,4 +25,6 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
     List<Festival> findAllByEndDateBetween(LocalDateTime startOfDay, LocalDateTime endOfDay);
 
     Optional<Festival> findByTags(FestivalTag tags);
+
+    List<Festival> findTop3ByOrderByReviewsDesc();
 }

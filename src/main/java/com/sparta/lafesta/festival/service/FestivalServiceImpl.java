@@ -117,10 +117,6 @@ public class FestivalServiceImpl implements FestivalService {
                                               List<MultipartFile> files, User user) throws IOException {
         Festival festival = findFestival(festivalId);
 
-        if (user.getRole().getAuthority().equals("ROLE_USER")) {
-            throw new UnauthorizedException("일반 유저는 페스티벌 글을 수정할 수 없습니다.");
-        }
-
         // 주최사는 본인이 작성한 글만 수정 가능
         if (user.getRole().getAuthority().equals("ROLE_ORGANIZER")
                 && !festival.getUser().getId().equals(user.getId())) {
@@ -222,6 +218,19 @@ public class FestivalServiceImpl implements FestivalService {
 
         // 위에서 커밋이 수행되었으므로 FestivalResponseDto에서 새로운 likeCnt를 가져올 수 있음
         return response;
+    }
+
+    //페스티벌 랭킹 조회
+    @Override
+    @Transactional(readOnly = true)
+    public List<FestivalResponseDto> selectFestvalRanking(User user){
+        //회원 확인
+        if (user == null) {
+            throw new IllegalArgumentException("로그인 해주세요");
+        }
+
+        return festivalRepository.findTop3ByOrderByReviewsDesc().stream()
+            .map(FestivalResponseDto::new).toList();
     }
 
     // 페스티벌 오픈 알림을 보낼 페스티벌 가져오기
