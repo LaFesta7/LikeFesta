@@ -44,4 +44,10 @@ public interface AdminService {
      * @return 페스티벌 게시 요청 승인 처리 결과
      */
     FestivaRequestlResponseDto modifyFestivalRequestAdminApproval(Long festivalRequestId, User user);
+
+    /**
+     * admin 권한 확인
+     * @param user 권한 확인
+     */
+    void checkAdminRole(User user);
 }

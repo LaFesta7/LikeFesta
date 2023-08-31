@@ -90,7 +90,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     // admin 권한 확인
-    private void checkAdminRole(User user) {
+    @Override
+    public void checkAdminRole(User user) {
         if (!user.getRole().equals(UserRoleEnum.ADMIN)) {
             throw new UnauthorizedException("해당 페이지에 접근할 권한이 없습니다.");
         }
