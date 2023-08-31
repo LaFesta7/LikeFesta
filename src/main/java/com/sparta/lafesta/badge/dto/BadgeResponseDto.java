@@ -2,7 +2,10 @@ package com.sparta.lafesta.badge.dto;
 
 import com.sparta.lafesta.badge.entity.Badge;
 import com.sparta.lafesta.badge.entity.BadgeConditionEnum;
+import com.sparta.lafesta.badge.entity.BadgeTag;
 import com.sparta.lafesta.common.s3.dto.FileOnS3Dto;
+import com.sparta.lafesta.tag.dto.TagResponseDto;
+import com.sparta.lafesta.tag.entity.Tag;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -18,6 +21,7 @@ public class BadgeResponseDto {
     private LocalDate conditionLastDay;
     private int conditionStandard;
     private List<FileOnS3Dto> files;
+    private List<TagResponseDto> tags;
 
     public BadgeResponseDto(Badge badge) {
         this.id = badge.getId();
@@ -28,5 +32,6 @@ public class BadgeResponseDto {
         this.conditionLastDay = badge.getConditionLastDay();
         this.conditionStandard = badge.getConditionStandard();
         this.files = badge.getBadgeFileOnS3s().stream().map(FileOnS3Dto::new).toList();
+        this.tags = badge.getBadgeTags().stream().map(BadgeTag::getTag).map(TagResponseDto::new).toList();
     }
 }
