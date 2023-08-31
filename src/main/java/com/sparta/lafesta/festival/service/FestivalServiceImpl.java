@@ -229,7 +229,7 @@ public class FestivalServiceImpl implements FestivalService {
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        return festivalRepository.findTop3ByOrderByReviewsDesc().stream()
+        return festivalRepository.findTop3().stream()
             .map(FestivalResponseDto::new).toList();
     }
 
