@@ -33,5 +33,5 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
         + "group by f.id\n"
         + "order by count(r.festival_id) desc\n"
         + "limit 3", nativeQuery = true)
-    List<Festival> findTop3();
+    List<Festival> findTop3Festival();
 }

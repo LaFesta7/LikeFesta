@@ -103,6 +103,7 @@ public class FestivalController {
     }
 
     @GetMapping("/festivals/rank")
+    @Operation(summary = "페스티벌 랭킹 조회", description = "페스티벌 중 가장 리뷰 수가 많은 TOP3를 조회합니다.")
     public ResponseEntity<List<FestivalResponseDto>> selectFestivalRanking(
         @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ){
