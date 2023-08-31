@@ -53,10 +53,8 @@ public class FestivalController {
         List<FestivalResponseDto> results = festivalService.selectFestivals(pageable);
 
         if (Boolean.TRUE.equals(apiMode)) {
-            // apiMode가 true이면 ResponseEntity를 반환합니다.
             return ResponseEntity.ok().body(results);
         } else {
-            // 그렇지 않으면 모델을 채우고 뷰 이름을 반환합니다.
             model.addAttribute("festivals", results);
             return "festivalListPage";
         }

@@ -169,21 +169,19 @@
                                 <thead>
                                 <tr>
                                     <th class="no">No.</th>
-                                    <th class="title">축제명</th>
-                                    <th class="author">위치</th>
-                                    <th class="time">날짜</th>
+                                    <th class="title">Festival name</th>
+                                    <th class="author">Location</th>
+                                    <th class="time">Date</th>
                                 </tr>
                                 </thead>
-                                <thead>
-                                <div th:each="festival : ${festivals}">
-                                    <h2 th:text="${festival.getName()}"></h2>
-                                    <p th:text="${festival.getDescription()}"></p>
-                                    <p th:text="${festival.getLocation()}"></p>
-                                    <p th:text="${festival.getOpenDate()}"></p>
-                                    <p th:text="${festival.getEndDate()}"></p>
-                                    <p th:text="${festival.getOfficialLink()}"></p>
-                                </div>
-                                </thead>
+                                <tbody id="festival-table-body">
+                                <tr th:each="festival, festivalStat : ${festivals}">
+                                    <td th:text="${festivalStat.index + 1}"></td> <!-- 번호 -->
+                                    <td th:text="${festival.name}"></td> <!-- 페스티벌 이름 -->
+                                    <td th:text="${festival.location}"></td> <!-- 위치 -->
+                                    <td th:text="${festival.openDate} + ' - ' + ${festival.endDate}"></td> <!-- 날짜 -->
+                                </tr>
+                                </tbody>
                             </table>
                         </div>
                     </ul>
@@ -201,13 +199,13 @@
         </div>
     </div>
     <div class="background" style="background-image:url(/images/background/img-7.jpg)"></div>
-
 </section>
 
 <script>
+    // ID가 'festival-table-body'인 tbody DOM 요소를 찾습니다.
     const festivalTableBody = document.getElementById('festival-table-body');
-    const pagination = document.getElementById('pagination');
 
+    // 페이지 네비게이션을 위한 로직
     const totalPages = 6;
     let paginationLinks = '';
 
