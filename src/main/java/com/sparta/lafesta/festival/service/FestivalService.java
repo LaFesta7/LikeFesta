@@ -84,9 +84,9 @@ public interface FestivalService {
      * 페스티벌 랭킹 조회
      *
      * @param user 권한 확인
-     * @return 랭킹 조회 결과
+     * @return 페스티벌 랭킹 조회 결과
      */
-    List<FestivalResponseDto> selectFestvalRanking(User user);
+    List<FestivalResponseDto> selectFestivalRanking(User user);
 
     /**
      * 페스티벌 오픈 알림을 보낼 페스티벌 가져오기

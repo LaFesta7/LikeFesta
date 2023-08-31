@@ -6,8 +6,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import org.springframework.data.jpa.repository.Query;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     List<Review> findAllByFestival(Festival festival, Pageable pageable);
+
+    @Query(value = "select r.* from reviews r\n"
+        + "left join review_like l on r.id = l.review_id\n"
+        + "group by r.id\n"
+        + "order by count(l.review_id) desc\n"
+        + "limit 3", nativeQuery = true)
+    List<Review> findTop3Review();
 }
