@@ -6,16 +6,18 @@ import com.sparta.lafesta.common.s3.entity.FileOnS3;
 import com.sparta.lafesta.common.s3.entity.ReviewFileOnS3;
 import com.sparta.lafesta.common.s3.repository.ReviewFileRepository;
 import com.sparta.lafesta.festival.entity.Festival;
-import com.sparta.lafesta.festival.service.FestivalServiceImpl;
+import com.sparta.lafesta.festival.service.FestivalService;
 import com.sparta.lafesta.like.reviewLike.entity.ReviewLike;
 import com.sparta.lafesta.like.reviewLike.repository.ReviewLikeRepository;
 import com.sparta.lafesta.review.dto.ReviewRequestDto;
 import com.sparta.lafesta.review.dto.ReviewResponseDto;
 import com.sparta.lafesta.review.entity.Review;
+import com.sparta.lafesta.review.event.ReviewCreatedEventPublisher;
 import com.sparta.lafesta.review.repostiroy.ReviewRepository;
 import com.sparta.lafesta.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -24,14 +26,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
     //CRUD
     private final ReviewRepository reviewRepository;
-    private final FestivalServiceImpl festivalService;
+    private final FestivalService festivalService;
 
     //S3
     private final S3UploadService s3UploadService;
@@ -40,6 +41,9 @@ public class ReviewServiceImpl implements ReviewService {
 
     //Like
     private final ReviewLikeRepository reviewLikeRepository;
+
+    // 알림
+    private final ReviewCreatedEventPublisher eventPublisher;
 
     @Autowired
     private TransactionTemplate transactionTemplate;
@@ -64,17 +68,20 @@ public class ReviewServiceImpl implements ReviewService {
             uploadFiles(files, review);
         }
 
+        // 이벤트 발생 -> 알림 생성
+        eventPublisher.publishReviewCreatedEvent(review);
+
         return new ReviewResponseDto(review);
     }
 
     // 리뷰 전체 조회
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewResponseDto> selectReviews(Long festivalId, User user) {
+    public List<ReviewResponseDto> selectReviews(Long festivalId, User user, Pageable pageable) {
         // user 권한 확인 예외처리 추후 추가 작성 예정
         Festival festival = festivalService.findFestival(festivalId);
-        return reviewRepository.findAllByFestivalOrderByCreatedAtDesc(festival).stream()
-                .map(ReviewResponseDto::new).collect(Collectors.toList());
+        return reviewRepository.findAllByFestival(festival, pageable).stream()
+                .map(ReviewResponseDto::new).toList();
     }
 
     // 리뷰 상세 조회
@@ -173,13 +180,14 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     // 리뷰 id로 리뷰 찾기
+    @Override
     public Review findReview(Long reviewId) {
         return reviewRepository.findById(reviewId).orElseThrow(() ->
                 new IllegalArgumentException("선택한 리뷰는 존재하지 않습니다.")
         );
     }
 
-
+    // s3 업로드
     private void uploadFiles(List<MultipartFile> files, Review review) throws IOException {
         List<FileOnS3> fileOnS3s = new ArrayList<>();
         if (files != null) {
@@ -197,6 +205,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
+    // s3 삭제
     private void deleteFiles(Review review) {
         // 파일정보 불러오기
         List<ReviewFileOnS3> fileOnS3s = review.getReviewFileOnS3s();
@@ -205,10 +214,12 @@ public class ReviewServiceImpl implements ReviewService {
         if (!fileOnS3s.isEmpty()) { // 파일이 있다면 실행
             for (ReviewFileOnS3 fileOnS3 : fileOnS3s) {
                 s3UploadService.deleteFile(fileOnS3.getKeyName());
+                reviewFileRepository.delete(fileOnS3);
             }
         }
     }
 
+    // s3 수정
     private void modifyFiles(Review review, List<MultipartFile> files) throws IOException {
 
         // 기존 파일 삭제

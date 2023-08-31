@@ -6,6 +6,7 @@ import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.follow.entity.FestivalFollow;
 import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
 import com.sparta.lafesta.review.entity.Review;
+import com.sparta.lafesta.tag.entity.FestivalTag;
 import com.sparta.lafesta.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,6 +23,7 @@ import java.util.List;
 @Setter
 @Table(name = "festivals")
 public class Festival extends Timestamped {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -50,7 +52,6 @@ public class Festival extends Timestamped {
     @Column(name = "official_link", nullable = false)
     private String officialLink;
 
-
     //연관관계
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -70,9 +71,11 @@ public class Festival extends Timestamped {
     @OneToMany(mappedBy = "festival", orphanRemoval = true) //todo 이후 프론트 전달 방식과 관련해서 개선필요해 보임
     private List<FestivalFileOnS3> festivalFileOnS3s = new ArrayList<>();
 
+    @OneToMany(mappedBy = "festival", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<FestivalTag> tags = new ArrayList<>();
 
     ////생성자 - 약속된 형태로만 생성가능하도록 합니다.
-  
+
     public Festival(FestivalRequestDto requestDto, User user) {
 
         this.title = requestDto.getTitle();
@@ -86,9 +89,8 @@ public class Festival extends Timestamped {
         this.user = user;
     }
 
-  
     //// 서비스 메소드 - 외부에서 엔티티를 수정할 메소드를 정의합니다. (단일 책임을 가지도록 주의합니다.)
-  
+
     public void modify(FestivalRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.location = requestDto.getLocation();
