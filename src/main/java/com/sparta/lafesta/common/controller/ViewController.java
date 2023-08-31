@@ -54,4 +54,11 @@ public class ViewController {
     public String festival1(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "festival-post";
     }
+
+    @GetMapping("/users/badge")
+    public String badge() {
+        return "my-badge";
+    }
+
+
 }
