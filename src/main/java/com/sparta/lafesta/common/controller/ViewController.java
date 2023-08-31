@@ -56,9 +56,8 @@ public class ViewController {
     }
 
     @GetMapping("/users/badge")
-    public String badge() {
+    public String badge(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "my-badge";
     }
-
 
 }

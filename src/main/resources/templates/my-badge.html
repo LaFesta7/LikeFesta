@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
@@ -18,42 +18,28 @@
     <script src="/js/slides.js"></script>
     <script src="/js/jquery.min.js"></script>
     <script src="/js/plugins.js"></script>
+    <script src="/js/badge.js"></script>
 </head>
 
 <body class="background" style="background-image:url(/images/background/img-14.jpeg)"></body>
 
 <div class="left">
-    <a href="#" title="Slides Framework">
+    <a href="/" title="Slides Framework">
         <img src="/images/logo-s1.png" width="270" height="240" alt="lafesta logo">
     </a>
 </div>
 
 <div class="login-box">
-    <h2>내 벳찌 임시 저장</h2>
+    <h2>My Badge Collection</h2>
     <form>
-
-
-
-
-        <a href="#">
+        <div id="badgeList"></div>
+        <a href="#" id="setPrimaryBadge">
             <span></span>
             <span></span>
             <span></span>
             <span></span>
-            Submit
+            대표 벳찌 설정
         </a>
     </form>
 </div>
-
-<script>
-    $(document).ready(function () {
-        // 이메일 확인 버튼 클릭 이벤트
-        $("#emailConfirmBtn").click(function () {
-            // 여기에 이메일 인증 로직을 추가
-
-            // 인증키 입력칸을 표시
-            $("#emailConfirmBox").show();
-        });
-    });
-</script>
 </html>
