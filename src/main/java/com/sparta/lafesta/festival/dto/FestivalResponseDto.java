@@ -3,6 +3,8 @@ package com.sparta.lafesta.festival.dto;
 import com.sparta.lafesta.common.s3.dto.FileOnS3Dto;
 import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.review.dto.ReviewResponseDto;
+import com.sparta.lafesta.tag.dto.TagResponseDto;
+import com.sparta.lafesta.tag.entity.FestivalTag;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -21,6 +23,7 @@ public class FestivalResponseDto {
     private String officialLink;
     private List<ReviewResponseDto> reviews;
     private List<FileOnS3Dto> files;
+    private List<TagResponseDto> tags;
     private int likeCnt;
 
     public FestivalResponseDto(Festival festival) {
@@ -37,6 +40,8 @@ public class FestivalResponseDto {
                 map(ReviewResponseDto::new).toList();
         this.files = festival.getFestivalFileOnS3s().stream().
                 map(FileOnS3Dto::new).toList();
+        this.tags = festival.getTags().stream()
+                .map(FestivalTag::getTag).map(TagResponseDto::new).toList();
         this.likeCnt = festival.getFestivalLikes().size();
     }
 }

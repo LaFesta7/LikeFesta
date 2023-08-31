@@ -1,5 +1,7 @@
 package com.sparta.lafesta.user.dto;
 
+import com.sparta.lafesta.badge.dto.UserBadgeResponseDto;
+import com.sparta.lafesta.badge.entity.UserBadge;
 import com.sparta.lafesta.common.s3.dto.FileOnS3Dto;
 import com.sparta.lafesta.user.entity.User;
 import com.sparta.lafesta.user.entity.UserRoleEnum;
@@ -14,6 +16,8 @@ public class SelectUserResponseDto {
     private String nickname;
     private UserRoleEnum role;
     private List<FileOnS3Dto> files;
+    private List<UserBadgeResponseDto> representativeBadges;
+    private List<UserBadgeResponseDto> badges;
 
     public SelectUserResponseDto(User user){
         this.id = user.getId();
@@ -22,5 +26,8 @@ public class SelectUserResponseDto {
         this.role = user.getRole();
         this.files = user.getUserFileOnS3s().stream().
                 map(FileOnS3Dto::new).toList();
+        this.representativeBadges = user.getUserBadges().stream()
+                .filter(UserBadge::isRepresentative).map(UserBadgeResponseDto::new).toList();
+        this.badges = user.getUserBadges().stream().map(UserBadgeResponseDto::new).toList();
     }
 }

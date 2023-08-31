@@ -134,12 +134,13 @@ public class TagServiceImpl implements TagService {
 
 
     //존재하는 태그인지 확인 -> 없으면 생성 / 존재하는 태그면 가져오기
+    @Override
     public Tag checkTag(TagRequestDto requestDto) {
         Optional<Tag> checkTag = tagRepository.findByTitle(requestDto.getTitle());
         //이미 존재하는 태그인지 확인
         if (checkTag.isPresent()) {
             return checkTag
-                    .orElseThrow(() -> new IllegalArgumentException("해당 태그가 없습니다."));
+                    .orElseThrow(() -> new IllegalArgumentException("해당 태그가 이미 존재합니다."));
         } else {
             //태그 생성
             Tag tag = new Tag(requestDto);
@@ -187,5 +188,12 @@ public class TagServiceImpl implements TagService {
         if (usedTag.isEmpty()) {
             tagRepository.delete(tag);
         }
+    }
+
+    @Override
+    public Tag findTagByTitle (String title) {
+        return tagRepository.findByTitle(title).orElseThrow(() ->
+                new IllegalArgumentException("선택한 태그는 존재하지 않습니다.")
+        );
     }
 }
