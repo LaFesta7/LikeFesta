@@ -174,8 +174,8 @@ public class BadgeServiceImpl implements BadgeService {
                 .map(TagRequestDto::getTitle).toList();
         List<String> missingTags = beforeTags.stream()
                 .filter(tag -> !requestTags.contains(tag)).toList();
-        for (String tagTitls : missingTags) {
-            Tag missingTag = tagService.findTagByTitle(tagTitls);
+        for (String tagTitles : missingTags) {
+            Tag missingTag = tagService.findTagByTitle(tagTitles);
             badgeTagRepository.delete(findBadgeTag(badge,missingTag));
         }
     }
