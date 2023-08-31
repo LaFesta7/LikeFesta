@@ -1,5 +1,6 @@
 package com.sparta.lafesta.user.service;
 
+import com.sparta.lafesta.common.exception.NotFoundException;
 import com.sparta.lafesta.common.s3.S3UploadService;
 import com.sparta.lafesta.common.s3.entity.FileOnS3;
 import com.sparta.lafesta.common.s3.entity.UserFileOnS3;
@@ -217,5 +218,10 @@ public class UserService {
         uploadFiles(files, user);
     }
 
-
+    // id로 유저 찾기
+    public User findUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() ->
+                new NotFoundException("선택한 유저는 존재하지 않습니다.")
+        );
+    }
 }

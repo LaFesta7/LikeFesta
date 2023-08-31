@@ -24,6 +24,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
@@ -79,12 +80,13 @@ public class UserController {
 
     // 로그아웃
     @GetMapping("/users/logout")
-    public ResponseEntity<ApiResponseDto> logout(HttpServletRequest request, HttpServletResponse response) {
+    public void logout(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) throws IOException {
         Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "로그아웃이 완료되었습니다."));
+        redirectAttributes.addFlashAttribute("logoutMessage", "로그아웃이 완료되었습니다.");
+        response.sendRedirect("/");  // 특정 URL로 리디렉션
     }
 
     @GetMapping("/users/rank")

@@ -1,0 +1,67 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-image: url('assets/img/best1.jpg');  /* 배경 이미지 변경 */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+form {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 40%;
+    text-align: left;  /* 폼 내용 왼쪽 정렬 */
+    border: 2px solid #4CAF50; /* 밝은 초록색 테두리 추가 */
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: left; /* 텍스트 왼쪽 정렬 */
+}
+
+input[type="text"],
+input[type="date"],
+input[type="url"],
+textarea,
+input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 2px solid #4CAF50; /* 밝은 초록색 테두리 */
+    border-radius: 5px;
+    transition: box-shadow 0.3s ease;
+    background: none; /* 배경색 제거 */
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="url"]:focus,
+textarea:focus,
+input[type="file"]:focus {
+    box-shadow: 0 0 10px #4CAF50;
+}
+
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #4CAF50;
+}
