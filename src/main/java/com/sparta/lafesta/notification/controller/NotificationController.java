@@ -6,6 +6,9 @@ import com.sparta.lafesta.notification.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +24,10 @@ public class NotificationController {
 
     @GetMapping("/users/{userId}/notifications")
     @Operation(summary = "알림 전체 조회", description = "로그인 한 유저의 정보를 가져와, 해당 유저에게 온 알림을 모두 조회합니다.")
-    public List<NotificationResponseDto> getNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return notificationService.getNotifications(userDetails.getUser());
+    public List<NotificationResponseDto> getNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable
+    ) {
+        return notificationService.getNotifications(userDetails.getUser(), pageable);
     }
 
     @PatchMapping("/users/{userId}/notifications/{notificationId}")
