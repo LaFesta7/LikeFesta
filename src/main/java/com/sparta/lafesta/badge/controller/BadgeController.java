@@ -11,6 +11,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,9 +44,11 @@ public class BadgeController {
     @GetMapping("/admin/badges")
     @Operation(summary = "뱃지 전체 조회", description = "생성된 뱃지를 모두 조회합니다.")
     public ResponseEntity<List<BadgeResponseDto>> selectBadges (
-            @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
+        @Parameter(description = "뱃지 페이지 처리에 필요한 기본 설정")
+        @PageableDefault(size=20, sort="createdAt", direction = Direction.DESC) Pageable pageable
     ) {
-        List<BadgeResponseDto> results = badgeService.selectBadges(userDetails.getUser());
+        List<BadgeResponseDto> results = badgeService.selectBadges(userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(results);
     }
 
@@ -73,9 +78,11 @@ public class BadgeController {
     @Operation(summary = "유저 뱃지 보유 목록 조회", description = "userId를 받아 해당 유저가 보유한 모든 뱃지를 조회합니다.")
     public ResponseEntity<List<UserBadgeResponseDto>> selectUserBadges (
             @Parameter(name = "userId", description = "조회할 user의 id", in = ParameterIn.PATH) @PathVariable Long userId,
-            @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "유저 뱃지 페이지 처리에 필요한 기본 설정")
+            @PageableDefault(size=20, sort="createdAt", direction = Direction.DESC) Pageable pageable
     ) {
-        List<UserBadgeResponseDto> results = badgeService.selectUserBadges(userId, userDetails.getUser());
+        List<UserBadgeResponseDto> results = badgeService.selectUserBadges(userId, userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(results);
     }
 

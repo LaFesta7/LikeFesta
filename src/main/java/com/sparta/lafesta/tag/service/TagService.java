@@ -9,6 +9,7 @@ import com.sparta.lafesta.user.entity.User;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 public interface TagService {
@@ -17,9 +18,10 @@ public interface TagService {
      * 전체 태그 조회
      *
      * @param user 권한 확인을 위한 유저 정보
+     * @param pageable 페이징을 위한 정보
      * @return 전체 태그 조회 결과
      */
-    List<TagResponseDto> selectTags(User user);
+    List<TagResponseDto> selectTags(User user, Pageable pageable);
 
     /**
      * 태그 수정
@@ -44,9 +46,10 @@ public interface TagService {
      *
      * @param tag  조회할 태그의 정보
      * @param user 권한 확인을 위한 유저 정보
+     * @param pageable 페이징 정보
      * @return 태그별 페스티벌 조회 결과
      */
-    List<FestivalResponseDto> selectFestivalTags(String tag, User user);
+    List<FestivalResponseDto> selectFestivalTags(String tag, User user, Pageable pageable);
 
     /**
      * 페스티벌 태그 삭제
