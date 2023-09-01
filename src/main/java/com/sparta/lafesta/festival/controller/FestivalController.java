@@ -114,4 +114,13 @@ public class FestivalController {
         FestivalResponseDto result = festivalService.deleteFestivalLike(festivalId, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "좋아요를 취소했습니다. 좋아요 수: " + result.getLikeCnt()));
     }
+
+    @GetMapping("/festivals/rank")
+    @Operation(summary = "페스티벌 랭킹 조회", description = "페스티벌 중 가장 리뷰 수가 많은 TOP3를 조회합니다.")
+    public ResponseEntity<List<FestivalResponseDto>> selectFestivalRanking(
+        @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        List<FestivalResponseDto> results = festivalService.selectFestivalRanking(userDetails.getUser());
+        return ResponseEntity.ok().body(results);
+    }
 }

@@ -2,7 +2,9 @@ package com.sparta.lafesta.user.controller;
 
 import com.sparta.lafesta.common.dto.ApiResponseDto;
 import com.sparta.lafesta.common.jwt.JwtUtil;
+import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.user.dto.MailConfirmRequestDto;
+import com.sparta.lafesta.user.dto.SelectUserResponseDto;
 import com.sparta.lafesta.user.dto.SignupRequestDto;
 import com.sparta.lafesta.user.dto.VerificationRequestDto;
 import com.sparta.lafesta.user.service.UserService;
@@ -17,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -84,5 +87,14 @@ public class UserController {
         response.addCookie(cookie);
         redirectAttributes.addFlashAttribute("logoutMessage", "로그아웃이 완료되었습니다.");
         response.sendRedirect("/");  // 특정 URL로 리디렉션
+    }
+
+    @GetMapping("/users/rank")
+    @Operation(summary = "인플루언서 랭킹 조회", description = "가장 팔로워 수가 많은 유저 TOP3를 조회합니다.")
+    public ResponseEntity<List<SelectUserResponseDto>> selectUserRanking(
+        @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        List<SelectUserResponseDto> results = userService.selectUserRanking(userDetails.getUser());
+        return ResponseEntity.ok().body(results);
     }
 }
