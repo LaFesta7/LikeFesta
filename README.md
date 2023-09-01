@@ -51,6 +51,9 @@
 
 ## 3. API 설계
 
+<details>
+<summary>Api 명세서</summary>
+
 ![a-2](https://github.com/LaFesta7/LikeFesta/assets/131860214/4a4bb893-aa86-47d6-95e2-6a4f5fdc355f)
 ![b-2](https://github.com/LaFesta7/LikeFesta/assets/131860214/20ae5c2b-695a-49c4-a9c2-1890303630bd)
 ![c](https://github.com/LaFesta7/LikeFesta/assets/132440453/d9bba998-0911-49a0-8f6c-1132bd9eeb86)
@@ -60,11 +63,16 @@
 ![g-2](https://github.com/LaFesta7/LikeFesta/assets/131860214/fffea5ce-2d0c-453a-a5e9-6a21675b1bfc)
 ![h-2](https://github.com/LaFesta7/LikeFesta/assets/131860214/9fd797a5-645c-4116-b17a-d82ca36bac3e)
 
+</details>
+
 ## 4. ERD 설계
 
-![lafesta_erd-2](https://github.com/LaFesta7/LikeFesta/assets/131860214/dbc7924f-fa5d-441c-bfa6-24c7a4d0e17b)
+![lafesta_erd](https://github.com/LaFesta7/LikeFesta/assets/131860214/8faf15dc-72bf-4290-b4d9-3775d8739f72)
 
 ## 5. 와이어프레임 설계
+
+<details>
+<summary>와이어프레임</summary>
 
 ![Group_1](https://github.com/LaFesta7/LikeFesta/assets/131860214/5522cba4-d879-4fdf-b41b-084fe7736bc1)
 
@@ -75,6 +83,8 @@
 ![Group_6](https://github.com/LaFesta7/LikeFesta/assets/131860214/ad4efa1c-d73f-4c1c-b030-b7d25b2c1167)
 ![Group_7](https://github.com/LaFesta7/LikeFesta/assets/131860214/267c3c3e-5f09-4ce6-86f8-11bd96942acd)
 ![Group_8](https://github.com/LaFesta7/LikeFesta/assets/131860214/43790f05-3d53-49e1-b09a-070407149777)
+
+</details>
 
 ## 6. 트러블 슈팅
 
@@ -138,8 +148,9 @@
 
 김현우 : 기술버전 기록, 첨부파일(S3), 테스트 코드 방법 연구, Redis 연동, Refresh Token
 
-조해나 : Init 코드 작성, 페스티벌, 리뷰, 코멘트 CRUD, User 수, Like 기능(festival, review, comment), CI, 권한 및 페스티벌 게시
-요청 CRUD, 이메일 인증 개선, 유저 서비스 개선, 이메일을 활용한 알림 기능, 이벤트 퍼블리셔를 활용한 웹 알림 기능, 뱃지 기능, 프론트-백 연결, 발표 자료 준비
+조해나 : Init 코드 작성, 페스티벌 CRUD, 리뷰 CRUD, 코멘트 CRUD, User 기능 수정, Like 기능(festival, review, comment), CI,
+권한, 페스티벌 게시 요청 CRUD,
+이메일 인증 개선, 유저 서비스 개선, 이메일을 활용한 알림 기능, 이벤트 퍼블리셔를 활용한 웹 알림 기능, 뱃지 기능, 프론트-백 연결, 발표 자료 준비
 
 정해인 : Follow 기능(festival, user), 이메일 인증, 페이징 처리, 태그 및 태그별 조회 기능, 랭킹 조회, README 2차 작성
 
