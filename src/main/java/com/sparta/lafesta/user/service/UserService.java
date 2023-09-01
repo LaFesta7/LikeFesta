@@ -7,6 +7,7 @@ import com.sparta.lafesta.common.s3.entity.UserFileOnS3;
 import com.sparta.lafesta.common.s3.repository.UserFileRepository;
 import com.sparta.lafesta.email.service.MailService;
 import com.sparta.lafesta.user.dto.MailConfirmRequestDto;
+import com.sparta.lafesta.user.dto.SelectUserResponseDto;
 import com.sparta.lafesta.user.dto.SignupRequestDto;
 import com.sparta.lafesta.user.dto.VerificationRequestDto;
 import com.sparta.lafesta.user.entity.User;
@@ -144,6 +145,18 @@ public class UserService {
     @Scheduled(fixedRate = 1800000) // 30분마다 실행
     public void cleanupExpiredVerificationCodes() {
         verificationCodeRepository.deleteByExpirationTimeBefore(LocalDateTime.now());
+    }
+
+    //인플루언서 랭킹 조회
+    @Transactional(readOnly = true)
+    public List<SelectUserResponseDto> selectUserRanking(User user){
+        //회원 확인
+        if (user == null) {
+            throw new IllegalArgumentException("로그인 해주세요");
+        }
+
+        return userRepository.findTop3User().stream()
+            .map(SelectUserResponseDto::new).toList();
     }
 
     //카카오 로그인 시 로그아웃

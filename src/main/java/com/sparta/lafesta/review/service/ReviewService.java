@@ -73,6 +73,14 @@ public interface ReviewService {
     ReviewResponseDto deleteReviewLike(Long reviewId, User user);
 
     /**
+     * 리뷰 랭킹 조회
+     *
+     * @param user 회원 권한 확인
+     * @return 리뷰 랭킹 조회 결과
+     */
+    List<ReviewResponseDto> selectReviewRanking(User user);
+
+    /**
      * 리뷰 가져오기
      * @param reviewId 가져올 리뷰의 id
      * @return 가져온 리뷰

@@ -190,6 +190,19 @@ public class ReviewServiceImpl implements ReviewService {
         return response;
     }
 
+    //리뷰 랭킹 조회
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReviewResponseDto> selectReviewRanking(User user){
+        //회원 확인
+        if (user == null) {
+            throw new IllegalArgumentException("로그인 해주세요");
+        }
+
+        return reviewRepository.findTop3Review().stream()
+            .map(ReviewResponseDto::new).toList();
+    }
+
     // 해당 페스티벌에 이미 작성한 리뷰 존재하는지 확인
     public void checkIfUserHasReviewedFestival(User user, Festival festival) {
         boolean hasReviewed = reviewRepository.existsByUserAndFestival(user, festival);
