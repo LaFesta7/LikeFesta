@@ -50,10 +50,10 @@ public class ViewController {
             return "login";
     }
 
-    @GetMapping("/users/fest")
-    public String festival1(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return "festival-post";
-    }
+//    @GetMapping("/users/fest")
+//    public String festival1(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        return "festival-post";
+//    }
 
     @GetMapping("/users/badge")
     public String badge(@AuthenticationPrincipal UserDetailsImpl userDetails) {
