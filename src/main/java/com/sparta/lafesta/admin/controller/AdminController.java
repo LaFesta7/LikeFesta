@@ -27,6 +27,7 @@ public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/users/organizer-requests")
+
     @Operation(summary = "주최사 가입 인증 요청 목록 조회", description = "주최사 가입 인증 요청한 목록을 전체 조회합니다.")
     public ResponseEntity<List<OrganizerResponseDto>> selectOrganizerRequests(
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
