@@ -14,6 +14,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -38,9 +41,11 @@ public class TagController {
     @GetMapping("/tags")
     @Operation(summary = "전체 태그 조회", description = "태그를 전체 조회합니다.")
     public ResponseEntity<List<TagResponseDto>> selectTags(
-            @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "페이지 처리에 필요한 기본 설정")
+            @PageableDefault(size=30, sort="title", direction = Direction.ASC) Pageable pageable
     ) {
-        List<TagResponseDto> results = tagservice.selectTags(userDetails.getUser());
+        List<TagResponseDto> results = tagservice.selectTags(userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(results);
     }
 
@@ -69,9 +74,11 @@ public class TagController {
     @Operation(summary = "페스티벌 태그별 조회", description = "@RequestParam을 통해 태그의 title을 받아와, 해당 태그를 사용하는 페스티벌을 전체 조회합니다.")
     public ResponseEntity<List<FestivalResponseDto>> selectFestivalTags(
             @Parameter(description = "페스티벌을 조회할 때 사용할 태그 이름") @RequestParam("tag") String tag,
-            @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "페이지 처리에 필요한 기본 설정")
+            @PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable
     ) {
-        List<FestivalResponseDto> results = tagservice.selectFestivalTags(tag, userDetails.getUser());
+        List<FestivalResponseDto> results = tagservice.selectFestivalTags(tag, userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(results);
     }
 

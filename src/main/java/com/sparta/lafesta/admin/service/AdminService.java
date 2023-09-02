@@ -5,14 +5,16 @@ import com.sparta.lafesta.festivalRequest.dto.FestivaRequestlResponseDto;
 import com.sparta.lafesta.user.entity.User;
 
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface AdminService {
     /**
      * 주최사 가입 인증 요청 목록 조회
      * @param user 권한 확인
+     * @param pageable 페이징 정보
      * @return 주최사 가입 인증 요청 목록
      */
-    List<OrganizerResponseDto> selectOrganizerRequests(User user);
+    List<OrganizerResponseDto> selectOrganizerRequests(User user, Pageable pageable);
 
     /**
      * 주최사 가입 인증 승인
@@ -33,9 +35,10 @@ public interface AdminService {
     /**
      * 페스티벌 게시 요청 미승인 목록 조회
      * @param user 권한 확인
+     * @param pageable 페이징 정보
      * @return 페스티벌 게시 요청 미승인 목록
      */
-    List<FestivaRequestlResponseDto> selectFestivalRequestNotAdminApproval(User user);
+    List<FestivaRequestlResponseDto> selectFestivalRequestNotAdminApproval(User user, Pageable pageable);
 
     /**
      * 페스티벌 게시 요청 승인

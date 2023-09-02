@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,13 +36,13 @@ public class TagServiceImpl implements TagService {
     //태그 전체 조회
     @Override
     @Transactional(readOnly = true)
-    public List<TagResponseDto> selectTags(User user) {
+    public List<TagResponseDto> selectTags(User user, Pageable pageable) {
         //회원 확인
         if (user == null) {
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        return tagRepository.findAllBy().stream()
+        return tagRepository.findAllBy(pageable).stream()
                 .map(TagResponseDto::new).toList();
     }
 
@@ -77,7 +78,7 @@ public class TagServiceImpl implements TagService {
     //페스티벌 태그별 조회
     @Override
     @Transactional(readOnly = true)
-    public List<FestivalResponseDto> selectFestivalTags(String title, User user) {
+    public List<FestivalResponseDto> selectFestivalTags(String title, User user, Pageable pageable) {
         //회원 확인
         if (user == null) {
             throw new IllegalArgumentException("로그인 해주세요");
@@ -86,7 +87,7 @@ public class TagServiceImpl implements TagService {
         Tag tag = tagRepository.findByTitle(title)
                 .orElseThrow(() -> new IllegalArgumentException("해당 태그가 없습니다."));
 
-        List<FestivalTag> festivalTags = festivalTagRepository.findAllByTag(tag);
+        List<FestivalTag> festivalTags = festivalTagRepository.findAllByTag(tag, pageable);
 
         List<FestivalResponseDto> tagedFestivals = new ArrayList<>();
         for (FestivalTag festivalTag : festivalTags) {

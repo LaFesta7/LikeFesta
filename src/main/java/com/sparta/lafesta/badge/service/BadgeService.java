@@ -5,6 +5,7 @@ import com.sparta.lafesta.badge.dto.BadgeResponseDto;
 import com.sparta.lafesta.badge.dto.UserBadgeResponseDto;
 import com.sparta.lafesta.badge.entity.Badge;
 import com.sparta.lafesta.user.entity.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -30,9 +31,10 @@ public interface BadgeService {
     /**
      * 뱃지 전체 조회
      * @param user       권한 확인
+     * @param pageable 페이징 정보
      * @return 뱃지 전체 조회 결과
      */
-    List<BadgeResponseDto> selectBadges(User user);
+    List<BadgeResponseDto> selectBadges(User user, Pageable pageable);
 
     /**
      * 뱃지 수정
@@ -76,9 +78,10 @@ public interface BadgeService {
      * 유저 뱃지 보유 목록 조회
      * @param userId 조회활 유저 id
      * @param user       권한 확인
+     * @param pageable 페이징 정보
      * @return 뱃지 보유 목록 조회 결과
      */
-    List<UserBadgeResponseDto> selectUserBadges(Long userId, User user);
+    List<UserBadgeResponseDto> selectUserBadges(Long userId, User user, Pageable pageable);
 
     /**
      * 유저 대표 뱃지 설정/해제

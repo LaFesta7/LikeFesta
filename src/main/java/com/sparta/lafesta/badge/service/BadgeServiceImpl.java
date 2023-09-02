@@ -29,6 +29,7 @@ import com.sparta.lafesta.tag.service.TagService;
 import com.sparta.lafesta.user.entity.User;
 import com.sparta.lafesta.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -114,11 +115,11 @@ public class BadgeServiceImpl implements BadgeService {
     // 뱃지 전체 조회
     @Override
     @Transactional(readOnly = true)
-    public List<BadgeResponseDto> selectBadges(User user) {
+    public List<BadgeResponseDto> selectBadges(User user, Pageable pageable) {
         // 관리자 권한 확인
         adminService.checkAdminRole(user);
 
-        return badgeRepository.findAll().stream().map(BadgeResponseDto::new).toList();
+        return badgeRepository.findAllBy(pageable).stream().map(BadgeResponseDto::new).toList();
     }
 
     // 뱃지 수정
@@ -302,9 +303,9 @@ public class BadgeServiceImpl implements BadgeService {
     // 유저 뱃지 보유 목록 조회
     @Override
     @Transactional(readOnly = true)
-    public List<UserBadgeResponseDto> selectUserBadges(Long userId, User user) {
+    public List<UserBadgeResponseDto> selectUserBadges(Long userId, User user, Pageable pageable) {
         User selectUser = userService.findUser(userId);
-        List<UserBadgeResponseDto> userBadges = userBadgeRepository.findAllByUser(selectUser)
+        List<UserBadgeResponseDto> userBadges = userBadgeRepository.findAllByUser(selectUser, pageable)
                 .stream().map(UserBadgeResponseDto::new).toList();
         return userBadges;
     }
