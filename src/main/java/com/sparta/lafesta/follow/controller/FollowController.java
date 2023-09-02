@@ -10,6 +10,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,19 +40,25 @@ public class FollowController {
     @GetMapping("/users/{userId}/follows/followers")
     @Operation(summary = "유저 팔로워 목록 조회 - 나를 팔로우 하는 유저", description = "나를 팔로우 하는 유저를 전체 조회합니다.")
     public ResponseEntity<List<SelectUserResponseDto>> selectFollowers(
-            @Parameter(description = "권한 확인 및 조회 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails){
-        List<SelectUserResponseDto> results = followService.selectFollowers(userDetails);
+            @Parameter(description = "권한 확인 및 조회 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
+        @Parameter(description = "페이지 처리에 필요한 기본 설정")
+        @PageableDefault(size=20, sort="createdAt", direction = Direction.DESC) Pageable pageable
+        ){
+        List<SelectUserResponseDto> results = followService.selectFollowers(userDetails, pageable);
         return ResponseEntity.ok().body(results);
     }
 
     @GetMapping("/users/{userId}/follows/followings")
     @Operation(summary = "유저 팔로잉 목록 조회 - 내가 팔로우 하는 유저", description = "내가 팔로우 하는 유저를 전체 조회합니다.")
     public ResponseEntity<List<SelectUserResponseDto>> selectFollowingUsers(
-            @Parameter(description = "권한 확인 및 조회 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails){
+            @Parameter(description = "권한 확인 및 조회 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
+        @Parameter(description = "페이지 처리에 필요한 기본 설정")
+        @PageableDefault(size=20, sort="createdAt", direction = Direction.DESC) Pageable pageable
+        ){
         if(userDetails == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);  // 401 Unauthorized 응답
         }
-        List<SelectUserResponseDto> results = followService.selectFollowingUsers(userDetails);
+        List<SelectUserResponseDto> results = followService.selectFollowingUsers(userDetails, pageable);
         return ResponseEntity.ok().body(results);
     }
 
@@ -69,8 +79,11 @@ public class FollowController {
     @GetMapping("/users/{userId}/followed-festivals")
     @Operation(summary = "페스티벌 팔로우 목록 조회", description = "내가 팔로우 하는 페스티벌을 전체 조회합니다.")
     public ResponseEntity<List<FestivalResponseDto>> selectFollowingFestivals(
-            @Parameter(description = "권한 확인 및 조회 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails){
-        List<FestivalResponseDto> results = followService.selectFollowingFestivals(userDetails);
+            @Parameter(description = "권한 확인 및 조회 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
+        @Parameter(description = "페이지 처리에 필요한 기본 설정")
+        @PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable
+        ){
+        List<FestivalResponseDto> results = followService.selectFollowingFestivals(userDetails, pageable);
         return ResponseEntity.ok().body(results);
     }
 

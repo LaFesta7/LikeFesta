@@ -11,6 +11,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 public interface FestivalRepository extends JpaRepository<Festival, Long> {
 
@@ -25,4 +26,12 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
     List<Festival> findAllByEndDateBetween(LocalDateTime startOfDay, LocalDateTime endOfDay);
 
     Optional<Festival> findByTags(FestivalTag tags);
+
+    @Query(value = "select f.* \n"
+        + "from festivals f\n"
+        + "left join reviews r on f.id = r.festival_id\n"
+        + "group by f.id\n"
+        + "order by count(r.festival_id) desc\n"
+        + "limit 3", nativeQuery = true)
+    List<Festival> findTop3Festival();
 }

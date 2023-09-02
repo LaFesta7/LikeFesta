@@ -10,6 +10,7 @@ import com.sparta.lafesta.notification.event.ReminderSendEmailEventPublisher;
 import com.sparta.lafesta.notification.repository.NotificationRepository;
 import com.sparta.lafesta.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,8 +79,8 @@ public class NotificationService {
 
     // 알림 전체 조회
     @Transactional(readOnly = true)
-    public List<NotificationResponseDto> getNotifications(User user) {
-        return notificationRepository.findAllByFollower(user)
+    public List<NotificationResponseDto> getNotifications(User user, Pageable pageable) {
+        return notificationRepository.findAllByFollower(user, pageable)
                 .stream().map(NotificationResponseDto::new).toList();
     }
 

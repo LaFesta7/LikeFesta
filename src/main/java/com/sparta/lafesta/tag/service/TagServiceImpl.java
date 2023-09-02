@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,13 +36,13 @@ public class TagServiceImpl implements TagService {
     //태그 전체 조회
     @Override
     @Transactional(readOnly = true)
-    public List<TagResponseDto> selectTags(User user) {
+    public List<TagResponseDto> selectTags(User user, Pageable pageable) {
         //회원 확인
         if (user == null) {
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        return tagRepository.findAllBy().stream()
+        return tagRepository.findAllBy(pageable).stream()
                 .map(TagResponseDto::new).toList();
     }
 
@@ -77,7 +78,7 @@ public class TagServiceImpl implements TagService {
     //페스티벌 태그별 조회
     @Override
     @Transactional(readOnly = true)
-    public List<FestivalResponseDto> selectFestivalTags(String title, User user) {
+    public List<FestivalResponseDto> selectFestivalTags(String title, User user, Pageable pageable) {
         //회원 확인
         if (user == null) {
             throw new IllegalArgumentException("로그인 해주세요");
@@ -86,7 +87,7 @@ public class TagServiceImpl implements TagService {
         Tag tag = tagRepository.findByTitle(title)
                 .orElseThrow(() -> new IllegalArgumentException("해당 태그가 없습니다."));
 
-        List<FestivalTag> festivalTags = festivalTagRepository.findAllByTag(tag);
+        List<FestivalTag> festivalTags = festivalTagRepository.findAllByTag(tag, pageable);
 
         List<FestivalResponseDto> tagedFestivals = new ArrayList<>();
         for (FestivalTag festivalTag : festivalTags) {
@@ -134,12 +135,13 @@ public class TagServiceImpl implements TagService {
 
 
     //존재하는 태그인지 확인 -> 없으면 생성 / 존재하는 태그면 가져오기
+    @Override
     public Tag checkTag(TagRequestDto requestDto) {
         Optional<Tag> checkTag = tagRepository.findByTitle(requestDto.getTitle());
         //이미 존재하는 태그인지 확인
         if (checkTag.isPresent()) {
             return checkTag
-                    .orElseThrow(() -> new IllegalArgumentException("해당 태그가 없습니다."));
+                    .orElseThrow(() -> new IllegalArgumentException("해당 태그가 이미 존재합니다."));
         } else {
             //태그 생성
             Tag tag = new Tag(requestDto);
@@ -187,5 +189,12 @@ public class TagServiceImpl implements TagService {
         if (usedTag.isEmpty()) {
             tagRepository.delete(tag);
         }
+    }
+
+    @Override
+    public Tag findTagByTitle (String title) {
+        return tagRepository.findByTitle(title).orElseThrow(() ->
+                new IllegalArgumentException("선택한 태그는 존재하지 않습니다.")
+        );
     }
 }
