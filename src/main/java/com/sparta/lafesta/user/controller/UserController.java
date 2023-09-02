@@ -79,7 +79,7 @@ public class UserController {
 
     // 프로필 조회
     @GetMapping("/users/{userId}/profile")
-    @Operation(summary = "프로필 조회", description = "프로필을 조회합니다.")
+    @Operation(summary = "프로필 조회", description = "Pathvariable로 유저 아이디를 받아 해당 유저의 프로필을 조회합니다.")
     public ResponseEntity<SelectUserResponseDto> selectUserProfile(
             @Parameter(description = "프로필을 조회할 user의 Id") @PathVariable Long userId,
             @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -90,7 +90,7 @@ public class UserController {
 
     // 내 정보 조회
     @GetMapping("/users/info")
-    @Operation(summary = "내 정보 조회", description = "내 정보를 조회합니다.")
+    @Operation(summary = "내 정보 조회", description = "로그인한 유저의 정보를 조회합니다.")
     public ResponseEntity<UserInfoResponseDto> selectUserInfo(
             @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
@@ -100,7 +100,7 @@ public class UserController {
 
     // 내 닉네임 수정
     @PutMapping("/users/info/nickname")
-    @Operation(summary = "내 닉네임 수정", description = "Dto로 정보를 받아 닉네임을 수정합니다.")
+    @Operation(summary = "내 닉네임 수정", description = "Dto로 정보를 받아 로그인한 유저의 닉네임을 수정합니다.")
     public ResponseEntity<ApiResponseDto> modifyUserNickname(
             @Parameter(description = "수정할 닉네임 정보") @RequestBody NicknameRequestDto requestDto,
             @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -111,7 +111,7 @@ public class UserController {
 
     // 내 소개 수정
     @PutMapping("/users/info/introduce")
-    @Operation(summary = "내 소개 수정", description = "Dto로 정보를 받아 소개를 수정합니다.")
+    @Operation(summary = "내 소개 수정", description = "Dto로 정보를 받아 로그인한 유저의 소개를 수정합니다.")
     public ResponseEntity<ApiResponseDto> modifyUserIntroduce(
             @Parameter(description = "수정할 소개 정보") @RequestBody IntroduceRequestDto requestDto,
             @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -122,7 +122,7 @@ public class UserController {
 
     // 내 이메일 수정
     @PutMapping("/users/info/email")
-    @Operation(summary = "내 이메일 수정", description = "Dto로 정보를 받아 이메일 인증을 거친 후 이메일을 수정합니다.")
+    @Operation(summary = "내 이메일 수정", description = "Dto로 정보를 받아 이메일 인증을 거친 후 로그인한 유저의 이메일을 수정합니다.")
     public ResponseEntity<ApiResponseDto> modifyUserEmail(
             @Parameter(description = "수정할 이메일 정보") @RequestBody MailRequestDto requestDto,
             @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -133,7 +133,7 @@ public class UserController {
 
     // 내 비밀번호 수정
     @PutMapping("/users/info/password")
-    @Operation(summary = "내 비밀번호 수정", description = "Dto로 정보를 받아 현재 비밀번호 확인 후 / 현재 비밀번호를 잊어버린 경우 이메일 인증을 받아 비밀번호를 수정합니다.")
+    @Operation(summary = "내 비밀번호 수정", description = "Dto로 정보를 받아 현재 비밀번호 확인 후 / 현재 비밀번호를 잊어버린 경우 이메일 인증을 받아 로그인한 유저의 비밀번호를 수정합니다.")
     public ResponseEntity<ApiResponseDto> modifyUserPassword(
             @Parameter(description = "수정할 비밀번호 정보") @RequestBody PasswordRequestDto requestDto,
             @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -153,7 +153,7 @@ public class UserController {
 
     // 내 프로필 사진 수정
     @PutMapping("/users/info/image")
-    @Operation(summary = "내 프로필 사진 수정", description = "이미지 정보를 받아 프로필 이미지를 수정합니다.")
+    @Operation(summary = "내 프로필 사진 수정", description = "이미지 정보를 받아 로그인한 유저의 프로필 이미지를 수정합니다.")
     public ResponseEntity<ApiResponseDto> modifyUserImage(
             @Parameter(description = "유저프로필 이미지 수정시 등록할 첨부 파일") @RequestPart(value = "files", required = false) List<MultipartFile> files,
             @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -164,7 +164,7 @@ public class UserController {
 
     // 유저 탈퇴
     @DeleteMapping("/users/withdrawal")
-    @Operation(summary = "회원 탈퇴", description = "Dto로 정보를 받아 비밀번호 확인 후 회원 탈퇴를 진행합니다.")
+    @Operation(summary = "회원 탈퇴", description = "Dto로 정보를 받아 비밀번호 확인 후 로그인한 유저의 회원 탈퇴를 진행합니다.")
     public ResponseEntity<ApiResponseDto> deleteUser(
             @Parameter(description = "탈퇴 확인을 위한 패스워드 정보") @RequestBody WithdrawalRequestDto requestDto,
             @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
