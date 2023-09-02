@@ -2,6 +2,7 @@ package com.sparta.lafesta.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.lafesta.common.dto.ApiResponseDto;
+import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.common.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -35,7 +36,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
 
         String tokenValue = jwtUtil.getJwtFromHeader(req);
-
+        log.info(tokenValue);
         if (StringUtils.hasText(tokenValue)) {
 
             if (!jwtUtil.validateToken(tokenValue)) {
@@ -60,6 +61,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
 
             try {
+                log.info(info.getSubject());
                 setAuthentication(info.getSubject());
             } catch (Exception e) {
                 log.error(e.getMessage());
@@ -72,6 +74,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     public void setAuthentication(String username) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
+        log.info(username);
         Authentication authentication = createAuthentication(username);
         context.setAuthentication(authentication);
 

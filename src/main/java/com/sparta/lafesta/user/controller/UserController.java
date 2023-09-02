@@ -27,7 +27,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -96,5 +98,14 @@ public class UserController {
     ){
         List<SelectUserResponseDto> results = userService.selectUserRanking(userDetails.getUser());
         return ResponseEntity.ok().body(results);
+    }
+
+    //유저 아이디 조회 (권한 확인용)
+    @GetMapping("/api/getUserId")
+    public ResponseEntity<Map<String, Long>> getUserId(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Long userId = userDetails.getUser().getId();
+        Map<String, Long> response = new HashMap<>();
+        response.put("userId", userId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

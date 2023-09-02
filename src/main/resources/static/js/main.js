@@ -39,3 +39,32 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     PAGINATION.innerHTML = paginationLinks;
 });
+
+document.addEventListener("DOMContentLoaded", function() {
+    const token = "YOUR_JWT_TOKEN_HERE"; // Replace this with the actual token value
+    const myButton = document.getElementById("myButton");
+
+    myButton.addEventListener("click", function() {
+        fetch("/your-api-endpoint", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            },
+
+        })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error("Error:", error));
+    });
+});
+
+const button = document.getElementById('getTagsBtn');
+
+button.addEventListener('click', function() {
+    if (this.id === 'getTagsBtn') {
+        // Do something for getTagsBtn
+    }
+    if (this.classList.contains('myButton')) {
+        // Do something for myButton
+    }
+});

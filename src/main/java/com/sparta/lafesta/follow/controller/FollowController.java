@@ -51,9 +51,9 @@ public class FollowController {
     @Operation(summary = "유저 팔로잉 목록 조회 - 내가 팔로우 하는 유저", description = "내가 팔로우 하는 유저를 전체 조회합니다.")
     public ResponseEntity<List<SelectUserResponseDto>> selectFollowingUsers(
             @Parameter(description = "권한 확인 및 조회 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
-        @Parameter(description = "페이지 처리에 필요한 기본 설정")
-        @PageableDefault(size=20, sort="createdAt", direction = Direction.DESC) Pageable pageable
-        ){
+            @Parameter(description = "페이지 처리에 필요한 기본 설정")
+            @PageableDefault(size=20, sort="createdAt", direction = Direction.DESC) Pageable pageable
+    ){
         if(userDetails == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);  // 401 Unauthorized 응답
         }

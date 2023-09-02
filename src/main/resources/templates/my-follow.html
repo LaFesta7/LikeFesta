@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
@@ -9,12 +10,13 @@
     <title>LAFESTA</title>
     <link rel="icon" href="/images/logo1.png" type="image/x-icon">
 
-    <link rel="stylesheet" href="/css/login.css">
     <link href="/css/slides.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" as="font"
           href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
     <link rel="stylesheet" href="/css/slides.css">
+    <link rel="stylesheet" href="../static/css/follow.css">
 
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
     <script src="/js/slides.js"></script>
     <script src="/js/jquery.min.js"></script>
@@ -30,10 +32,37 @@
     </a>
 </div>
 
-<div class="login-box">
+<div id="following-list">
     <h2>My Follower List</h2>
-    <form>
-        <div id="followerList"></div> <!-- 팔로우 목록을 표시할 빈 div -->
-    </form>
+        <h1>밥 좀 먹고 올게용</h1>
     </div>
+
+<script>
+    let userId;
+
+    $.ajax({
+        url: '/api/getUserId',
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            userId = data.userId;
+
+            // Now fetch the followings
+            $.ajax({
+                url: `/api/users/${userId}/follows/followings`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // Do something
+                },
+                error: function(err) {
+                    console.log('Error:', err);
+                }
+            });
+        },
+        error: function(err) {
+            console.log('Error:', err);
+        }
+    });
+</script>
 </html>
