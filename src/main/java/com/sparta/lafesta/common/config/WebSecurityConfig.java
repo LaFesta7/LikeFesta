@@ -65,7 +65,6 @@ public class WebSecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/users/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/users/profile/followings")).authenticated() // 로그인시 허용 추가
                         .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()

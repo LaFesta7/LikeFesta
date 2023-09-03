@@ -1,0 +1,23 @@
+#following-list {
+    text-align: center;
+}
+
+#followers {
+    list-style-type: none;
+    padding: 0;
+}
+
+#followers li {
+    margin: 10px;
+    display: inline-block;
+}
+
+.follow-button {
+    background-color: red;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+}
