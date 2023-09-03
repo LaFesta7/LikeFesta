@@ -58,8 +58,9 @@ public class ViewController {
         return "my-badge";
     }
 
-    @GetMapping("/users/profile/followings")
-    public String showFollowings(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @GetMapping("/users/profile/followings-page")
+    public String showFollowings(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info(userDetails.getUsername());
         return "my-follow";
     }
 }

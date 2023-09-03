@@ -10,6 +10,7 @@ import com.sparta.lafesta.like.commentLike.repository.CommentLikeRepository;
 import com.sparta.lafesta.review.entity.Review;
 import com.sparta.lafesta.review.service.ReviewService;
 import com.sparta.lafesta.user.entity.User;
+import com.sparta.lafesta.user.entity.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +35,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public CommentResponseDto createComment(Long reviewId, CommentRequestDto requestDto, User user) {
         // 주최사, 일반 사용자는 댓글 작성 가능(관리자 불가)
-        if (user.getRole().getAuthority().equals("ROLE_ADMIN")) {
+        if (user.getRole().getAuthority().equals(UserRoleEnum.ADMIN.getAuthority())) {
             throw new UnauthorizedException("댓글을 작성할 수 있는 권한이 없습니다.");
         }
 

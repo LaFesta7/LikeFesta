@@ -62,7 +62,6 @@ public class FestivalController {
         }
     }
 
-
     @GetMapping("/festivals/{festivalId}")
     @Operation(summary = "페스티벌 상세 조회", description = "@PathVariable을 통해 festivalId 받아와, 해당 festival을 상세 조회합니다.")
     public ResponseEntity<FestivalResponseDto> selectFestival(

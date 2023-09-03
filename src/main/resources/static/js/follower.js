@@ -51,3 +51,32 @@ function toggleFollow(followingUserId) {
 $(document).ready(function() {
     loadFollowers();
 });
+
+document.addEventListener("DOMContentLoaded", function() {
+    // 예시 팔로워 목록
+    const followers = ['Alice', 'Bob', 'Charlie'];
+
+    // 팔로워 목록과 팔로우 취소 버튼을 채웁니다.
+    const followerList = document.getElementById('followers');
+    followers.forEach(follower => {
+        const listItem = document.createElement('li');
+        listItem.textContent = follower;
+
+        const unfollowButton = document.createElement('button');
+        unfollowButton.textContent = '팔로우 취소';
+        unfollowButton.addEventListener('click', function() {
+            unfollow(follower);
+        });
+
+        listItem.appendChild(unfollowButton);
+        followerList.appendChild(listItem);
+    });
+});
+
+// 팔로우 취소 동작을 처리하는 함수
+function unfollow(followerName) {
+    // 팔로워 목록에서 팔로워를 제거합니다 (필요하면 구현)
+    // 상태 창을 업데이트합니다.
+    const status = document.getElementById('status');
+    status.textContent = `${followerName} 님을 팔로우 취소하였습니다.`;
+}

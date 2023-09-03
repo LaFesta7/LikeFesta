@@ -82,7 +82,7 @@
     function onLogin() {
         let username = $('#username').val();
         let password = $('#password').val();
-
+        console.log(username, password);
         $.ajax({
             type: "POST",
             url: `/api/users/login`,
@@ -90,8 +90,6 @@
             data: JSON.stringify({username: username, password: password}),
         })
             .done(function (res, status, xhr) {
-                const token = xhr.getResponseHeader('Authorization');
-                Cookies.set('Authorization', token, {path: '/'});
                 window.location.href = host;
             })
             .fail(function (jqXHR, textStatus) {
