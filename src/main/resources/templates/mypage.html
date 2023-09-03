@@ -41,6 +41,23 @@
 </div>
 
 <script>
+    $(document).ready(function () {
+        $.ajax({
+            url: `/api/users/follows/followings`,
+            type: 'GET',
+            success: function (data) {
+                console.log(data);
+                let html = '';
+                for (let i = 0; i < data.length; i++) {
+                    html += `<li><a href="/api/users/${data[i].username}">${data[i].nickname}</a></li>`;
+                }
+                $('#followers').html(html);
+            },
+            error: function (err) {
+                console.log('Error:', err);
+            }
+        });
+    });
     // Edit Profile Button Click Event
     document.getElementById('editProfile').addEventListener('click', function () {
         // Redirect to Edit Profile Page (Change this URL to the actual edit page URL)
