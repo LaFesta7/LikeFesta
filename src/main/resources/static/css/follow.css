@@ -4,8 +4,10 @@
 }
 
 #followers li {
+    padding: 10px;
+    border-bottom: 1px solid #fff;
+    color: #0b0a0a;
     margin: 10px;
-    color: darkblue;
     font-weight: bold;
     border-bottom: 1px solid #ccc;
     list-style: none;
@@ -13,34 +15,35 @@
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid #ccc;
-    padding: 10px;
 }
 
 .heart {
     cursor: pointer;
+    float: right;
     font-size: 24px;
 }
 
 .followed .heart {
-    color: red;
+    color: #f81616;
 }
 
 .unfollowed .heart {
-    color: #ccc;
+    color: #0b0a0a;
 }
 
 
 #following-list {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    top: 50%;  /* 중앙으로 정렬 */
+    left: 50%;  /* 중앙으로 정렬 */
     width: 400px;
-    background-color: #f9f9f9;
-    padding: 20px;
+    padding: 40px;
+    background: rgba(0,0,0,.5);
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0,0,0,.6);
+    border-radius: 10px;
+    transform: translate(-50%, -50%);  /* 중앙으로 정렬 */
+    border: 2px solid #ccc;
     text-align: center;
     margin: auto;
 }
@@ -49,7 +52,7 @@ h2 {
     text-align: center;
     margin-bottom: 20px;
     color: white;
-    background-color: #007bff;
+    background-color: #bc23b0;
     padding: 10px;
     border-radius: 4px;
 }
@@ -63,7 +66,7 @@ ul li {
     padding: 12px;
     border-bottom: 1px solid #ddd;
     background-color: #f1f1f1;
-    color: #333;
+    color: #0b0a0a;
 }
 
 ul li:last-child {
@@ -74,10 +77,9 @@ ul li:nth-child(odd) {
     background-color: #e6e6e6;
 }
 
-/* Stylish and cool "Following" box */
 #status-window {
     border: 2px solid #ffffff;
-    background: linear-gradient(45deg, #42a5f5, #478ed1, #42a5f5);
+    background: linear-gradient(45deg, #bc23b0, #bc23b0, #bc23b0);
     background-size: 400% 400%;
     color: white;
     padding: 20px;
@@ -88,6 +90,7 @@ ul li:nth-child(odd) {
 }
 
 #status-window h3 {
+    margin-top: 20px;
     font-size: 2em;
     text-shadow: 2px 2px 4px #000000;
 }
@@ -116,4 +119,21 @@ ul li:nth-child(odd) {
     100% {
         box-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.8);
     }
+}
+
+.follow-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    padding: 40px;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,.5);
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0,0,0,.6);
+    border-radius: 10px;
+}
+
+#status-window h3, #status-window #status {
+    color: #fff;
 }

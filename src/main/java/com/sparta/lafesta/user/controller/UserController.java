@@ -119,4 +119,15 @@ public class UserController {
         UserInfoResponseDto result = userService.findUserInfo(userDetails.getUser());
         return ResponseEntity.ok().body(result);
     }
+
+    // 내 정보수정 - 닉네임 수정
+    @PutMapping("/users/info")
+    @Operation(summary = "내 정보 수정", description = "내 정보를 수정합니다.")
+    public ResponseEntity<ApiResponseDto> modifyUserNickname(
+            @Parameter(description = "수정할 닉네임 정보") @RequestBody NicknameRequestDto requestDto,
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        UserInfoResponseDto result = userService.modifyUserNickname(requestDto, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "닉네임 수정이 완료되었습니다!"));
+    }
 }

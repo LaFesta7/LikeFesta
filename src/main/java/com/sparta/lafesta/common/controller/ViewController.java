@@ -63,4 +63,9 @@ public class ViewController {
         log.info(userDetails.getUsername());
         return "my-follow";
     }
+
+    @GetMapping("/users/profile/edit-page")
+    public String editProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "mypage-modify";
+    }
 }

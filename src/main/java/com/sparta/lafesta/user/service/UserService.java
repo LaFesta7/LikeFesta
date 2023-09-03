@@ -229,4 +229,16 @@ public class UserService {
         User selectUser = findUser(user.getId());
         return new UserInfoResponseDto(selectUser);
     }
+
+    // 내 닉네임 수정
+    @Transactional
+    public UserInfoResponseDto modifyUserNickname(NicknameRequestDto requestDto, User user) {
+        Optional<User> checkNickname = userRepository.findByNickname(requestDto.getNickname());
+        if (checkNickname.isPresent()) {
+            throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
+        }
+        User selectUser = findUser(user.getId());
+        selectUser.modifyNickname(requestDto.getNickname());
+        return new UserInfoResponseDto(selectUser);
+    }
 }

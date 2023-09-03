@@ -32,7 +32,7 @@
     </a>
 </div>
 
-<div class="profile-section">
+<div class="profile-section profile-box">
     <img src="/images/logo1.png" alt="Profile Photo" width="100" height="100">
     <div class="profile-info">
         <h2>My Profile</h2>
@@ -42,7 +42,7 @@
     </div>
 </div>
 <div class="button_container">
-    <button id="editProfile" class="btn"><span>프로필 수정</span></button>
+    <button id="editProfile" href="/api/users/profile/edit-page" class="btn"><span>프로필 수정</span></button>
 </div>
 
 <script>
@@ -53,9 +53,9 @@
             success: function (data) {
                 console.log(data);
                 let html = `
-                    <p><strong>Username</strong><p></p> ${data.username}</p>
-                    <p><strong>Nickname</strong><p></p> ${data.nickname}</p>
-                    <p><strong>Email</strong><p></p> ${data.email}</p>
+                    <p><strong>Username</strong></p><p> ${data.username}</p>
+                    <p><strong>Nickname</strong></p><p> ${data.nickname}</p>
+                    <p><strong>Email</strong></p><p> ${data.email}</p>
                 `;
                 $('#profile').html(html);
             },
@@ -66,7 +66,7 @@
     });
 
     document.getElementById('editProfile').addEventListener('click', function () {
-        window.location.href = '/edit-profile';
+        window.location.href = '/api/users/profile/edit-page';
     });
 </script>
 </html>
