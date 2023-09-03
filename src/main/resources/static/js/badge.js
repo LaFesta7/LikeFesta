@@ -6,9 +6,9 @@ async function fetchBadges() {
     // 예를 들어: const response = await fetch("/api/badges");
     // 예시 데이터
     const badges = [
-        {id: 1, name: 'Badge1'},
-        {id: 2, name: 'Badge2'},
-        {id: 3, name: 'Badge3'}
+        {id: 1, name: '축제의 달인'},
+        {id: 2, name: '라페스타 개근'},
+        {id: 3, name: '리뷰의 달인'}
     ];
 
     const badgeList = document.getElementById('badgeList');
