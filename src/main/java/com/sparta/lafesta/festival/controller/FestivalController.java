@@ -42,9 +42,9 @@ public class FestivalController {
     }
 
     @GetMapping("/festivals")
-    @Operation(summary = "Search the entire festival", description = "Search the entire festival.")
+    @Operation(summary = "전체 축제 검색", description = "전체 축제를 검색합니다.")
     public ResponseEntity<List<FestivalResponseDto>> selectFestivals(
-            @Parameter(description = "Basic settings required for festival page processing")
+            @Parameter(description = "축제 페이지 처리에 필요한 기본 설정")
             @PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable,
             @RequestParam(value = "apiMode", required = false) Boolean apiMode
     ) {
