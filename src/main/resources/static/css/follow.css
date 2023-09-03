@@ -8,18 +8,11 @@
     display: inline-block;
     color: darkblue;
     font-weight: bold;
-    list-style-type: none;
+    border-bottom: 1px solid #ccc;
+    padding: 5px;
+    list-style: none;
 }
 
-.follow-button {
-    background-color: red;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 16px;
-}
 
 #following-list {
     position: absolute;
@@ -36,17 +29,15 @@
     margin: auto;
 }
 
-/* Style for the title */
 h2 {
     text-align: center;
     margin-bottom: 20px;
     color: white;
-    background-color: #007bff;  /* Change as you like */
+    background-color: #007bff;
     padding: 10px;
     border-radius: 4px;
 }
 
-/* Style for the list items */
 ul {
     list-style: none;
     padding: 0;
@@ -55,8 +46,8 @@ ul {
 ul li {
     padding: 12px;
     border-bottom: 1px solid #ddd;
-    background-color: #f1f1f1; /* Light gray background */
-    color: #333;  /* Dark text color */
+    background-color: #f1f1f1;
+    color: #333;
 }
 
 ul li:last-child {
@@ -64,30 +55,49 @@ ul li:last-child {
 }
 
 ul li:nth-child(odd) {
-    background-color: #e6e6e6; /* Slightly darker background for odd items */
+    background-color: #e6e6e6;
 }
 
+/* Stylish and cool "Following" box */
 #status-window {
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    background-color: #fff;
-}
-
-#status {
-    color: green; /* Color for status messages */
+    border: 2px solid #ffffff;
+    background: linear-gradient(45deg, #42a5f5, #478ed1, #42a5f5);
+    background-size: 400% 400%;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    animation: gradient 5s ease infinite, shimmer 1.5s infinite alternate;
 }
 
 #status-window h3 {
-    animation: shine 2s infinite alternate;
-    color: #333;
+    font-size: 2em;
+    text-shadow: 2px 2px 4px #000000;
 }
 
-@keyframes shine {
-    from {
-        text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 15px #ff00ff, 0 0 20px #ff00ff, 0 0 25px #ff00ff, 0 0 30px #ff00ff, 0 0 35px #ff00ff;
+#status {
+    padding: 10px;
+    font-size: 1.2em;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
     }
-    to {
-        text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 30px #ff00ff, 0 0 40px #ff00ff, 0 0 50px #ff00ff, 0 0 60px #ff00ff, 0 0 70px #ff00ff;
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.8);
     }
 }
