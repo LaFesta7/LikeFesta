@@ -2,6 +2,8 @@ package com.sparta.lafesta.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.lafesta.common.dto.ApiResponseDto;
+import com.sparta.lafesta.common.refreshtoken.entity.RefreshToken;
+import com.sparta.lafesta.common.refreshtoken.repository.RefreshTokenRepository;
 import com.sparta.lafesta.user.dto.LoginRequestDto;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.user.entity.UserRoleEnum;
@@ -21,9 +23,11 @@ import java.io.IOException;
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository) {
         this.jwtUtil = jwtUtil;
+        this.refreshTokenRepository = refreshTokenRepository;
         setFilterProcessesUrl("/api/users/login");
     }
 
@@ -52,8 +56,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
-        String token = jwtUtil.createToken(username, role);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        String accessToken = jwtUtil.createToken(username, role);
+        String refreshToken = jwtUtil.createRefreshToken(); //refresh token 생성
+
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
+        response.addHeader(JwtUtil.REFRESH_TOKEN_HEADER, refreshToken); //헤더에 추가로 전달. todo 클라이언트에서 헤더값을 저장해주는 코드 필요.
+
+        refreshTokenRepository.save(new RefreshToken(((UserDetailsImpl) authResult.getPrincipal()).getUser().getId(),
+                                                        refreshToken, accessToken));
+
+        log.info("accessToken : " + accessToken);
+        log.info("refreshToke : " + refreshToken);
 
         response.setStatus(200);
         response.setContentType("application/json");

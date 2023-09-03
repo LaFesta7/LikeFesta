@@ -18,13 +18,18 @@ import java.util.Date;
 @Component
 public class JwtUtil {
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+
+    //access Token 관련 멤버
     public static final String AUTHORIZATION_HEADER = "Authorization";
-
     public static final String AUTHORIZATION_KEY = "auth";
-
     public static final String BEARER_PREFIX = "Bearer ";
-
     private final long TOKEN_TIME = 60 * 60 * 1000L;
+
+
+    //Refresh Token 관련 멤버
+    public static final String REFRESH_TOKEN_HEADER = "Refresh-Token";
+    private final long REFRESH_TOKEN_TIME = 14 * 24 * 60 * 60 * 1000L; // 14일 세팅
+
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -49,6 +54,22 @@ public class JwtUtil {
                         .signWith(key, signatureAlgorithm)
                         .compact();
     }
+
+
+    public String createRefreshToken() {
+        Date date = new Date();
+        Claims claims = Jwts
+                .claims();
+
+        return Jwts
+                .builder()
+                .setClaims(claims)
+                .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME))
+                .setIssuedAt(date)
+                .signWith(key, signatureAlgorithm)
+                .compact();
+    }
+
 
     public String getJwtFromHeader(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);

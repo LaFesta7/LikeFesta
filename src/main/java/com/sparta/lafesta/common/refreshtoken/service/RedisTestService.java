@@ -38,7 +38,6 @@ public class RedisTestService {
 
     public void createByTemplate() {
         ValueOperations<String, String> stringValueOperations = redisTemplate.opsForValue();
-//        stringValueOperations.set("keyUsername", "valueRefreshToken");
         stringValueOperations.set("keyUsername", "valueRefreshToken", LIMIT_TIME, TimeUnit.SECONDS);
 
     }

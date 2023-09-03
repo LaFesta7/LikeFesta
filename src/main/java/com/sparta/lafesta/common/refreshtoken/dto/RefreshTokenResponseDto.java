@@ -8,7 +8,7 @@ import org.springframework.data.redis.core.RedisHash;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@RedisHash("refreshTokenFolder") //일.시.분.초 // 7일로 설정
+@RedisHash("refreshTokenFolder")
 public class RefreshTokenResponseDto {
     @Id
     private String username;
