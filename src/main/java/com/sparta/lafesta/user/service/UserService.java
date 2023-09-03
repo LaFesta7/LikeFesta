@@ -6,10 +6,7 @@ import com.sparta.lafesta.common.s3.entity.FileOnS3;
 import com.sparta.lafesta.common.s3.entity.UserFileOnS3;
 import com.sparta.lafesta.common.s3.repository.UserFileRepository;
 import com.sparta.lafesta.email.service.MailService;
-import com.sparta.lafesta.user.dto.MailConfirmRequestDto;
-import com.sparta.lafesta.user.dto.SelectUserResponseDto;
-import com.sparta.lafesta.user.dto.SignupRequestDto;
-import com.sparta.lafesta.user.dto.VerificationRequestDto;
+import com.sparta.lafesta.user.dto.*;
 import com.sparta.lafesta.user.entity.User;
 import com.sparta.lafesta.user.entity.UserRoleEnum;
 import com.sparta.lafesta.user.entity.VerificationCode;
@@ -24,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import com.sparta.lafesta.user.dto.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -223,5 +221,12 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow(() ->
                 new NotFoundException("선택한 유저는 존재하지 않습니다.")
         );
+    }
+
+    // 내 정보 조회
+    @Transactional(readOnly = true)
+    public UserInfoResponseDto findUserInfo(User user) {
+        User selectUser = findUser(user.getId());
+        return new UserInfoResponseDto(selectUser);
     }
 }
