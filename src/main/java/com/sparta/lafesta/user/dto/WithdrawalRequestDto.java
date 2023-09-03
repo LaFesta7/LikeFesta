@@ -1,13 +1,11 @@
 package com.sparta.lafesta.user.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 @Getter
-public class MailConfirmRequestDto {
+public class WithdrawalRequestDto {
 
     @NotBlank
-    @Email
-    private String email;
+    private String password;
 }
