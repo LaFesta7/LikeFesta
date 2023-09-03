@@ -5,12 +5,28 @@
 
 #followers li {
     margin: 10px;
-    display: inline-block;
     color: darkblue;
     font-weight: bold;
     border-bottom: 1px solid #ccc;
-    padding: 5px;
     list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+}
+
+.heart {
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.followed .heart {
+    color: red;
+}
+
+.unfollowed .heart {
+    color: #ccc;
 }
 
 

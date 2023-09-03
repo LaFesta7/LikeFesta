@@ -51,9 +51,32 @@
                 console.log(data);
                 let html = '';
                 for (let i = 0; i < data.length; i++) {
-                    html += `<li><a href="/api/users/${data[i].username}">${data[i].nickname}</a></li>`;
+                    html +=`
+                    <li class="followed">
+                        <a href="/api/users/${data[i].username}">${data[i].nickname}</a>
+                        <span class="heart">&#9829;</span>
+                    </li>
+                `;
                 }
                 $('#followers').html(html);
+
+                $('.heart').click(function() {
+                        const isFollowed = $(this).closest('li').hasClass('followed');
+                        const confirmationMessage = isFollowed ?
+                            "팔로우 취소하시겠습니까?" :
+                            "팔로우 하시겠습니까?";
+
+                        if (window.confirm(confirmationMessage)) {
+                            // Toggle heart class and symbol
+                            if (isFollowed) {
+                                $(this).closest('li').removeClass('followed').addClass('unfollowed');
+                                $(this).html('&#9825;');  // Empty heart
+                            } else {
+                                $(this).closest('li').removeClass('unfollowed').addClass('followed');
+                                $(this).html('&#9829;');  // Filled heart
+                            }
+                        }
+                });
             },
             error: function (err) {
                 console.log('Error:', err);
