@@ -21,11 +21,17 @@
         <script src="/js/plugins.js"></script>
 </head>
 
-<body class="background"></body>
+<body class="background" style="background-color: black"></body>
 
 <div class="left">
     <a href="/" title="Slides Framework">
         <img src="/images/logo-s1.png" width="270" height="240" alt="lafesta logo">
+    </a>
+</div>
+
+<div style="margin-bottom: 20px; margin-right: 20px; text-align: right">
+    <a class="button" id="festival-post-button" href="javascript:void(0);">
+        페스티벌 작성
     </a>
 </div>
 
@@ -115,6 +121,25 @@
 
         var resultDiv = document.getElementById('clickLatlng');
         resultDiv.innerHTML = message;
+
+        var lat = latlng.getLat(); // 위도
+        var lng = latlng.getLng(); // 경도
+
+        document.getElementById('festival-post-button').addEventListener('click', function () {
+            // 확인 대화상자 표시
+            var confirmation = confirm('해당 위치에 페스티벌을 작성하시겠습니까?');
+
+            // 사용자가 "확인"을 선택한 경우
+            if (confirmation) {
+                // 위에서 얻은 위도와 경도 정보를 사용하여 URL을 동적으로 생성
+                var url = `/api/users/fest-edit?lat=${lat}&lng=${lng}`;
+
+                // 생성된 URL로 이동
+                window.location.href = url;
+            }
+            // "취소"를 선택한 경우 아무 동작도 하지 않음
+        });
+
     });
 </script>
 
