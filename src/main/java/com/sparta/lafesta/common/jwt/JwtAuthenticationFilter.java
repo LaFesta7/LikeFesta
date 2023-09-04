@@ -47,26 +47,29 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         } catch (IOException e) {
             log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
+
         }
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.info("로그인 성공 및 JWT 생성");
+
+        // refactor 토큰을 한번에 처리할 수 있게 합칠 수도 있지 않을까?
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
         String accessToken = jwtUtil.createToken(username, role);
-        String refreshToken = jwtUtil.createRefreshToken(); //refresh token 생성
+        String refreshToken = jwtUtil.createRefreshToken(username, role); //refresh token 생성
 
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
         response.addHeader(JwtUtil.REFRESH_TOKEN_HEADER, refreshToken); //헤더에 추가로 전달. todo 클라이언트에서 헤더값을 저장해주는 코드 필요.
 
-        refreshTokenRepository.save(new RefreshToken(((UserDetailsImpl) authResult.getPrincipal()).getUser().getId(),
+        refreshTokenRepository.save(new RefreshToken(((UserDetailsImpl) authResult.getPrincipal()).getUser().getUsername(),
                                                         refreshToken, accessToken));
 
         log.info("accessToken : " + accessToken);
-        log.info("refreshToke : " + refreshToken);
+        log.info("refreshToken : " + refreshToken);
 
         response.setStatus(200);
         response.setContentType("application/json");

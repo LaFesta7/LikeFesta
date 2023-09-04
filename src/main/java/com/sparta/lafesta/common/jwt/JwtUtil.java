@@ -1,5 +1,6 @@
 package com.sparta.lafesta.common.jwt;
 
+import com.sparta.lafesta.common.refreshtoken.repository.RefreshTokenRepository;
 import com.sparta.lafesta.user.entity.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -18,12 +19,13 @@ import java.util.Date;
 @Component
 public class JwtUtil {
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     //access Token 관련 멤버
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String AUTHORIZATION_KEY = "auth";
     public static final String BEARER_PREFIX = "Bearer ";
-    private final long TOKEN_TIME = 60 * 60 * 1000L;
+    private final long TOKEN_TIME = 60* 1000L; //todo 임시로 5초로 설정
 
 
     //Refresh Token 관련 멤버
@@ -34,6 +36,10 @@ public class JwtUtil {
     @Value("${jwt.secret.key}")
     private String secretKey;
     private Key key;
+
+    public JwtUtil(RefreshTokenRepository refreshTokenRepository) {
+        this.refreshTokenRepository = refreshTokenRepository;
+    }
 
 
     @PostConstruct
@@ -56,23 +62,30 @@ public class JwtUtil {
     }
 
 
-    public String createRefreshToken() {
+    public String createRefreshToken(String username, UserRoleEnum role) {
         Date date = new Date();
-        Claims claims = Jwts
-                .claims();
 
-        return Jwts
-                .builder()
-                .setClaims(claims)
-                .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME))
-                .setIssuedAt(date)
-                .signWith(key, signatureAlgorithm)
-                .compact();
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .setSubject(username)
+                        .claim(AUTHORIZATION_KEY, role)
+                        .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME))
+                        .setIssuedAt(date)
+                        .signWith(key, signatureAlgorithm)
+                        .compact();
     }
 
 
-    public String getJwtFromHeader(HttpServletRequest request) {
+    public String getAccessTokenFromHeader(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+
+    public String getRefreshTokenFromHeader(HttpServletRequest request) {
+        String bearerToken = request.getHeader(REFRESH_TOKEN_HEADER);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.substring(7);
         }
@@ -85,17 +98,20 @@ public class JwtUtil {
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.error("유효하지 않은 JWT 서명입니다.");
-        } catch (ExpiredJwtException e) {
-            log.error("이 토큰은 만료된 JWT 토큰입니다.");
         } catch (UnsupportedJwtException e) {
             log.error("이 토큰은 지원되지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException e) {
             log.error("잘못된 JWT 토큰입니다.");
+        } catch (ExpiredJwtException e) {
+            log.error("이 토큰은 만료된 JWT 토큰입니다.");
         }
         return false;
     }
 
     public Claims getUserInfoFromToken(String token) {
+        if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) {
+            token =  token.substring(7);
+        }
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 }
