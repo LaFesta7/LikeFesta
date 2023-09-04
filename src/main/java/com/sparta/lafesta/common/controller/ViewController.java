@@ -73,4 +73,9 @@ public class ViewController {
     public String festivalPage() {
         return "festival-post";
     }
+
+    @GetMapping("/festivals/review-page")
+    public String reviewPage() {
+        return "review-show";
+    }
 }
