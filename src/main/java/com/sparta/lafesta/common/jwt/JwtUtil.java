@@ -1,6 +1,5 @@
 package com.sparta.lafesta.common.jwt;
 
-import com.sparta.lafesta.common.refreshtoken.repository.RefreshTokenRepository;
 import com.sparta.lafesta.user.entity.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -19,13 +18,12 @@ import java.util.Date;
 @Component
 public class JwtUtil {
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-    private final RefreshTokenRepository refreshTokenRepository;
 
     //access Token 관련 멤버
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String AUTHORIZATION_KEY = "auth";
     public static final String BEARER_PREFIX = "Bearer ";
-    private final long TOKEN_TIME = 60* 1000L; //todo 임시로 5초로 설정
+    private final long TOKEN_TIME = 2 * 60 * 60 * 1000L; //2시간으로 세팅. 테스트시 임의로 수정해야함
 
 
     //Refresh Token 관련 멤버
@@ -36,10 +34,6 @@ public class JwtUtil {
     @Value("${jwt.secret.key}")
     private String secretKey;
     private Key key;
-
-    public JwtUtil(RefreshTokenRepository refreshTokenRepository) {
-        this.refreshTokenRepository = refreshTokenRepository;
-    }
 
 
     @PostConstruct
@@ -110,7 +104,7 @@ public class JwtUtil {
 
     public Claims getUserInfoFromToken(String token) {
         if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) {
-            token =  token.substring(7);
+            token = token.substring(7);
         }
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
