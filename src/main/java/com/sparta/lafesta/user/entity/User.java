@@ -1,6 +1,7 @@
 package com.sparta.lafesta.user.entity;
 
 import com.sparta.lafesta.badge.entity.UserBadge;
+import com.sparta.lafesta.common.s3.entity.FestivalFileOnS3;
 import com.sparta.lafesta.common.s3.entity.UserFileOnS3;
 import com.sparta.lafesta.follow.entity.FestivalFollow;
 import com.sparta.lafesta.follow.entity.UserFollow;
@@ -16,7 +17,7 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "users")
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of="id")
 public class User {
 
     @Id
@@ -38,9 +39,6 @@ public class User {
 
     @Column(nullable = false, unique = true)
     private String nickname;
-
-    @Column
-    private String introduce;
 
     @Column
     private Boolean organizerRequest;
@@ -80,7 +78,7 @@ public class User {
         this.email = email;
         this.role = role;
         this.nickname = nickname;
-        this.kakaoId = kakaoId;
+        this.kakaoId =kakaoId;
     }
 
     public void approveOrganizer() {
@@ -95,17 +93,5 @@ public class User {
 
     public void modifyNickname(String nickname) {
         this.nickname = nickname;
-    }
-
-    public void modifyIntroduce(String introduce) {
-        this.introduce = introduce;
-    }
-
-    public void modifyEmail(String email) {
-        this.email = email;
-    }
-
-    public void modifyPassword(String password) {
-        this.password = password;
     }
 }

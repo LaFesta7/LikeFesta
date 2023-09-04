@@ -63,4 +63,19 @@ public class ViewController {
         log.info(userDetails.getUsername());
         return "my-follow";
     }
+
+    @GetMapping("/users/profile/edit-page")
+    public String editProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "mypage-modify";
+    }
+
+    @GetMapping("/festivals/post-page")
+    public String festivalPage() {
+        return "festival-post";
+    }
+
+    @GetMapping("/festivals/review-page")
+    public String reviewPage() {
+        return "review-show";
+    }
 }

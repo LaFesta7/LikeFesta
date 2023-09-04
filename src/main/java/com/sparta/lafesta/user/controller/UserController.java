@@ -22,6 +22,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.sparta.lafesta.user.dto.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -230,5 +231,26 @@ public class UserController {
         Map<String, Long> response = new HashMap<>();
         response.put("userId", userId);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // 내 정보 조회
+    @GetMapping("/users/info")
+    @Operation(summary = "내 정보 조회", description = "내 정보를 조회합니다.")
+    public ResponseEntity<UserInfoResponseDto> selectUserInfo(
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        UserInfoResponseDto result = userService.findUserInfo(userDetails.getUser());
+        return ResponseEntity.ok().body(result);
+    }
+
+    // 내 정보수정 - 닉네임 수정
+    @PutMapping("/users/info")
+    @Operation(summary = "내 정보 수정", description = "내 정보를 수정합니다.")
+    public ResponseEntity<ApiResponseDto> modifyUserNickname(
+            @Parameter(description = "수정할 닉네임 정보") @RequestBody NicknameRequestDto requestDto,
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        UserInfoResponseDto result = userService.modifyUserNickname(requestDto, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "닉네임 수정이 완료되었습니다!"));
     }
 }

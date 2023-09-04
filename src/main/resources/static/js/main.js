@@ -11,61 +11,83 @@ $(document).ready(function () {
         $('#loginButton').hide();  // 로그인 버튼을 숨깁니다
     }
 
-    $("#getTagsBtn").click(function() {
-        $.ajax({
-            url: '/api/tags',
-            type: 'GET',
-            dataType: 'json',
-            headers: {
-
-            },
-            success: function(data) {
-
-                console.log(data);
-            },
-            error: function(error) {
-                console.error("There was an error!", error);
-            }
-        });
+    $.ajax({
+        url: '/api/festivals',
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+            let html = '';
+            for (let i = 0; i <data.length; i++) { // Loop through each festival
+                html += `<tr>
+                        <td>${data[i].id}</td>
+                        <td>${data[i].title}</td>
+                        <td>${data[i].location}</td>
+                        <td>${data[i].content}</td>
+                        <td>${data[i].openDate} ~ ${data[i].endDate}</td>
+                        <td><a href="${data[i].officialLink}" target="_blank">Official Link</a></td>
+                    </tr>`;
+            };
+            $('#festival-table-body').html(html);
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
     });
-});
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Your previous code
-    const FESTIVAL_TABLE_BODY = document.getElementById('festival-table-body');
-    const PAGINATION = document.getElementById('pagination');
-    const TOTAL_PAGES = 6;
-    let paginationLinks = '';
+    $.ajax({
+        url: '/api/festivals',
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+            let html = '';
+            for (let i = 0; i <data.length; i++) { // Loop through each festival
+                html += `<tr>
+                        <td>${data[i].id}</td>
+                        <td>${data[i].title}</td>
+                        <td>${data[i].location}</td>
+                        <td>${data[i].content}</td>
+                        <td>${data[i].openDate} ~ ${data[i].endDate}</td>
+                        <td><a href="${data[i].officialLink}" target="_blank">Official Link</a></td>
+                    </tr>`;
+            };
+            $('#festival-table-body').html(html);
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
 
-    for (let page = 1; page <= TOTAL_PAGES; page++) {
-        paginationLinks += `<a href="?page=${page}">${page}</a>`;
-    }
+    $.ajax({
+        url: '/api/users/followed-festivals',
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+            let html = '';
+            for (let i = 0; i <data.length; i++) { // Loop through each festival
+                html += `
+                        <td>${data[i].title}</td>`;
+            };
+            $('#my-follow-festival').html(html);
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
 
-    PAGINATION.innerHTML = paginationLinks;
-
-    const token = "7Iqk7YyM66W07YOA7L2U65Sp7YG065+9U3ByaW5n6rCV7J2Y7Yqc7YSw7LWc7JuQ67mI7J6F64uI64ukLg=="; // Replace this with the actual token value
-    const myButton = document.getElementById("myButton");
-
-    // if(myButton) {  // Check if myButton is not null
-    //     myButton.addEventListener("click", function() {
-    //         fetch("/api/users/profile/followings-page", {
-    //             method: "GET",
-    //             headers: {
-    //                 "Authorization": `Bearer ${token}`
-    //             },
-    //         })
-    //             .then(response => response.json())
-    //             .then(data => console.log(data))
-    //             .catch(error => console.error("Error:", error));
-    //     });
-    // }
-
-    const button = document.getElementById('getTagsBtn');
-
-    if(button) {
-        button.addEventListener('click', function() {
-            if (this.classList.contains('myButton')) {
-            }
-        });
-    }
+    $.ajax({
+        url: '/api/users/follows/followers',
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+            let html = '';
+            for (let i = 0; i <data.length; i++) { // Loop through each festival
+                html += `
+                        <td>${data[i].username}</td>`;
+            };
+            $('#my-follow-list').html(html);
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
 });

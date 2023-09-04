@@ -56,7 +56,7 @@
 <script>
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div
         mapOption = {
-            center: new kakao.maps.LatLng(37.566826, 126.9786567), // 지도의 중심좌표
+            center: new kakao.maps.LatLng(37.5171395,127.0708922), // 지도의 중심좌표
             level: 3 // 지도의 확대 레벨
         };
 
@@ -85,9 +85,16 @@
     kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
         // 클릭한 위도, 경도 정보를 가져옵니다
         var latlng = mouseEvent.latLng;
+
+        var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
+        message += '경도는 ' + latlng.getLng() + ' 입니다';
         // 마커 위치를 클릭한 위치로 옮깁니다
         marker.setPosition(latlng);
+
+        overlay.setPosition(latlng);
+
         overlay.setMap(map);
+        console.log(message);
     });
 
     // 커스텀 오버레이는 아래와 같이 사용자가 자유롭게 컨텐츠를 구성하고 이벤트를 제어할 수 있기 때문에
@@ -105,7 +112,7 @@
         '            <div class="desc">' +
         '                <div class="ellipsis">서울 어딘가 경기장에서</div>' +
         '                <div class="jibun ellipsis">(우) 05292 (지번) 스파르타 게더게더</div>' +
-        '                <div><a href="http://waterbombfestival.com/" target="_blank" class="link">홈페이지</a><a> / </a><a href="/api/festivals/reviews" target="_blank" class="link">리뷰</a></div>' +
+        '                <div><a href="http://waterbombfestival.com/" target="_blank" class="link">홈페이지</a><a> / </a><a href="/api/festivals/post-page" target="_blank" class="link">축제 정보</a></div>' +
         '            </div>' +
         '        </div>' +
         '    </div>' +
@@ -270,7 +277,6 @@
                 image: markerImage
             });
 
-        marker.setMap(map); // 지도 위에 마커를 표출합니다
         markers.push(marker);  // 배열에 생성된 마커를 추가합니다
 
         return marker;
@@ -331,6 +337,6 @@
         }
     }
 </script>
-
 </body>
+
 </html>

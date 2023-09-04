@@ -4,49 +4,59 @@
 }
 
 #followers li {
+    padding: 10px;
+    border-bottom: 1px solid #fff;
+    color: #0b0a0a;
     margin: 10px;
-    display: inline-block;
-    color: darkblue;
     font-weight: bold;
-    list-style-type: none;
+    border-bottom: 1px solid #ccc;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
 }
 
-.follow-button {
-    background-color: red;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 50%;
+.heart {
     cursor: pointer;
-    font-size: 16px;
+    float: right;
+    font-size: 24px;
 }
+
+.followed .heart {
+    color: #f81616;
+}
+
+.unfollowed .heart {
+    color: #0b0a0a;
+}
+
 
 #following-list {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    top: 50%;  /* 중앙으로 정렬 */
+    left: 50%;  /* 중앙으로 정렬 */
     width: 400px;
-    background-color: #f9f9f9;
-    padding: 20px;
+    padding: 40px;
+    background: rgba(0,0,0,.5);
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0,0,0,.6);
+    border-radius: 10px;
+    transform: translate(-50%, -50%);  /* 중앙으로 정렬 */
+    border: 2px solid #ccc;
     text-align: center;
     margin: auto;
 }
 
-/* Style for the title */
 h2 {
     text-align: center;
     margin-bottom: 20px;
     color: white;
-    background-color: #007bff;  /* Change as you like */
+    background-color: #bc23b0;
     padding: 10px;
     border-radius: 4px;
 }
 
-/* Style for the list items */
 ul {
     list-style: none;
     padding: 0;
@@ -55,8 +65,8 @@ ul {
 ul li {
     padding: 12px;
     border-bottom: 1px solid #ddd;
-    background-color: #f1f1f1; /* Light gray background */
-    color: #333;  /* Dark text color */
+    background-color: #f1f1f1;
+    color: #0b0a0a;
 }
 
 ul li:last-child {
@@ -64,52 +74,66 @@ ul li:last-child {
 }
 
 ul li:nth-child(odd) {
-    background-color: #e6e6e6; /* Slightly darker background for odd items */
+    background-color: #e6e6e6;
 }
 
 #status-window {
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    background-color: #fff;
-}
-
-#status {
-    color: green; /* Color for status messages */
+    border: 2px solid #ffffff;
+    background: linear-gradient(45deg, #bc23b0, #bc23b0, #bc23b0);
+    background-size: 400% 400%;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    animation: gradient 5s ease infinite, shimmer 1.5s infinite alternate;
 }
 
 #status-window h3 {
-    animation: shine 2s infinite alternate;
-    color: #333;
-    margin: 0;
-    padding: 0;
+    margin-top: 20px;
+    font-size: 2em;
+    text-shadow: 2px 2px 4px #000000;
 }
 
-#status-window {
-    width: 300px;
-    margin: auto;
-    border: 3px solid #333;
-    animation: shine-border 2s infinite alternate;
-    text-align: center;
+#status {
     padding: 10px;
+    font-size: 1.2em;
 }
 
-@keyframes shine-text {
-    from {
-        text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 15px #ff00ff, 0 0 20px #ff00ff, 0 0 25px #ff00ff, 0 0 30px #ff00ff, 0 0 35px #ff00ff;
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
     }
-    to {
-        text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 30px #ff00ff, 0 0 40px #ff00ff, 0 0 50px #ff00ff, 0 0 60px #ff00ff, 0 0 70px #ff00ff;
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
     }
 }
 
-@keyframes shine-border {
-    from {
-        border-color: #ff00ff;
-        box-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 15px #ff00ff, 0 0 20px #ff00ff;
+@keyframes shimmer {
+    0% {
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
     }
-    to {
-        border-color: #ffffff;
-        box-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 30px #ffffff, 0 0 40px #ffffff;
+    100% {
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.8);
     }
+}
+
+.follow-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    padding: 40px;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,.5);
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0,0,0,.6);
+    border-radius: 10px;
+}
+
+#status-window h3, #status-window #status {
+    color: #fff;
 }

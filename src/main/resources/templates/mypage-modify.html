@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
@@ -15,6 +16,8 @@
           href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
     <link rel="stylesheet" href="/css/slides.css">
 
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
     <script src="/js/slides.js"></script>
     <script src="/js/jquery.min.js"></script>
     <script src="/js/plugins.js"></script>
@@ -29,58 +32,21 @@
 </div>
 
 <div class="login-box">
-    <h2>LFESTA Sign Up</h2>
-    <form>
+    <h2>Modify Profile</h2>
+    <form id="modifyForm">
         <div class="user-box">
-            <input type="text" name="" required="">
-            <label>Username</label>
-        </div>
-        <div class="user-box">
-            <input type="password" name="" required="">
-            <label>Password</label>
-        </div>
-        <div class="user-box">
-            <input type="email" name="" required="">
-            <label>Email</label>
-            <button type="button" id="emailConfirmBtn">확인</button>
-        </div>
-        <!-- 이메일 인증키 입력칸 (기본적으로 숨김) -->
-        <div class="user-box" id="emailConfirmBox" style="display: none;">
-            <input type="text" name="emailConfirmKey" required="">
-            <label>이메일 인증키</label>
-            <button type="button" id="emailConfirmKeyBtn">확인</button>
-        </div>
-        <div class="user-box">
-            <input type="password" name="" required="">
+            <input type="text" id="nicknameInput" required="">
             <label>Nickname</label>
         </div>
-        <!-- 사용자 유형 선택 토글 -->
-        <div class="user-box">
-            <select id="userType">
-                <option value="user">일반 사용자</option>
-                <option value="admin">관리자</option>
-                <option value="organizer">주최사</option>
-            </select>
-        </div>
-        <a href="#">
+        <a href="#" id="submitButton">
             <span></span>
             <span></span>
             <span></span>
             <span></span>
-            Submit
+            수정하기
         </a>
     </form>
 </div>
 
-<script>
-    $(document).ready(function () {
-        // 이메일 확인 버튼 클릭 이벤트
-        $("#emailConfirmBtn").click(function () {
-            // 여기에 이메일 인증 로직을 추가
-
-            // 인증키 입력칸을 표시
-            $("#emailConfirmBox").show();
-        });
-    });
-</script>
+<script src="/js/myedit.js"></script>
 </html>
