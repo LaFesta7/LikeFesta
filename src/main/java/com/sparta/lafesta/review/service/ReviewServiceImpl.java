@@ -1,5 +1,6 @@
 package com.sparta.lafesta.review.service;
 
+import com.sparta.lafesta.badge.service.BadgeService;
 import com.sparta.lafesta.common.exception.UnauthorizedException;
 import com.sparta.lafesta.common.s3.S3UploadService;
 import com.sparta.lafesta.common.s3.entity.FileOnS3;
@@ -12,6 +13,7 @@ import com.sparta.lafesta.like.reviewLike.repository.ReviewLikeRepository;
 import com.sparta.lafesta.review.dto.ReviewRequestDto;
 import com.sparta.lafesta.review.dto.ReviewResponseDto;
 import com.sparta.lafesta.review.entity.Review;
+import com.sparta.lafesta.review.event.ReviewCreatedEventPublisher;
 import com.sparta.lafesta.review.repostiroy.ReviewRepository;
 import com.sparta.lafesta.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,12 @@ public class ReviewServiceImpl implements ReviewService {
     //Like
     private final ReviewLikeRepository reviewLikeRepository;
 
+    // 알림
+    private final ReviewCreatedEventPublisher eventPublisher;
+
+    // 뱃지
+    private final BadgeService badgeService;
+
     @Autowired
     private TransactionTemplate transactionTemplate;
 
@@ -55,6 +63,10 @@ public class ReviewServiceImpl implements ReviewService {
 
         Festival festival = festivalService.findFestival(festivalId);
 
+        // 한 페스티벌에 하나의 리뷰만 작성 가능
+        // -> 해당 페스티벌에 이미 작성한 리뷰가 있는지 확인
+        checkIfUserHasReviewedFestival(user, festival);
+
         //Review DB에 저장
         Review review = new Review(festival, requestDto, user);
         reviewRepository.save(review);
@@ -63,6 +75,12 @@ public class ReviewServiceImpl implements ReviewService {
         if (files != null) {
             uploadFiles(files, review);
         }
+
+        // 뱃지 조건 확인
+        badgeService.checkBadgeCondition(user);
+
+        // 이벤트 발생 -> 알림 생성
+        eventPublisher.publishReviewCreatedEvent(review);
 
         return new ReviewResponseDto(review);
     }
@@ -172,6 +190,27 @@ public class ReviewServiceImpl implements ReviewService {
         return response;
     }
 
+    //리뷰 랭킹 조회
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReviewResponseDto> selectReviewRanking(User user){
+        //회원 확인
+        if (user == null) {
+            throw new IllegalArgumentException("로그인 해주세요");
+        }
+
+        return reviewRepository.findTop3Review().stream()
+            .map(ReviewResponseDto::new).toList();
+    }
+
+    // 해당 페스티벌에 이미 작성한 리뷰 존재하는지 확인
+    public void checkIfUserHasReviewedFestival(User user, Festival festival) {
+        boolean hasReviewed = reviewRepository.existsByUserAndFestival(user, festival);
+        if (hasReviewed) {
+            throw new IllegalArgumentException("해당 페스티벌에 대한 리뷰를 이미 작성하였습니다.");
+        }
+    }
+
     // 리뷰 id로 리뷰 찾기
     @Override
     public Review findReview(Long reviewId) {
@@ -180,7 +219,7 @@ public class ReviewServiceImpl implements ReviewService {
         );
     }
 
-
+    // s3 업로드
     private void uploadFiles(List<MultipartFile> files, Review review) throws IOException {
         List<FileOnS3> fileOnS3s = new ArrayList<>();
         if (files != null) {
@@ -198,6 +237,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
+    // s3 삭제
     private void deleteFiles(Review review) {
         // 파일정보 불러오기
         List<ReviewFileOnS3> fileOnS3s = review.getReviewFileOnS3s();
@@ -206,10 +246,12 @@ public class ReviewServiceImpl implements ReviewService {
         if (!fileOnS3s.isEmpty()) { // 파일이 있다면 실행
             for (ReviewFileOnS3 fileOnS3 : fileOnS3s) {
                 s3UploadService.deleteFile(fileOnS3.getKeyName());
+                reviewFileRepository.delete(fileOnS3);
             }
         }
     }
 
+    // s3 수정
     private void modifyFiles(Review review, List<MultipartFile> files) throws IOException {
 
         // 기존 파일 삭제

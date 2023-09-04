@@ -1,52 +1,72 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
-            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
-    <meta charset="UTF-8">
-    <title>로그인 페이지</title>
+
+    <title>LAFESTA LOGIN</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/slides.js"></script>
+    <script src="/js/slides.min.js" type="text/javascript"></script>
+
+    <link rel="stylesheet" href="/css/login.css">
+    <link href="/css/slides.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" as="font"
+          href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
+    <link rel="stylesheet" href="/css/slides.css">
 </head>
-<body>
-<div id="login-form">
-    <div id="login-title">lafesta login</div>
-    <button onclick="goHome()">메인화면</button>
-    <br>
-    <button id="login-kakao-btn"
-            th:attr="onclick='location.href=\'' + ${kakaoUrl} + '\''">
-        카카오로 로그인하기
-    </button>
-    <button id="login-id-btn" onclick="location.href='/api/users/sign-up'">
-        회원 가입하기
-    </button>
-    <div>
-        <div class="login-id-label">아이디</div>
-        <input type="text" name="username" id="username" class="login-input-box">
 
-        <div class="login-id-label">비밀번호</div>
-        <input type="password" name="password" id="password" class="login-input-box">
+<body class="background">
 
-        <button id="login-id-submit" onclick="onLogin()">로그인</button>
-    </div>
+<div class="left">
+    <a href="/" title="Slides Framework">
+        <img src="/images/logo-s1.png" width="270" height="240" alt="lafesta logo">
+    </a>
 </div>
-</body>
-<script>
-    // 메인화면
-    function goHome() {
-        // 로그인 페이지로 이동
-        window.location.href = '/';
-    }
 
-    $(document).ready(function () {
-        // 토큰 삭제
-        Cookies.remove('Authorization', {path: '/'});
-    });
+<div class="login-box">
+    <h2>LFESTA Login</h2>
+    <form>
+        <div class="user-box">
+            <input type="text" id="username" name="" required="">
+            <label>Username</label>
+        </div>
+        <div class="user-box">
+            <input type="password" id="password" name="" required="">
+            <label>Password</label>
+        </div>
+        <div id="login-failed" style="display:none" class="alert alert-danger" role="alert">로그인에 실패하였습니다.</div>
+        <a href="#" id="login-id-submit" onclick="onLogin()">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            Login
+        </a>
+        <br>
+        <a href="/api/users/sign-up" id="login-id-btn">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            Signup
+        </a>
+
+        <br>
+        <a id="login-kakao-btn"  th:attr="onclick='location.href=\'' + ${kakaoUrl} + '\''">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            Kakao Login
+        </a>
+    </form>
+</div>
+
+<script th:inline="javascript">
 
     const href = location.href;
     const queryString = href.substring(href.indexOf("?") + 1)
@@ -69,19 +89,24 @@
         })
             .done(function (res, status, xhr) {
                 const token = xhr.getResponseHeader('Authorization');
-
-                Cookies.set('Authorization', token, {path: '/'})
-
-                $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-                    jqXHR.setRequestHeader('Authorization', token);
-                });
-
+                Cookies.set('Authorization', token, {path: '/'});
                 window.location.href = host;
             })
             .fail(function (jqXHR, textStatus) {
-                alert('로그인에 실패했습니다.');
+                alert("로그인에 실패하였습니다.");
                 window.location.href = host + '/api/users/login-page'
             });
     }
+    $(document).ready(function () {
+        // 토큰을 체크
+        const token = Cookies.get('Authorization');
+
+        if(token) {
+            // 사용자가 이미 로그인했으면, http://localhost:8080/ 로 리디렉션
+            window.location.href = 'http://localhost:8080/';
+        }
+
+    });
+
 </script>
-</html>
+</body>

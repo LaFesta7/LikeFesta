@@ -66,13 +66,19 @@ public class WebSecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/users/**")).permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/festivals/").permitAll() // GET 요청 허용
+//                      .requestMatchers(new AntPathRequestMatcher ("/api/festivals/").permitAll() // GET 요청 허용
                         .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .anyRequest().authenticated()
         );
-
+        // 로그인 설정
+        http.formLogin((formLogin) ->
+                formLogin
+                        .loginPage("/api/users/login-page").permitAll()
+                        .loginProcessingUrl("/api/users/login").permitAll()
+                        .defaultSuccessUrl("/")//로그인 성공 시 이동될 경로
+        );
         // 필터 관리
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

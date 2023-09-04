@@ -1,0 +1,101 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f4;
+}
+.post-container {
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.post-title {
+    font-weight: 500;
+    font-size: 24px;
+}
+.post-meta {
+    color: #777;
+}
+.post-image {
+    width: 100%;
+    margin-top: 15px;
+}
+.post-content {
+    margin-top: 20px;
+}
+.actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.like-button {
+    cursor: pointer;
+    color: #777;
+    transition: color 0.3s;
+}
+.like-button:hover {
+    color: #e74c3c;
+}
+.edit-delete {
+    display: flex;
+    gap: 10px;
+}
+.edit, .delete {
+    padding: 8px 12px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+.edit {
+    background-color: #3498db;
+    color: #fff;
+}
+.delete {
+    background-color: #e74c3c;
+    color: #fff;
+}
+.edit:hover {
+    background-color: #2980b9;
+}
+.delete:hover {
+    background-color: #c0392b;
+}
+.comments-section {
+    margin-top: 30px;
+}
+.comment {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+.comment-author {
+    font-weight: 500;
+}
+.comment-content {
+    margin-top: 5px;
+}
+
+@keyframes shimmer {
+    0% {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    50% {
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+    100% {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+.post-container {
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    animation: shimmer 2s infinite;
+}

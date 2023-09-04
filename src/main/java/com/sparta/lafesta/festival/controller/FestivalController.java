@@ -11,12 +11,12 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,12 +44,24 @@ public class FestivalController {
 
     @GetMapping("/festivals")
     @Operation(summary = "페스티벌 전체 조회", description = "페스티벌을 전체 조회합니다.")
-    public ResponseEntity<List<FestivalResponseDto>> selectFestivals(
-        @Parameter(description = "festival 페이징 처리에 필요한 기본 설정")@PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable
+    public Object selectFestivals(
+            @Parameter(description = "축제 페이지 처리에 필요한 기본 설정")
+            @PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable,
+            @RequestParam(value = "apiMode", required = false) Boolean apiMode,
+            Model model
     ) {
         List<FestivalResponseDto> results = festivalService.selectFestivals(pageable);
-        return ResponseEntity.ok().body(results);
+
+        if (Boolean.TRUE.equals(apiMode)) {
+            // apiMode가 true이면 ResponseEntity를 반환합니다.
+            return ResponseEntity.ok().body(results);
+        } else {
+            // 그렇지 않으면 모델을 채우고 뷰 이름을 반환합니다.
+            model.addAttribute("festivals", results);
+            return "festivalListPage";
+        }
     }
+
 
     @GetMapping("/festivals/{festivalId}")
     @Operation(summary = "페스티벌 상세 조회", description = "@PathVariable을 통해 festivalId 받아와, 해당 festival을 상세 조회합니다.")
@@ -101,5 +113,14 @@ public class FestivalController {
     ) {
         FestivalResponseDto result = festivalService.deleteFestivalLike(festivalId, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "좋아요를 취소했습니다. 좋아요 수: " + result.getLikeCnt()));
+    }
+
+    @GetMapping("/festivals/rank")
+    @Operation(summary = "페스티벌 랭킹 조회", description = "페스티벌 중 가장 리뷰 수가 많은 TOP3를 조회합니다.")
+    public ResponseEntity<List<FestivalResponseDto>> selectFestivalRanking(
+        @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        List<FestivalResponseDto> results = festivalService.selectFestivalRanking(userDetails.getUser());
+        return ResponseEntity.ok().body(results);
     }
 }

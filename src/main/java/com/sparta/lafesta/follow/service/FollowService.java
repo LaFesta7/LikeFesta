@@ -13,6 +13,7 @@ import com.sparta.lafesta.user.dto.SelectUserResponseDto;
 import com.sparta.lafesta.user.entity.User;
 import com.sparta.lafesta.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -61,14 +62,14 @@ public class FollowService {
 
     //유저 팔로워 목록 조회 - 나를 팔로우 하는 유저
     @Transactional(readOnly = true)
-    public List<SelectUserResponseDto> selectFollowers(UserDetailsImpl userDetails){
+    public List<SelectUserResponseDto> selectFollowers(UserDetailsImpl userDetails, Pageable pageable){
         User followedUser = userDetails.getUser();
 
         if(followedUser == null){
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        List<UserFollow> followers = userFollowRepository.findAllByFollowedUser(followedUser);
+        List<UserFollow> followers = userFollowRepository.findAllByFollowedUser(followedUser, pageable);
 
         List<SelectUserResponseDto> followerUsers = new ArrayList<>();
         for(UserFollow follower : followers){
@@ -84,14 +85,14 @@ public class FollowService {
 
 //    유저 팔로잉 목록 조회 - 내가 팔로우 하는 유저
     @Transactional(readOnly = true)
-    public List<SelectUserResponseDto> selectFollowingUsers(UserDetailsImpl userDetails){
+    public List<SelectUserResponseDto> selectFollowingUsers(UserDetailsImpl userDetails, Pageable pageable){
         User follower = userDetails.getUser();
 
         if(follower == null){
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        List<UserFollow> followings = userFollowRepository.findAllByFollowingUser(follower);
+        List<UserFollow> followings = userFollowRepository.findAllByFollowingUser(follower, pageable);
 
         List<SelectUserResponseDto> followingUsers = new ArrayList<>();
         for(UserFollow following : followings){
@@ -155,14 +156,14 @@ public class FollowService {
 
     //페스티벌 팔로우 목록 조회
     @Transactional(readOnly = true)
-    public List<FestivalResponseDto> selectFollowingFestivals(UserDetailsImpl userDetails){
+    public List<FestivalResponseDto> selectFollowingFestivals(UserDetailsImpl userDetails, Pageable pageable){
         User followingUser = userDetails.getUser();
 
         if(followingUser == null){
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        List<FestivalFollow> follows = festivalFollowRepository.findAllByFollowingFestivalUser(followingUser);
+        List<FestivalFollow> follows = festivalFollowRepository.findAllByFollowingFestivalUser(followingUser, pageable);
 
         List<FestivalResponseDto> followedFestivals = new ArrayList<>();
         for(FestivalFollow festivalFollow : follows){
@@ -195,5 +196,16 @@ public class FollowService {
         festivalFollowRepository.delete(festivalFollow);
 
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), followedFestival.getTitle() + "을(를) 언팔로우 했습니다."));
+    }
+
+    // 팔로우 유저 찾기
+    public List<User> findFollowers(User followedUser) {
+        List<UserFollow> followUsers = userFollowRepository.findAllByFollowedUser(followedUser);
+        List<User> followers = new ArrayList<>();
+        for (UserFollow follower : followUsers) {
+            User followerUser = userRepository.findByFollowers(follower).orElse(null);
+            followers.add(followerUser);
+        }
+        return followers;
     }
 }

@@ -2,6 +2,7 @@ package com.sparta.lafesta.follow.repository;
 
 import com.sparta.lafesta.follow.entity.UserFollow;
 import com.sparta.lafesta.user.entity.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -11,7 +12,9 @@ public interface UserFollowRepository extends JpaRepository<UserFollow, Long> {
 
     Optional<UserFollow> findByFollowedUserAndFollowingUser(User followedUser, User followingUser);
 
-    List<UserFollow> findAllByFollowingUser(User follower);
+    List<UserFollow> findAllByFollowingUser(User follower, Pageable pageable);
+
+    List<UserFollow> findAllByFollowedUser(User followedUser, Pageable pageable);
 
     List<UserFollow> findAllByFollowedUser(User followedUser);
 }

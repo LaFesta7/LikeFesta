@@ -1,0 +1,53 @@
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+.review-form {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.review-form label {
+    font-weight: 500;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.review-form input, .review-form textarea, .review-form button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.review-form input:focus, .review-form textarea:focus {
+    border-color: #007BFF;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+.review-form button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.review-form button:hover {
+    background-color: #0056b3;
+}
+
+.uploaded-image {
+    max-width: 100%;
+    margin-bottom: 15px;
+}

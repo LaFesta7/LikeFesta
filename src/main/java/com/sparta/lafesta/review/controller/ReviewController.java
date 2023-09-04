@@ -5,7 +5,6 @@ import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.review.dto.ReviewRequestDto;
 import com.sparta.lafesta.review.dto.ReviewResponseDto;
 import com.sparta.lafesta.review.service.ReviewService;
-import com.sparta.lafesta.review.service.ReviewServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -104,5 +103,14 @@ public class ReviewController {
     ) {
         ReviewResponseDto result = reviewService.deleteReviewLike(reviewId, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "좋아요를 취소했습니다. 좋아요 수: " + result.getLikeCnt()));
+    }
+
+    @GetMapping("/festivals/reviews/rank")
+    @Operation(summary = "리뷰 랭킹 조회", description = "가장 좋아요가 많은 리뷰 TOP3를 조회합니다.")
+    public ResponseEntity<List<ReviewResponseDto>> selectReviewRanking(
+        @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        List<ReviewResponseDto> results = reviewService.selectReviewRanking(userDetails.getUser());
+        return ResponseEntity.ok().body(results);
     }
 }

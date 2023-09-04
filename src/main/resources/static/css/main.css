@@ -1,0 +1,17 @@
+.button {
+    font-size: 16px;
+    width: 150px;
+    height: 45px;
+    padding: 10px;
+}
+#loginButton {
+    font-size: 18px;
+    width: 110px;
+    height: 42px;
+}
+
+#logoutForm button {
+    font-size: 18px;
+    width: 110px;
+    height: 42px;
+}
