@@ -68,4 +68,9 @@ public class ViewController {
     public String editProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "mypage-modify";
     }
+
+    @GetMapping("/festivals/post-page")
+    public String festivalPage() {
+        return "festival-post";
+    }
 }
