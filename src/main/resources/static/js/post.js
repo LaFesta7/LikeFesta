@@ -1,6 +1,6 @@
 $(document).ready(function () {
     $.ajax({
-        url: `/api/festivals/1`,
+            url: `/api/festivals/1`,
         type: 'GET',
         success: function (data) {
             console.log(data);
