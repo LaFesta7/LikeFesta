@@ -14,7 +14,9 @@ import java.util.List;
 public class FestivalResponseDto {
     private Long id;
     private String title;
-    private String location;
+    private String place;
+    private Double latitude;
+    private Double longitude;
     private String content;
     private LocalDateTime openDate;
     private LocalDateTime endDate;
@@ -29,7 +31,9 @@ public class FestivalResponseDto {
     public FestivalResponseDto(Festival festival) {
         this.id = festival.getId();
         this.title = festival.getTitle();
-        this.location = festival.getLocation();
+        this.place = festival.getPlace();
+        this.latitude = festival.getLatitude();
+        this.longitude = festival.getLongitude();
         this.content = festival.getContent();
         this.openDate = festival.getOpenDate();
         this.endDate = festival.getEndDate();

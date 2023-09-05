@@ -4,10 +4,8 @@ import com.sparta.lafesta.common.jwt.JwtUtil;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.social.service.KakaoService;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,12 +50,12 @@ public class ViewController {
 
     @GetMapping("/users/fest")
     public String festival1(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return "festival-post";
+        return "festival";
     }
 
-    @GetMapping("/users/fest-edit")
+    @GetMapping("/users/festivals")
     public String festivalEdit(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return "festival-edit";
+        return "festival-post";
     }
 
     @GetMapping("/users/badge")
