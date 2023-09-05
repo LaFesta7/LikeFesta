@@ -11,6 +11,7 @@ import com.sparta.lafesta.festival.dto.FestivalResponseDto;
 import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.festival.event.FestivalCreatedEventPublisher;
 import com.sparta.lafesta.festival.repository.FestivalRepository;
+import com.sparta.lafesta.festival.repository.FestivalRepositoryCustom;
 import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
 import com.sparta.lafesta.like.festivalLike.repository.FestivalLikeRepository;
 import com.sparta.lafesta.notification.dto.ReminderDto;
@@ -44,6 +45,7 @@ public class FestivalServiceImpl implements FestivalService {
 
     //CRUD
     private final FestivalRepository festivalRepository;
+    private final FestivalRepositoryCustom festivalRepositoryCustom;
 
     //S3
     private final S3UploadService s3UploadService;
@@ -229,7 +231,7 @@ public class FestivalServiceImpl implements FestivalService {
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        return festivalRepository.findTop3Festival().stream()
+        return festivalRepositoryCustom.findTop3Festival().stream()
             .map(FestivalResponseDto::new).toList();
     }
 
