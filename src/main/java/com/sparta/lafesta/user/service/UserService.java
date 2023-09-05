@@ -12,8 +12,6 @@ import com.sparta.lafesta.user.entity.UserRoleEnum;
 import com.sparta.lafesta.user.entity.VerificationCode;
 import com.sparta.lafesta.user.repository.UserRepository;
 import com.sparta.lafesta.user.repository.VerificationCodeRepository;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import com.sparta.lafesta.user.dto.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -47,7 +44,7 @@ public class UserService {
     // ADMIN_TOKEN
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
-
+    // 회원가입
     public void signup(SignupRequestDto requestDto, List<MultipartFile> files) throws IOException {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
@@ -105,11 +102,21 @@ public class UserService {
 
     // 인증 메일 발송 후 코드 DB 임시 저장하기
     @Transactional
-    public void sendMailAndCreateVerificationCode(MailConfirmRequestDto requestDto) throws Exception {
+    public void sendMailAndCreateVerificationCode(MailRequestDto requestDto) throws Exception {
         String email = requestDto.getEmail();
 
         // 회원 중복 확인
         checkEmail(email);
+
+        String code = mailService.sendMessage(email);
+        VerificationCode verificationCode = new VerificationCode(email, code);
+        verificationCodeRepository.save(verificationCode);
+    }
+
+    // 비밀번호를 분실한 경우 인증 메일 발송 후 코드 DB 임시 저장하기
+    @Transactional
+    public void sendMailAndCreateVerificationCodePassword(User user) throws Exception {
+        String email = findUser(user.getId()).getEmail();
 
         String code = mailService.sendMessage(email);
         VerificationCode verificationCode = new VerificationCode(email, code);
@@ -147,31 +154,117 @@ public class UserService {
 
     //인플루언서 랭킹 조회
     @Transactional(readOnly = true)
-    public List<SelectUserResponseDto> selectUserRanking(User user){
+    public List<SelectUserResponseDto> selectUserRanking(User user) {
         //회원 확인
         if (user == null) {
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
         return userRepository.findTop3User().stream()
-            .map(SelectUserResponseDto::new).toList();
+                .map(SelectUserResponseDto::new).toList();
     }
 
-    //카카오 로그인 시 로그아웃
-    public void kakaoLogout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("token", null);
-        cookie.setMaxAge(0);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        response.addCookie(cookie);
+    // 프로필 조회
+    @Transactional(readOnly = true)
+    public SelectUserResponseDto selectUserProfile(Long userId, User user) {
+        return new SelectUserResponseDto(findUser(userId));
     }
 
-    // 이메일 중복 확인
-    public void checkEmail(String email) {
-        Optional<User> checkEmail = userRepository.findByEmail(email);
-        if (checkEmail.isPresent()) {
-            throw new IllegalArgumentException("해당 이메일로 이미 가입하셨습니다.");
+    // 내 정보 조회
+    @Transactional(readOnly = true)
+    public UserInfoResponseDto selectUserInfo(User user) {
+        User selectUser = findUser(user.getId());
+        return new UserInfoResponseDto(selectUser);
+    }
+
+    // 내 닉네임 수정
+    @Transactional
+    public UserInfoResponseDto modifyUserNickname(NicknameRequestDto requestDto, User user) {
+        Optional<User> checkNickname = userRepository.findByNickname(requestDto.getNickname());
+        if (checkNickname.isPresent()) {
+            throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
         }
+        User selectUser = findUser(user.getId());
+        selectUser.modifyNickname(requestDto.getNickname());
+        return new UserInfoResponseDto(selectUser);
+    }
+
+    // 내 소개 수정
+    @Transactional
+    public UserInfoResponseDto modifyUserIntroduce(IntroduceRequestDto requestDto, User user) {
+        User selectUser = findUser(user.getId());
+        selectUser.modifyIntroduce(requestDto.getIntroduce());
+        return new UserInfoResponseDto(selectUser);
+    }
+
+    // 내 이메일 수정
+    @Transactional
+    public UserInfoResponseDto modifyUserEmail(MailRequestDto requestDto, User user) {
+        // 이메일 중복 확인
+        checkEmail(requestDto.getEmail());
+
+        // 사용자 이메일 인증 확인
+        VerificationCode verificationCode = verificationCodeRepository.findByEmailAndConfirm(requestDto.getEmail(), true)
+                .orElse(null);
+        // 이메일 인증이 되지 않은 경우
+        if (verificationCode == null) {
+            log.error("이메일 미인증");
+            throw new IllegalArgumentException("이메일 인증이 완료되지 않았습니다.");
+        }
+
+        User selectUser = findUser(user.getId());
+        selectUser.modifyEmail(requestDto.getEmail());
+        return new UserInfoResponseDto(selectUser);
+    }
+
+    // 내 비밀번호 수정
+    @Transactional
+    public UserInfoResponseDto modifyUserPassword(PasswordRequestDto requestDto, User user) {
+        User selectUser = findUser(user.getId());
+
+        // 현재 비밀번호 확인
+        if (!requestDto.getCurrentPassword().isBlank() &&
+                !passwordEncoder.matches(requestDto.getCurrentPassword(), selectUser.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 틀렸습니다. 비밀번호를 잊어버리신 경우 이메일 인증을 진행해주세요.");
+        }
+
+        // 현재 비밀번호를 잊어버린 경우 이메일 인증 확인
+        if (requestDto.getCurrentPassword().isBlank()) {
+            // 사용자 이메일 인증 확인
+            VerificationCode verificationCode = verificationCodeRepository.findByEmailAndConfirm(selectUser.getEmail(), true)
+                    .orElse(null);
+            // 이메일 인증이 되지 않은 경우
+            if (verificationCode == null) {
+                log.error("이메일 미인증");
+                throw new IllegalArgumentException("이메일 인증이 완료되지 않았습니다.");
+            }
+        }
+
+        selectUser.modifyPassword(passwordEncoder.encode(requestDto.getNewPassword()));
+        return new UserInfoResponseDto(selectUser);
+    }
+
+    // 내 프로필 사진 수정
+    @Transactional
+    public UserInfoResponseDto modifyUserImage(List<MultipartFile> files, User user) throws IOException {
+        User selectUser = findUser(user.getId());
+        if (files == null) {
+            deleteFiles(selectUser);
+        } else {
+            modifyFiles(selectUser, files);
+        }
+        return new UserInfoResponseDto(selectUser);
+    }
+
+    // 유저 탈퇴
+    @Transactional
+    public void deleteUser(WithdrawalRequestDto requestDto, User user) {
+        // 현재 비밀번호 확인
+        if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
+        }
+        User selectUser = findUser(user.getId());
+        userRepository.delete(selectUser);
     }
 
     // s3 업로드
@@ -216,6 +309,14 @@ public class UserService {
         uploadFiles(files, user);
     }
 
+    // 이메일 중복 확인
+    public void checkEmail(String email) {
+        Optional<User> checkEmail = userRepository.findByEmail(email);
+        if (checkEmail.isPresent()) {
+            throw new IllegalArgumentException("해당 이메일로 이미 가입하셨습니다.");
+        }
+    }
+
     // id로 유저 찾기
     public User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(() ->
@@ -230,15 +331,4 @@ public class UserService {
         return new UserInfoResponseDto(selectUser);
     }
 
-    // 내 닉네임 수정
-    @Transactional
-    public UserInfoResponseDto modifyUserNickname(NicknameRequestDto requestDto, User user) {
-        Optional<User> checkNickname = userRepository.findByNickname(requestDto.getNickname());
-        if (checkNickname.isPresent()) {
-            throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
-        }
-        User selectUser = findUser(user.getId());
-        selectUser.modifyNickname(requestDto.getNickname());
-        return new UserInfoResponseDto(selectUser);
-    }
 }

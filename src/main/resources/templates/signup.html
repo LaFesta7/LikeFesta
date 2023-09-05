@@ -138,7 +138,7 @@
                 return;
             }
 
-            const response = await fetch('/api/users/sign-up/mail-confirm', {
+            const response = await fetch('/api/users/mail-confirm', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -164,11 +164,18 @@
         }
     });
 
+    // 타이머를 초기화하는 함수
+    function resetTimer() {
+        clearInterval(timer);
+        seconds = 180; // 3분
+        timerElement.textContent = "3:00";
+    }
+
     confirmButton.addEventListener('click', async () => {
         // 인증 코드를 확인하는 로직을 여기에 넣을 수 있습니다.
         if (verificationCodeInput.value) {
             // 인증 확인
-            const verifyResponse = await fetch('/api/users/sign-up/verify-code', {
+            const verifyResponse = await fetch('/api/users/verify-code', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -180,12 +187,12 @@
             });
 
             if (verifyResponse.ok) {
-                clearInterval(countdownInterval); // 타이머 중지
+                resetTimer(); // 타이머 초기화
                 const responseData = await verifyResponse.json();
                 console.log(responseData.statusMessage);
                 alert(responseData.statusMessage);
                 verificationContainer.style.display = 'none';
-                submitButton.disabled = false; // submitButton 활성화
+                submitButton.removeAttribute('disabled'); // submitButton 활성화
             } else {
                 const responseData = await verifyResponse.json();
                 console.error(responseData.statusMessage);
