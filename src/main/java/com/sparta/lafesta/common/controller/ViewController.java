@@ -2,6 +2,7 @@ package com.sparta.lafesta.common.controller;
 
 import com.sparta.lafesta.common.jwt.JwtUtil;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
+import com.sparta.lafesta.follow.service.FollowService;
 import com.sparta.lafesta.social.service.KakaoService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
 @Controller
@@ -19,6 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ViewController {
     private final KakaoService kakaoService;
     private final JwtUtil jwtUtil;
+
+    @Autowired
+    private FollowService followService;
 
     @GetMapping("/")
     public String home() {
@@ -48,9 +53,9 @@ public class ViewController {
         return "login";
     }
 
-    @GetMapping("/users/fest")
+    @GetMapping("/users/profile")
     public String festival1(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return "festival-post";
+        return "mypage";
     }
 
     @GetMapping("/users/badge")
@@ -58,4 +63,29 @@ public class ViewController {
         return "my-badge";
     }
 
+    @GetMapping("/users/profile/followings-page")
+    public String showFollowings(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info(userDetails.getUsername());
+        return "my-follow";
+    }
+
+    @GetMapping("/users/profile/edit-page")
+    public String editProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "mypage-modify";
+    }
+
+    @GetMapping("/festivals/page")
+    public String festivalPage() {
+        return "festival";
+    }
+
+    @GetMapping("/festivals/post-page")
+    public String festivalEdit(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "festival-post";
+    }
+
+    @GetMapping("/festivals/review-page")
+    public String reviewPage() {
+        return "review-show";
+    }
 }

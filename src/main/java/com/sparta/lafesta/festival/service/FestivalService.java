@@ -24,6 +24,7 @@ public interface FestivalService {
      */
     FestivalResponseDto createFestival(FestivalRequestDto requestDto,
                                        List<MultipartFile> files, User user) throws IOException;
+//  FestivalResponseDto createFestival(FestivalRequestDto requestDto, User user) throws IOException;
 
     /**
      * 전체 페스티벌 조회

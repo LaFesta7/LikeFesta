@@ -47,7 +47,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         } catch (IOException e) {
             log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
-
         }
     }
 
@@ -71,21 +70,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         log.info("accessToken : " + accessToken);
         log.info("refreshToken : " + refreshToken);
 
-        response.setStatus(200);
-        response.setContentType("application/json");
-        String result = new ObjectMapper().writeValueAsString(new ApiResponseDto(HttpStatus.OK.value(), "Login Success"));
-
-        response.getOutputStream().print(result);
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         log.info("로그인 실패");
-
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        response.setContentType("application/json");
-        String result = new ObjectMapper().writeValueAsString(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "Login Failed"));
-
-        response.getOutputStream().print(result);
+        response.setStatus(401);
     }
 }

@@ -22,7 +22,7 @@ import java.util.List;
 public class NotificationController {
     private final NotificationService notificationService;
 
-    @GetMapping("/users/{userId}/notifications")
+    @GetMapping("/users/notifications")
     @Operation(summary = "알림 전체 조회", description = "로그인 한 유저의 정보를 가져와, 해당 유저에게 온 알림을 모두 조회합니다.")
     public List<NotificationResponseDto> getNotifications(@AuthenticationPrincipal UserDetailsImpl userDetails,
         @PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable
@@ -30,7 +30,7 @@ public class NotificationController {
         return notificationService.getNotifications(userDetails.getUser(), pageable);
     }
 
-    @PatchMapping("/users/{userId}/notifications/{notificationId}")
+    @PatchMapping("/users/notifications/{notificationId}")
     @Operation(summary = "알림 읽음 처리", description = "@PathVariable을 통해 notificationId를 받아와, 해당 알림을 읽음 처리합니다.")
     public ResponseEntity<NotificationResponseDto> readNotification(
             @PathVariable Long notificationId, @AuthenticationPrincipal UserDetailsImpl userDetails) {

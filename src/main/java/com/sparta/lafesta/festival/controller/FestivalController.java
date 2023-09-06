@@ -16,7 +16,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,31 +34,24 @@ public class FestivalController {
     public ResponseEntity<ApiResponseDto> createFestival(
             @Parameter(description = "festival을 생성할 때 필요한 정보") @RequestPart(value = "requestDto") FestivalRequestDto requestDto,
             @Parameter(description = "festival 생성시 등록한 첨부 파일") @RequestPart(value = "files", required = false) List<MultipartFile> files,
+//            @Parameter(description = "festival을 생성할 때 필요한 정보") @RequestBody FestivalRequestDto requestDto,
             @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws IOException {
 
         FestivalResponseDto result = festivalService.createFestival(requestDto, files, userDetails.getUser());
+//        FestivalResponseDto result = festivalService.createFestival(requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), result.getTitle()+"를 추가했습니다."));
     }
 
     @GetMapping("/festivals")
-    @Operation(summary = "페스티벌 전체 조회", description = "페스티벌을 전체 조회합니다.")
-    public Object selectFestivals(
+    @Operation(summary = "전체 축제 검색", description = "전체 축제를 검색합니다.")
+    public ResponseEntity<List<FestivalResponseDto>> selectFestivals(
             @Parameter(description = "축제 페이지 처리에 필요한 기본 설정")
             @PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable,
-            @RequestParam(value = "apiMode", required = false) Boolean apiMode,
-            Model model
+            @RequestParam(value = "apiMode", required = false) Boolean apiMode
     ) {
         List<FestivalResponseDto> results = festivalService.selectFestivals(pageable);
-
-        if (Boolean.TRUE.equals(apiMode)) {
-            // apiMode가 true이면 ResponseEntity를 반환합니다.
-            return ResponseEntity.ok().body(results);
-        } else {
-            // 그렇지 않으면 모델을 채우고 뷰 이름을 반환합니다.
-            model.addAttribute("festivals", results);
-            return "festivalListPage";
-        }
+        return ResponseEntity.ok().body(results);
     }
 
 
