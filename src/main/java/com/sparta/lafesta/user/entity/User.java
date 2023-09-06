@@ -1,7 +1,6 @@
 package com.sparta.lafesta.user.entity;
 
 import com.sparta.lafesta.badge.entity.UserBadge;
-import com.sparta.lafesta.common.s3.entity.FestivalFileOnS3;
 import com.sparta.lafesta.common.s3.entity.UserFileOnS3;
 import com.sparta.lafesta.follow.entity.FestivalFollow;
 import com.sparta.lafesta.follow.entity.UserFollow;

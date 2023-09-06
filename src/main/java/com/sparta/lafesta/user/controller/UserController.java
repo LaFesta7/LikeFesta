@@ -3,10 +3,7 @@ package com.sparta.lafesta.user.controller;
 import com.sparta.lafesta.common.dto.ApiResponseDto;
 import com.sparta.lafesta.common.jwt.JwtUtil;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
-import com.sparta.lafesta.user.dto.MailRequestDto;
-import com.sparta.lafesta.user.dto.SelectUserResponseDto;
-import com.sparta.lafesta.user.dto.SignupRequestDto;
-import com.sparta.lafesta.user.dto.VerificationRequestDto;
+import com.sparta.lafesta.user.dto.*;
 import com.sparta.lafesta.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,7 +22,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.sparta.lafesta.user.dto.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -44,9 +40,9 @@ public class UserController {
     @Operation(summary = "유저 회원가입", description = "ResponseDto를 통해 가입할 유저정보를 받아옵니다.")
     public ResponseEntity<ApiResponseDto> signup(
             @Parameter(description = "유저 정보를 받을 dto") @Valid @RequestBody SignupRequestDto requestDto,
-			@Parameter(description = "유저프로필 생성시 등록할 첨부 파일") @RequestPart(value = "files", required = false) List<MultipartFile> files,
-			BindingResult bindingResult
-	) throws IOException {
+            @Parameter(description = "유저프로필 생성시 등록할 첨부 파일") @RequestPart(value = "files", required = false) List<MultipartFile> files,
+            BindingResult bindingResult
+    ) throws IOException {
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         if (fieldErrors.size() > 0) {
@@ -75,14 +71,12 @@ public class UserController {
     @GetMapping("/users/rank")
     @Operation(summary = "인플루언서 랭킹 조회", description = "가장 팔로워 수가 많은 유저 TOP3를 조회합니다.")
     public ResponseEntity<List<SelectUserResponseDto>> selectUserRanking(
-        @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
-    ){
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         List<SelectUserResponseDto> results = userService.selectUserRanking(userDetails.getUser());
         return ResponseEntity.ok().body(results);
     }
 
-
-    // -----------------------------------------------------------------------------------------------------------------
     // 프로필 조회
     @GetMapping("/users/{userId}/profile")
     @Operation(summary = "프로필 조회", description = "Pathvariable로 유저 아이디를 받아 해당 유저의 프로필을 조회합니다.")

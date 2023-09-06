@@ -44,6 +44,7 @@ public class UserService {
     // ADMIN_TOKEN
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
+
     // 회원가입
     public void signup(SignupRequestDto requestDto, List<MultipartFile> files) throws IOException {
         String username = requestDto.getUsername();
@@ -98,58 +99,6 @@ public class UserService {
         if (files != null) {
             uploadFiles(files, user);
         }
-    }
-
-    // 인증 메일 발송 후 코드 DB 임시 저장하기
-    @Transactional
-    public void sendMailAndCreateVerificationCode(MailRequestDto requestDto) throws Exception {
-        String email = requestDto.getEmail();
-
-        // 회원 중복 확인
-        checkEmail(email);
-
-        String code = mailService.sendMessage(email);
-        VerificationCode verificationCode = new VerificationCode(email, code);
-        verificationCodeRepository.save(verificationCode);
-    }
-
-    // 비밀번호를 분실한 경우 인증 메일 발송 후 코드 DB 임시 저장하기
-    @Transactional
-    public void sendMailAndCreateVerificationCodePassword(User user) throws Exception {
-        String email = findUser(user.getId()).getEmail();
-
-        String code = mailService.sendMessage(email);
-        VerificationCode verificationCode = new VerificationCode(email, code);
-        verificationCodeRepository.save(verificationCode);
-    }
-
-    // 인증코드 확인하기
-    @Transactional
-    public void verifyCode(VerificationRequestDto verificationRequestDto) {
-        String email = verificationRequestDto.getEmail();
-        String code = verificationRequestDto.getVerificationCode();
-
-        VerificationCode verificationCode = verificationCodeRepository.findByEmailAndCode(email, code)
-                .orElse(null);
-
-        // 인증 코드가 일치하지 않는 경우
-        if (verificationCode == null) {
-            log.error("인증 코드 불일치");
-            throw new IllegalArgumentException("인증코드가 만료되었거나 일치하지 않습니다.");
-        }
-        // 인증 코드가 만료된 경우
-        if (verificationCode.getExpirationTime().isBefore(LocalDateTime.now())) {
-            log.error("인증 코드 만료");
-            throw new IllegalArgumentException("만료된 인증코드입니다.");
-        }
-        verificationCode.verificationCodeConfirm();
-    }
-
-    // 인증 코드 DB 30분마다 삭제하기
-    @Transactional
-    @Scheduled(fixedRate = 1800000) // 30분마다 실행
-    public void cleanupExpiredVerificationCodes() {
-        verificationCodeRepository.deleteByExpirationTimeBefore(LocalDateTime.now());
     }
 
     //인플루언서 랭킹 조회
@@ -267,6 +216,87 @@ public class UserService {
         userRepository.delete(selectUser);
     }
 
+    // 인증 메일 발송 후 코드 DB 임시 저장하기
+    @Transactional
+    public void sendMailAndCreateVerificationCode(MailRequestDto requestDto) throws Exception {
+        String email = requestDto.getEmail();
+
+        // 회원 중복 확인
+        checkEmail(email);
+
+        String code = mailService.sendMessage(email);
+        VerificationCode verificationCode = new VerificationCode(email, code);
+        verificationCodeRepository.save(verificationCode);
+    }
+
+    // 비밀번호를 분실한 경우 인증 메일 발송 후 코드 DB 임시 저장하기
+    @Transactional
+    public void sendMailAndCreateVerificationCodePassword(User user) throws Exception {
+        String email = findUser(user.getId()).getEmail();
+
+        String code = mailService.sendMessage(email);
+        VerificationCode verificationCode = new VerificationCode(email, code);
+        verificationCodeRepository.save(verificationCode);
+    }
+
+    // 인증코드 확인하기
+    @Transactional
+    public void verifyCode(VerificationRequestDto verificationRequestDto) {
+        String email = verificationRequestDto.getEmail();
+        String code = verificationRequestDto.getVerificationCode();
+
+        VerificationCode verificationCode = verificationCodeRepository.findByEmailAndCode(email, code)
+                .orElse(null);
+
+        // 인증 코드가 일치하지 않는 경우
+        if (verificationCode == null) {
+            log.error("인증 코드 불일치");
+            throw new IllegalArgumentException("인증코드가 만료되었거나 일치하지 않습니다.");
+        }
+        // 인증 코드가 만료된 경우
+        if (verificationCode.getExpirationTime().isBefore(LocalDateTime.now())) {
+            log.error("인증 코드 만료");
+            throw new IllegalArgumentException("만료된 인증코드입니다.");
+        }
+        verificationCode.verificationCodeConfirm();
+    }
+
+    // 인증 코드 DB 30분마다 삭제하기
+    @Transactional
+    @Scheduled(fixedRate = 1800000) // 30분마다 실행
+    public void cleanupExpiredVerificationCodes() {
+        verificationCodeRepository.deleteByExpirationTimeBefore(LocalDateTime.now());
+    }
+
+    //인플루언서 랭킹 조회
+    @Transactional(readOnly = true)
+    public List<SelectUserResponseDto> selectUserRanking(User user){
+        //회원 확인
+        if (user == null) {
+            throw new IllegalArgumentException("로그인 해주세요");
+        }
+
+        return userRepository.findTop3User().stream()
+            .map(SelectUserResponseDto::new).toList();
+    }
+
+    //카카오 로그인 시 로그아웃
+    public void kakaoLogout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("token", null);
+        cookie.setMaxAge(0);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+    }
+
+    // 이메일 중복 확인
+    public void checkEmail(String email) {
+        Optional<User> checkEmail = userRepository.findByEmail(email);
+        if (checkEmail.isPresent()) {
+            throw new IllegalArgumentException("해당 이메일로 이미 가입하셨습니다.");
+        }
+    }
+
     // s3 업로드
     private void uploadFiles(List<MultipartFile> files, User user) throws IOException {
         List<FileOnS3> fileOnS3s = new ArrayList<>();
@@ -323,12 +353,4 @@ public class UserService {
                 new NotFoundException("선택한 유저는 존재하지 않습니다.")
         );
     }
-
-    // 내 정보 조회
-    @Transactional(readOnly = true)
-    public UserInfoResponseDto findUserInfo(User user) {
-        User selectUser = findUser(user.getId());
-        return new UserInfoResponseDto(selectUser);
-    }
-
 }
