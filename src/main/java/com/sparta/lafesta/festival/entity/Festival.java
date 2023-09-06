@@ -81,9 +81,8 @@ public class Festival extends Timestamped {
     ////생성자 - 약속된 형태로만 생성가능하도록 합니다.
 
     @Builder
-    public Festival(String title, String location, String content, LocalDateTime openDate, LocalDateTime endDate, LocalDateTime reservationOpenDate, String reservationPlace, String officialLink, User user) {
+    public Festival(String title, String content, LocalDateTime openDate, LocalDateTime endDate, LocalDateTime reservationOpenDate, String reservationPlace, String officialLink, User user) {
         this.title = title;
-        this.location = location;
         this.content = content;
         this.openDate = openDate;
         this.endDate = endDate;
