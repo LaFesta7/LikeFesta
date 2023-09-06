@@ -83,18 +83,7 @@ public class FollowService {
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        List<UserFollow> followings = userFollowRepository.findAllByFollowingUser(follower, pageable);
-
-        List<SelectUserResponseDto> followingUsers = new ArrayList<>();
-        for(UserFollow following : followings){
-            User followingUser = userRepository.findByFollowings(following)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
-
-            SelectUserResponseDto selectUserResponseDto = new SelectUserResponseDto(followingUser);
-            followingUsers.add(selectUserResponseDto);
-        }
-
-        return followingUsers;
+        return followRepositoryCustom.findAllFollowings(userDetails.getUser(), pageable);
     }
 
     //유저 팔로우 취소
@@ -154,17 +143,7 @@ public class FollowService {
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        List<FestivalFollow> follows = festivalFollowRepository.findAllByFollowingFestivalUser(followingUser, pageable);
-
-        List<FestivalResponseDto> followedFestivals = new ArrayList<>();
-        for(FestivalFollow festivalFollow : follows){
-            Festival followedFestival = festivalRepository.findByFestivalFollowers(festivalFollow)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 페스티벌이 없습니다."));
-
-            FestivalResponseDto festivalResponseDto = new FestivalResponseDto(followedFestival);
-            followedFestivals.add(festivalResponseDto);
-        }
-        return followedFestivals;
+        return followRepositoryCustom.findAllFestivalFollowers(userDetails.getUser(), pageable);
     }
 
     //페스티벌 팔로우 취소
