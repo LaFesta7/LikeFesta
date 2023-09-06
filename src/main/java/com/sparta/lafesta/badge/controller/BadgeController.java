@@ -46,7 +46,7 @@ public class BadgeController {
     public ResponseEntity<List<BadgeResponseDto>> selectBadges (
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
         @Parameter(description = "뱃지 페이지 처리에 필요한 기본 설정")
-        @PageableDefault(size=20, sort="createdAt", direction = Direction.DESC) Pageable pageable
+        @PageableDefault(size=20, sort="id") Pageable pageable
     ) {
         List<BadgeResponseDto> results = badgeService.selectBadges(userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(results);

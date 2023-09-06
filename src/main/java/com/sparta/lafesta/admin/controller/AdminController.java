@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +33,7 @@ public class AdminController {
     public ResponseEntity<List<OrganizerResponseDto>> selectOrganizerRequests(
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "페이지 처리에 필요한 기본 설정")
-            @PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable
+            @PageableDefault(size=10, sort="id") Pageable pageable
     ) {
         List<OrganizerResponseDto> results = adminService.selectOrganizerRequests(userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(results);
@@ -65,7 +64,7 @@ public class AdminController {
     public ResponseEntity<List<FestivaRequestlResponseDto>> selectFestivalRequestNotAdminApproval(
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "페이지 처리에 필요한 기본 설정")
-            @PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable
+            @PageableDefault(size=10, sort="createdAt") Pageable pageable
     ) {
         List<FestivaRequestlResponseDto> results = adminService.selectFestivalRequestNotAdminApproval(userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(results);

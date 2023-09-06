@@ -7,6 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <title>LAFESTA LOGIN</title>
+    <link rel="icon" href="/images/logo1.png" type="image/x-icon">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
     <script src="/js/jquery.min.js"></script>
     <script src="/js/slides.js"></script>
@@ -80,7 +82,7 @@
     function onLogin() {
         let username = $('#username').val();
         let password = $('#password').val();
-
+        console.log(username, password);
         $.ajax({
             type: "POST",
             url: `/api/users/login`,
@@ -88,8 +90,6 @@
             data: JSON.stringify({username: username, password: password}),
         })
             .done(function (res, status, xhr) {
-                const token = xhr.getResponseHeader('Authorization');
-                Cookies.set('Authorization', token, {path: '/'});
                 window.location.href = host;
             })
             .fail(function (jqXHR, textStatus) {

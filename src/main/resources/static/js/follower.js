@@ -1,6 +1,5 @@
 let userId = localStorage.getItem('userId');
 
-// 팔로우 목록을 불러오는 함수
 function loadFollowers() {
     $.ajax({
         url: `/api/users/${userId}/follows/followings`,
@@ -11,30 +10,73 @@ function loadFollowers() {
             data.forEach(follower => {
                 followerListHTML += `
           <div class="follower-item">
-            <span>${follower.followedUser.name}</span> <!-- 팔로워 이름 -->
-            <button onclick="unfollow(${follower.id})">팔로우 취소</button> <!-- 팔로우 취소 버튼 -->
+            <span>${follower.followedUser.name}</span> 
+            <button class="follow-button" onclick="toggleFollow(${follower.followedUser.id})">❤</button>
           </div>`;
             });
             $('#followerList').html(followerListHTML);
         },
         error: function(error) {
-            console.log("에러가 발생했습니다:", error);
+            console.log("An error occurred:", error);
         }
     });
 }
 
-// 팔로우를 취소하는 함수
-function unfollow(followerId) {
+function toggleFollow(followingUserId) {
     $.ajax({
-        url: `/api/users/${userId}/follows/${followerId}`,
-        type: 'DELETE',
+        url: `/api/users/${userId}/follows/${followingUserId}`,
+        type: 'POST',
         success: function() {
-            loadFollowers(); // 팔로우 취소 후 목록을 다시 불러옴
+            loadFollowers();
+        },
+        error: function(err) {
+
+            if (err.status === 400) {
+                $.ajax({
+                    url: `/api/users/${userId}/follows/${followingUserId}`,
+                    type: 'DELETE',
+                    success: function() {
+                        loadFollowers();
+                    },
+                    error: function(error) {
+                        console.log("An error occurred:", error);
+                    }
+                });
+            }
         }
     });
 }
 
-// 페이지가 로드되면 팔로우 목록을 불러옵니다.
+// When the page loads, load the follow list.
 $(document).ready(function() {
     loadFollowers();
 });
+
+document.addEventListener("DOMContentLoaded", function() {
+    // 예시 팔로워 목록
+    const followers = ['Alice', 'Bob', 'Charlie'];
+
+    // 팔로워 목록과 팔로우 취소 버튼을 채웁니다.
+    const followerList = document.getElementById('followers');
+    followers.forEach(follower => {
+        const listItem = document.createElement('li');
+        listItem.textContent = follower;
+
+        const unfollowButton = document.createElement('button');
+        unfollowButton.textContent = '팔로우 취소';
+        unfollowButton.addEventListener('click', function() {
+            unfollow(follower);
+        });
+
+        listItem.appendChild(unfollowButton);
+        followerList.appendChild(listItem);
+    });
+});
+
+// 팔로우 취소 동작을 처리하는 함수
+function unfollow(followerName) {
+    // 팔로워 목록에서 팔로워를 제거합니다 (필요하면 구현)
+    // 상태 창을 업데이트합니다.
+    const status = document.getElementById('status');
+    status.textContent = `${followerName} 님을 팔로우 취소하였습니다.`;
+}

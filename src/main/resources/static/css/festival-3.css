@@ -24,7 +24,7 @@ label {
 }
 
 input[type="text"],
-input[type="date"],
+input[type="datetime-local"],
 input[type="url"],
 textarea,
 input[type="file"] {
@@ -38,7 +38,7 @@ input[type="file"] {
 }
 
 input[type="text"]:focus,
-input[type="date"]:focus,
+input[type="datetime-local"]:focus,
 input[type="url"]:focus,
 textarea:focus,
 input[type="file"]:focus {
@@ -76,8 +76,8 @@ skewX(-45deg);
     animation: shining 1.5s infinite;
 }
 
-@keyframes shining {
-    100% {
-        left: 140%;
-    }
-}
+/*@keyframes shining {*/
+/*    100% {*/
+/*        left: 140%;*/
+/*    }*/
+/*}*/

@@ -18,7 +18,7 @@ public class ReminderDto {
     private String mailContent;
     private String festivalTitle;
     private String festivalOpenDate;
-    private String festivalLocate;
+    private String festivalPlace;
     private String reservationOpenDate;
     private String reservationPlace;
     private List<User> festivalFollowUsers;
@@ -29,7 +29,7 @@ public class ReminderDto {
         this.mailContent = findMailContent(festival, type);
         this.festivalTitle = festival.getTitle();
         this.festivalOpenDate = formFestivalDate(festival, FestivalReminderType.FESTIVAL_OPEN);
-        this.festivalLocate = festival.getLocation();
+        this.festivalPlace = festival.getPlace();
         if (type != FestivalReminderType.RESERVATION_OPEN) {
             this.reservationOpenDate = null;
             this.reservationPlace = null;

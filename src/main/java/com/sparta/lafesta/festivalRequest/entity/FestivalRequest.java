@@ -23,8 +23,14 @@ public class FestivalRequest extends Timestamped {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "location", nullable = false)
-    private String location;
+    @Column(name = "place", nullable = false)
+    private String place;
+
+    @Column(name = "latitude", nullable = false)
+    private Double latitude;
+
+    @Column(name = "longitude", nullable = false)
+    private Double longitude;
 
     @Column(name = "content", nullable = false)
     private String content;
@@ -53,7 +59,9 @@ public class FestivalRequest extends Timestamped {
 
     public FestivalRequest(FestivalRequestRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
-        this.location = requestDto.getLocation();
+        this.place = requestDto.getPlace();
+        this.latitude = requestDto.getLatitude();
+        this.longitude = requestDto.getLongitude();
         this.content = requestDto.getContent();
         this.openDate = requestDto.getOpenDate();
         this.endDate = requestDto.getEndDate();
@@ -66,7 +74,7 @@ public class FestivalRequest extends Timestamped {
 
     public void modify(FestivalRequestRequestDto requestDto) {
         this.title = requestDto.getTitle();
-        this.location = requestDto.getLocation();
+        this.place = requestDto.getPlace();
         this.content = requestDto.getContent();
         this.openDate = requestDto.getOpenDate();
         this.endDate = requestDto.getEndDate();

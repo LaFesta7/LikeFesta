@@ -29,11 +29,10 @@ label {
 }
 
 input[type="text"],
-input[type="date"],
+input[type="datetime-local"],
 input[type="url"],
 textarea,
 input[type="file"] {
-    width: 100%;
     padding: 10px;
     margin-bottom: 20px;
     border: 2px solid #4CAF50; /* 밝은 초록색 테두리 */
@@ -43,7 +42,7 @@ input[type="file"] {
 }
 
 input[type="text"]:focus,
-input[type="date"]:focus,
+input[type="datetime-local"]:focus,
 input[type="url"]:focus,
 textarea:focus,
 input[type="file"]:focus {

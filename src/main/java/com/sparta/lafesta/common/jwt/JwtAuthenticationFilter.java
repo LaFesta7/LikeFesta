@@ -46,30 +46,21 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
     }
 
+    //@exceptionHandler
+//customExceptionHandler (runtime exception)
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.info("로그인 성공 및 JWT 생성");
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
-
         String token = jwtUtil.createToken(username, role);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        jwtUtil.addJwtToCookie(token, response);
 
-        response.setStatus(200);
-        response.setContentType("application/json");
-        String result = new ObjectMapper().writeValueAsString(new ApiResponseDto(HttpStatus.OK.value(), "Login Success"));
-
-        response.getOutputStream().print(result);
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         log.info("로그인 실패");
-
-        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        response.setContentType("application/json");
-        String result = new ObjectMapper().writeValueAsString(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "Login Failed"));
-
-        response.getOutputStream().print(result);
+        response.setStatus(401);
     }
 }
