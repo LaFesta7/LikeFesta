@@ -42,6 +42,14 @@
             </ul>
         </div>
         <div class="right">
+            <a id="notification-click" href="/api/users/notification-page">
+                <svg id="notification-icon" style="margin-right: 20px" xmlns="http://www.w3.org/2000/svg" width="50"
+                     height="50" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
+                    <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
+                </svg>
+            </a>
+        </div>
+        <div class="right">
             <a id="loginButton" class="button blue gradient" href="/api/users/login-page" style="display:none;">로그인</a>
             <form id="logoutForm" method="get" action="/api/users/logout" style="display:none;">
                 <button class="button green gradient" type="submit">로그아웃</button>
@@ -171,7 +179,7 @@
                                 <tr>
                                     <th class="no" scope="col">No.</th>
                                     <th class="title" scope="col">Festival name</th>
-                                    <th class="author" scope="col">Location</th>
+                                    <th class="author" scope="col">Place</th>
                                     <th class="author" scope="col">Content</th>
                                     <th class="time" scope="col">Date</th>
                                     <th class="author" scope="col">Official Link</th>
