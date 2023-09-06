@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.Key;
@@ -51,7 +48,6 @@ public class JwtUtil {
     private final long REFRESH_TOKEN_TIME = 14 * 24 * 60 * 60 * 1000L; // 14일 세팅
 
 
-
     @Value("${JWT_SECRET_KEY}") // Base64 Encode 한 SecretKey
 
     private String secretKey; //application.properties에 선언되어 있는 값을 가져온다.
@@ -81,6 +77,7 @@ public class JwtUtil {
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘
                         .compact();
     }
+
     //3.생성된 JWT를 Cookie에 저장
     public void addJwtToCookie(String token, HttpServletResponse res) {
         try {
@@ -139,7 +136,7 @@ public class JwtUtil {
         return null;
     }
 
-    public boolean validateToken(String token, HttpServletResponse response) {
+    public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
@@ -148,7 +145,7 @@ public class JwtUtil {
             logger.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
         } catch (ExpiredJwtException e) {
             logger.error("Expired JWT token, 만료된 JWT token 입니다.");
-            removeTokenFromCookie(response);
+//            removeTokenFromCookie(response); //todo 만료된 토큰을 쿠키에서 제거하는 부분 체크하기.
         } catch (UnsupportedJwtException e) {
             logger.error("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
         } catch (IllegalArgumentException e) {
@@ -170,7 +167,7 @@ public class JwtUtil {
     // HttpServletRequest 에서 Cookie Value : JWT 가져오기
     public String getTokenFromRequest(HttpServletRequest req) {
         Cookie[] cookies = req.getCookies();
-        if(cookies != null) {
+        if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(AUTHORIZATION_HEADER)) {
                     try {
@@ -183,13 +180,15 @@ public class JwtUtil {
         }
         return null;
     }
+
     public String resolveToken(HttpServletRequest request) {
-        String bearerToken= request.getHeader(AUTHORIZATION_HEADER);
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)){
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.substring(7);
         }
         return null;
     }
+
     //쿠키에 있는 토큰 제거
     public void removeTokenFromCookie(HttpServletResponse response) {
         Cookie cookie = createExpiredCookie();
@@ -203,6 +202,7 @@ public class JwtUtil {
         cookie.setPath("/");
         return cookie;
     }
+
     //블랙리스트에 추가
     public void addTokenToBlacklist(String token) {
         tokenBlacklist.add(token);

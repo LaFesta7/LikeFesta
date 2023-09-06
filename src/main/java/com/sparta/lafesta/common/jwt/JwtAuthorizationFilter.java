@@ -1,9 +1,9 @@
 package com.sparta.lafesta.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.sparta.lafesta.common.dto.ApiResponseDto;
 import com.sparta.lafesta.common.exception.NotFoundException;
+import com.sparta.lafesta.common.refreshtoken.entity.RefreshToken;
 import com.sparta.lafesta.common.refreshtoken.repository.RefreshTokenRepository;
 import com.sparta.lafesta.common.security.UserDetailsServiceImpl;
 import com.sparta.lafesta.user.entity.UserRoleEnum;
