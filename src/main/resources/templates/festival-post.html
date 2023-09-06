@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>페스티벌 포스트 수정</title>
+    <title>페스티벌 포스트 작성</title>
     <link rel="stylesheet" href="/css/festival-3.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -119,7 +119,7 @@
     });
 
     $(document).ready(function () {
-        auth = getToken();
+        auth = 'Bearer ' + getToken();
     });
 
     // 쿠키에서 인증 토큰 가져오기
@@ -173,7 +173,7 @@
 
 
         // 서버로 데이터를 전송
-        fetch(`/api/users/festivals`, {
+        fetch(`/api/festivals`, {
             method: 'POST',
             headers: {
                 'Authorization': `${auth}`,
@@ -181,6 +181,7 @@
                 // 'Content-Type': 'application/json',
             },
             body: formData,
+            // body: JSON.stringify(requestDto),
         })
             .then(response => {
                 return response.json(); // 응답을 JSON으로 파싱
