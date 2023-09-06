@@ -76,7 +76,7 @@ public class TagController {
             @Parameter(description = "페스티벌을 조회할 때 사용할 태그 이름") @RequestParam("tag") String tag,
             @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "페이지 처리에 필요한 기본 설정")
-            @PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable
+            @PageableDefault(size=10, sort="id", direction = Direction.DESC) Pageable pageable
     ) {
         List<FestivalResponseDto> results = tagservice.selectFestivalTags(tag, userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(results);
