@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.jpa.repository.Query;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
@@ -23,12 +22,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByFollowings(UserFollow followingUser);
 
     Optional<User> findByFollowers(UserFollow followedUser);
-
-    @Query(value = "select u.* \n"
-        + "from users u\n"
-        + "left join user_follow f on u.id = f.follow_target_id\n"
-        + "group by u.id\n"
-        + "order by count(f.follow_target_id) desc\n"
-        + "limit 3", nativeQuery = true)
-    List<User> findTop3User();
 }

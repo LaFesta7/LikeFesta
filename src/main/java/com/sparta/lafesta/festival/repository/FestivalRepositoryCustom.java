@@ -1,7 +1,5 @@
 package com.sparta.lafesta.festival.repository;
 
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.festival.entity.QFestival;
@@ -16,30 +14,16 @@ public class FestivalRepositoryCustom {
   private final JPAQueryFactory queryFactory;
 
   QFestival qFestival = new QFestival("f");
-  QReview reviews = new QReview("r");
-
-//  public List<FestivalResponseDto> practice(){
-//    return queryFactory
-//        .select(qFestival)
-//        .from(qFestival)
-//        .fetch()
-//        .stream()
-//        .map(FestivalResponseDto::new).toList();
-//  }
-NumberPath<Long> aliasQuantity = Expressions.numberPath(Long.class, "aliasQuantity");
+  QReview qReviews = new QReview("r");
 
   public List<Festival> findTop3Festival(){
-
-    reviews.count().as(aliasQuantity);
-
     return queryFactory
         .select(qFestival)
         .from(qFestival)
-        .leftJoin(qFestival.reviews, reviews)
+        .leftJoin(qFestival.reviews, qReviews)
         .groupBy(qFestival.id)
-//        .orderBy(aliasQuantity.desc())
+        .orderBy(qReviews.festival.count().desc())
         .limit(3)
         .fetch();
   }
-
 }

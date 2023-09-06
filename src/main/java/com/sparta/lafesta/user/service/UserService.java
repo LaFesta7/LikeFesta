@@ -11,6 +11,7 @@ import com.sparta.lafesta.user.entity.User;
 import com.sparta.lafesta.user.entity.UserRoleEnum;
 import com.sparta.lafesta.user.entity.VerificationCode;
 import com.sparta.lafesta.user.repository.UserRepository;
+import com.sparta.lafesta.user.repository.UserRepositoryCustom;
 import com.sparta.lafesta.user.repository.VerificationCodeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,7 @@ public class UserService {
     //CRUD
     private final MailService mailService;
     private final UserRepository userRepository;
+    private final UserRepositoryCustom userRepositoryCustom;
     private final VerificationCodeRepository verificationCodeRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -109,7 +111,7 @@ public class UserService {
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        return userRepository.findTop3User().stream()
+        return userRepositoryCustom.findTop3User().stream()
                 .map(SelectUserResponseDto::new).toList();
     }
     
