@@ -13,8 +13,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class FestivalRequestDto {
 
     private String title;
-    private String location;
+    private String place;
     private String content;
+    private Double latitude;
+    private Double longitude;
 
     //예매 오픈 시각
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

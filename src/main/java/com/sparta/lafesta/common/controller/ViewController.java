@@ -69,8 +69,13 @@ public class ViewController {
         return "mypage-modify";
     }
 
-    @GetMapping("/festivals/post-page")
+    @GetMapping("/festivals/page")
     public String festivalPage() {
+        return "festival";
+    }
+
+    @GetMapping("/festivals/post-page")
+    public String festivalEdit(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "festival-post";
     }
 

@@ -63,7 +63,7 @@
             <div id="adminTokenContainer" style="display: none;">
                 <label for="adminToken">Admin Token</label>
                 <input type="text" id="adminToken" name="adminToken">
-                <button type="button" id="adminTokenButton">Verify</button>
+<!--                <button type="button" id="adminTokenButton">Verify</button>-->
             </div>
         </div>
         <div class="user-box">
@@ -221,8 +221,8 @@
                 nickname: nicknameInput.value,
                 email: emailInput.value,
                 verificationCode: verificationCodeInput.value,
-                isAdmin: adminCheckbox.checked,
-                isOrganizer: organizerCheckbox.checked,
+                admin: adminCheckbox.checked,
+                organizer: organizerCheckbox.checked,
                 adminToken: adminCheckbox.checked ? adminTokenInput.value : null
             };
 
