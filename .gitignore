@@ -8,7 +8,6 @@ build/
 ### properties ###
 application-redis.properties
 application-s3.properties
-application-redis.properties
 
 
 ### STS ###
