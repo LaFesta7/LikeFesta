@@ -45,6 +45,8 @@ public class User {
     @Column
     private Boolean organizerRequest;
 
+
+
     @Column(nullable = true, unique = true)
     private Long kakaoId;
 

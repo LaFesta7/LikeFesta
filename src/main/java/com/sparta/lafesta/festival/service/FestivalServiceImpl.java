@@ -70,6 +70,7 @@ public class FestivalServiceImpl implements FestivalService {
     @Transactional
     public FestivalResponseDto createFestival(FestivalRequestDto requestDto,
                                               List<MultipartFile> files, User user) throws IOException {
+//  public FestivalResponseDto createFestival(FestivalRequestDto requestDto, User user) throws IOException {
 
         // 허가되지 않은 주최사, 일반 사용자 접근 시 예외처리
         if (user.getRole().getAuthority().equals("ROLE_USER")) {

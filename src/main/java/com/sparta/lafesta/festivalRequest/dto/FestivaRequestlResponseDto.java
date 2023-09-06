@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class FestivaRequestlResponseDto {
     private Long id;
     private String title;
-    private String location;
+    private String place;
     private String content;
     private LocalDateTime openDate;
     private LocalDateTime endDate;
@@ -22,7 +22,7 @@ public class FestivaRequestlResponseDto {
     public FestivaRequestlResponseDto(FestivalRequest festivalRequest) {
         this.id = festivalRequest.getId();
         this.title = festivalRequest.getTitle();
-        this.location = festivalRequest.getLocation();
+        this.place = festivalRequest.getPlace();
         this.content = festivalRequest.getContent();
         this.openDate = festivalRequest.getOpenDate();
         this.endDate = festivalRequest.getEndDate();

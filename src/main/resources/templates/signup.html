@@ -8,6 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <title>LAFESTA</title>
+    <link rel="icon" href="/images/logo1.png" type="image/x-icon">
 
     <link rel="stylesheet" href="/css/login.css">
     <link href="/css/slides.min.css" rel="stylesheet" type="text/css">
@@ -62,7 +63,7 @@
             <div id="adminTokenContainer" style="display: none;">
                 <label for="adminToken">Admin Token</label>
                 <input type="text" id="adminToken" name="adminToken">
-                <button type="button" id="adminTokenButton">Verify</button>
+<!--                <button type="button" id="adminTokenButton">Verify</button>-->
             </div>
         </div>
         <div class="user-box">
@@ -163,6 +164,13 @@
         }
     });
 
+    // 타이머를 초기화하는 함수
+    function resetTimer() {
+        clearInterval(timer);
+        seconds = 180; // 3분
+        timerElement.textContent = "3:00";
+    }
+
     confirmButton.addEventListener('click', async () => {
         // 인증 코드를 확인하는 로직을 여기에 넣을 수 있습니다.
         if (verificationCodeInput.value) {
@@ -179,12 +187,12 @@
             });
 
             if (verifyResponse.ok) {
-                clearInterval(countdownInterval); // 타이머 중지
+                resetTimer(); // 타이머 초기화
                 const responseData = await verifyResponse.json();
                 console.log(responseData.statusMessage);
                 alert(responseData.statusMessage);
                 verificationContainer.style.display = 'none';
-                submitButton.disabled = false; // submitButton 활성화
+                submitButton.removeAttribute('disabled'); // submitButton 활성화
             } else {
                 const responseData = await verifyResponse.json();
                 console.error(responseData.statusMessage);
@@ -213,8 +221,8 @@
                 nickname: nicknameInput.value,
                 email: emailInput.value,
                 verificationCode: verificationCodeInput.value,
-                isAdmin: adminCheckbox.checked,
-                isOrganizer: organizerCheckbox.checked,
+                admin: adminCheckbox.checked,
+                organizer: organizerCheckbox.checked,
                 adminToken: adminCheckbox.checked ? adminTokenInput.value : null
             };
 

@@ -13,6 +13,8 @@ import com.sparta.lafesta.user.entity.VerificationCode;
 import com.sparta.lafesta.user.repository.UserRepository;
 import com.sparta.lafesta.user.repository.UserRepositoryCustom;
 import com.sparta.lafesta.user.repository.VerificationCodeRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -223,6 +225,7 @@ public class UserService {
     public void sendMailAndCreateVerificationCode(MailRequestDto requestDto) throws Exception {
         String email = requestDto.getEmail();
 
+        // 회원 중복 확인
         checkEmail(email);
 
         String code = mailService.sendMessage(email);
@@ -269,6 +272,23 @@ public class UserService {
         verificationCodeRepository.deleteByExpirationTimeBefore(LocalDateTime.now());
     }
 
+    //카카오 로그인 시 로그아웃
+    public void kakaoLogout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("token", null);
+        cookie.setMaxAge(0);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+    }
+
+    // 이메일 중복 확인
+    public void checkEmail(String email) {
+        Optional<User> checkEmail = userRepository.findByEmail(email);
+        if (checkEmail.isPresent()) {
+            throw new IllegalArgumentException("해당 이메일로 이미 가입하셨습니다.");
+        }
+    }
+
     // s3 업로드
     private void uploadFiles(List<MultipartFile> files, User user) throws IOException {
         List<FileOnS3> fileOnS3s = new ArrayList<>();
@@ -309,14 +329,6 @@ public class UserService {
 
         // 파일 등록
         uploadFiles(files, user);
-    }
-
-    // 이메일 중복 확인
-    public void checkEmail(String email) {
-        Optional<User> checkEmail = userRepository.findByEmail(email);
-        if (checkEmail.isPresent()) {
-            throw new IllegalArgumentException("해당 이메일로 이미 가입하셨습니다.");
-        }
     }
 
     // id로 유저 찾기

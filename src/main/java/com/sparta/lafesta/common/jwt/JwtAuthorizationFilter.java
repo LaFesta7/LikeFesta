@@ -1,9 +1,12 @@
 package com.sparta.lafesta.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.sparta.lafesta.common.dto.ApiResponseDto;
+import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.common.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,30 +37,19 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
 
-        String tokenValue = jwtUtil.getJwtFromHeader(req);
+        String tokenValue = jwtUtil.getTokenFromRequest(req);
 
         if (StringUtils.hasText(tokenValue)) {
+            // JWT 토큰 substring
+            tokenValue = jwtUtil.substringToken(tokenValue);
+            log.info(tokenValue);
 
-            if (!jwtUtil.validateToken(tokenValue)) {
-                res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                res.setContentType("application/json");
-                String result = new ObjectMapper().writeValueAsString(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "INVALID_TOKEN"));
-
-                res.getOutputStream().print(result);
+            if (!jwtUtil.validateToken(tokenValue,res)) {
+                log.error("Token Error");
                 return;
             }
 
-            Claims info;
-            try {
-                info = jwtUtil.getUserInfoFromToken(tokenValue);
-            } catch (Exception e) {
-                res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                res.setContentType("application/json");
-                String result = new ObjectMapper().writeValueAsString(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "INVALID_TOKEN"));
-
-                res.getOutputStream().print(result);
-                return;
-            }
+            Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
 
             try {
                 setAuthentication(info.getSubject());
@@ -70,6 +62,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(req, res);
     }
 
+    // 인증 처리
     public void setAuthentication(String username) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         Authentication authentication = createAuthentication(username);
@@ -78,6 +71,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         SecurityContextHolder.setContext(context);
     }
 
+    // 인증 객체 생성
     private Authentication createAuthentication(String username) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

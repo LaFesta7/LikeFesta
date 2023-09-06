@@ -55,14 +55,14 @@ public class NotificationService {
                     String mailContent = reminder.getMailContent();
                     String festivalTitle = reminder.getFestivalTitle();
                     String festivalOpenDate = reminder.getFestivalOpenDate();
-                    String festivalLocate = reminder.getFestivalLocate();
+                    String festivalPlace = reminder.getFestivalPlace();
                     String reservationOpenDate = reminder.getReservationOpenDate();
                     String reservationPlace = reminder.getReservationPlace();
                     List<User> festivalFollowUsers = reminder.getFestivalFollowUsers();
 
                     for (User toUser : festivalFollowUsers) {
                         String toEmail = toUser.getEmail();
-                        mailService.sendNotificationEmail(toEmail, mailTitle, mailContent, festivalTitle, festivalOpenDate, festivalLocate, reservationOpenDate, reservationPlace, htmlTemplate);
+                        mailService.sendNotificationEmail(toEmail, mailTitle, mailContent, festivalTitle, festivalOpenDate, festivalPlace, reservationOpenDate, reservationPlace, htmlTemplate);
                     }
 
                     eventPublisher.publishReminderSendEmailEvent(reminder);
