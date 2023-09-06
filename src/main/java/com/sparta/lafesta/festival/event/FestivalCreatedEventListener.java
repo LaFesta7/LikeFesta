@@ -30,7 +30,7 @@ public class FestivalCreatedEventListener implements ApplicationListener<Festiva
         List<User> followers = event.getFollowers();
         for (User follower : followers) {
             Notification notification = new Notification(title, detail, createdAt, follower);
-            notificationService.saveNotification(notification);
+            notificationService.saveNotification(notification, follower.getId());
         }
         log.info("페스티벌 작성 이벤트 발생");
     }
