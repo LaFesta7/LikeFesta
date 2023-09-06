@@ -4,10 +4,8 @@ import com.sparta.lafesta.common.jwt.JwtUtil;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.social.service.KakaoService;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,15 +37,15 @@ public class ViewController {
 
     @GetMapping("/users/login-page")
     public String login(HttpServletRequest request, Model model) {
-            String jwtToken = jwtUtil.getJwtFromHeader(request);
+        String jwtToken = jwtUtil.getAccessTokenFromHeader(request);
 
-            if (jwtToken != null && jwtUtil.validateToken(jwtToken)) {
-                return "redirect:/";
-            }
+        if (jwtToken != null && jwtUtil.validateToken(jwtToken)) {
+            return "redirect:/";
+        }
 
-            String kakaoUrl = kakaoService.getKakaoLogin();
-            model.addAttribute("kakaoUrl", kakaoUrl);
-            return "login";
+        String kakaoUrl = kakaoService.getKakaoLogin();
+        model.addAttribute("kakaoUrl", kakaoUrl);
+        return "login";
     }
 
     @GetMapping("/users/fest")

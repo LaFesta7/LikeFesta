@@ -10,8 +10,6 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
@@ -62,6 +60,20 @@ public class User {
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<UserBadge> userBadges = new ArrayList<>();
+
+
+    //refactor 생성자 정리 ->  빌더형태로 하나 만들어 둔 걸로 변경할 수 있어 보인다. +기존 생성자코드를 빌더코드로 바꿔야 함.
+    @Builder
+    public User(String username, String password, String email, UserRoleEnum role, String nickname, String introduce, Boolean organizerRequest, Long kakaoId) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.nickname = nickname;
+        this.introduce = introduce;
+        this.organizerRequest = organizerRequest;
+        this.kakaoId = kakaoId;
+    }
 
     public User(String username, String password, String email, UserRoleEnum role, String nickname, Boolean organizerRequest) {
         this.username = username;

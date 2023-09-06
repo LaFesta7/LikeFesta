@@ -8,13 +8,13 @@ import com.sparta.lafesta.like.reviewLike.entity.ReviewLike;
 import com.sparta.lafesta.review.dto.ReviewRequestDto;
 import com.sparta.lafesta.user.entity.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
@@ -46,6 +46,14 @@ public class Review extends Timestamped {
 
     @OneToMany(mappedBy = "review", orphanRemoval = true) //todo 이후 프론트 전달 방식과 관련해서 개선필요해 보임
     private List<ReviewFileOnS3> reviewFileOnS3s = new ArrayList<>();
+
+
+    public Review(String title, String content, User user, Festival festival) {
+        this.title = title;
+        this.content = content;
+        this.user = user;
+        this.festival = festival;
+    }
 
     public Review(Festival festival, ReviewRequestDto requestDto, User user) {
         this.festival = festival;
