@@ -11,24 +11,59 @@ $(document).ready(function () {
         $('#loginButton').hide();  // 로그인 버튼을 숨깁니다
     }
 
+    // 알림 받아오기
+    getNotifications();
+
+    // SSE 연결을 열기 위한 함수 호출
+    openSSEConnection();
+
+});
+
+let eventSource = undefined;
+
+// SSE 연결을 열어주는 함수
+function openSSEConnection() {
+    eventSource = new EventSource("/api/users/notifications/subscribe");
+
+    eventSource.addEventListener("open", function (event) {
+        console.log("connection opened");
+    });
+
+    eventSource.addEventListener("notification", function (event) {
+        console.log("get notifications ok");
+        getNotifications();
+    });
+
+    eventSource.addEventListener("error", function (event) {
+        console.log(event.target.readyState);
+        if (event.target.readyState === EventSource.CLOSED) {
+            console.log("eventsource closed (" + event.target.readyState + ")");
+        }
+        eventSource.close();
+    });
+}
+
+// 알림 받아오기
+function getNotifications() {
     $.ajax({
         url: '/api/users/notifications',
         type: 'GET',
         success: function (data) {
-            console.log(data);
+            console.log('handleGetNotifications');
             let html = '';
-            for (let i = 0; i <data.length; i++) { // Loop through each festival
+            for (let i = 0; i < data.length; i++) { // Loop through each festival
                 html += `<tr>
                         <td>${data[i].title}</td>
                         <td>${data[i].detail}</td>
                         <td>${data[i].timeSinceCreated}</td>
                         <td>${data[i].rd}</td>
                     </tr>`;
-            };
+            }
+            ;
             $('#notification-table-body').html(html);
         },
         error: function (err) {
             console.log('Error:', err);
         }
     });
-});
+}
