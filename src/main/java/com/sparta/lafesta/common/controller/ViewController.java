@@ -83,4 +83,9 @@ public class ViewController {
     public String reviewPage() {
         return "review-show";
     }
+
+    @GetMapping("/users/notification-page")
+    public String notificationPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "notification";
+    }
 }

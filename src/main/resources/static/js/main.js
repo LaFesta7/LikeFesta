@@ -6,6 +6,7 @@ $(document).ready(function () {
         // 토큰이 존재하지 않으면, 사용자는 로그인 상태가 아닙니다.
         $('#logoutForm').hide();  // 로그아웃 버튼을 숨깁니다
         $('#loginButton').show();  // 로그인 버튼을 표시합니다
+        $('#notification-icon').hide();  // 알림 미표시
     } else {
         $('#logoutForm').show();  // 로그아웃 버튼을 표시합니다
         $('#loginButton').hide();  // 로그인 버튼을 숨깁니다
@@ -21,7 +22,7 @@ $(document).ready(function () {
                 html += `<tr>
                         <td>${data[i].id}</td>
                         <td><a href="/api/festivals/${data[i].id}" target="_blank">${data[i].title}</a></td>
-                        <td>${data[i].location}</td>
+                        <td>${data[i].place}</td>
                         <td>${data[i].content}</td>
                         <td>${data[i].openDate} ~ ${data[i].endDate}</td>
                         <td><a href="${data[i].officialLink}" target="_blank">Official Link</a></td>
