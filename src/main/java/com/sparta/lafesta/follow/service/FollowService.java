@@ -8,6 +8,7 @@ import com.sparta.lafesta.festival.repository.FestivalRepository;
 import com.sparta.lafesta.follow.entity.FestivalFollow;
 import com.sparta.lafesta.follow.entity.UserFollow;
 import com.sparta.lafesta.follow.repository.FestivalFollowRepository;
+import com.sparta.lafesta.follow.repository.FollowRepositoryCustom;
 import com.sparta.lafesta.follow.repository.UserFollowRepository;
 import com.sparta.lafesta.user.dto.SelectUserResponseDto;
 import com.sparta.lafesta.user.entity.User;
@@ -28,6 +29,7 @@ public class FollowService {
     private final UserFollowRepository userFollowRepository;
     private final UserRepository userRepository;
     private final FestivalFollowRepository festivalFollowRepository;
+    private final FollowRepositoryCustom followRepositoryCustom;
     private final FestivalRepository festivalRepository;
 
 
@@ -69,18 +71,7 @@ public class FollowService {
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        List<UserFollow> followers = userFollowRepository.findAllByFollowedUser(followedUser, pageable);
-
-        List<SelectUserResponseDto> followerUsers = new ArrayList<>();
-        for(UserFollow follower : followers){
-            User followerUser = userRepository.findByFollowers(follower)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
-
-            SelectUserResponseDto selectUserResponseDto = new SelectUserResponseDto(followerUser);
-            followerUsers.add(selectUserResponseDto);
-        }
-
-        return followerUsers;
+        return followRepositoryCustom.findAllFollowers(userDetails.getUser(), pageable);
     }
 
 //    유저 팔로잉 목록 조회 - 내가 팔로우 하는 유저
