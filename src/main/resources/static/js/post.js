@@ -14,7 +14,7 @@ $(document).ready(function () {
                     <p>${data.endDate}</p>
                     <br>
                     <p> 위치 </p>
-                    p>${data.location}</p>
+                    p>${data.place}</p>
             </div>
                     <div class="festival-content">
                     <img src="/images/best1.jpg" alt="축제 이미지" class="festival-image">
