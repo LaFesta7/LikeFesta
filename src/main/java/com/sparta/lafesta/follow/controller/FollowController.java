@@ -86,7 +86,7 @@ public class FollowController {
         return ResponseEntity.ok().body(results);
     }
 
-    @DeleteMapping("/users/{userId}/followed-festivals/{festivalId}")
+    @DeleteMapping("/users/followed-festivals/{festivalId}")
     @Operation(summary = "페스티벌 팔로우 취소", description = "@PathVariable을 통해 festivalId를 받아와, 해당 festival 팔로우를 취소합니다")
     public ResponseEntity<ApiResponseDto> deleteFollowingFestival(
             @Parameter(description = "권한 확인 및 취소 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long festivalId){
