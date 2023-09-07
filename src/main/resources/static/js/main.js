@@ -10,6 +10,40 @@ $(document).ready(function () {
     } else {
         $('#logoutForm').show();  // 로그아웃 버튼을 표시합니다
         $('#loginButton').hide();  // 로그인 버튼을 숨깁니다
+
+        $.ajax({
+            url: '/api/users/followed-festivals',
+            type: 'GET',
+            success: function (data) {
+                console.log(data);
+                let html = '';
+                for (let i = 0; i <data.length; i++) { // Loop through each festival
+                    html += `
+                        <td>${data[i].title}</td>`;
+                };
+                $('#my-follow-festival').html(html);
+            },
+            error: function (err) {
+                console.log('Error:', err);
+            }
+        });
+
+        $.ajax({
+            url: '/api/users/follows/followers',
+            type: 'GET',
+            success: function (data) {
+                console.log(data);
+                let html = '';
+                for (let i = 0; i <data.length; i++) { // Loop through each festival
+                    html += `
+                        <td>${data[i].username}</td>`;
+                };
+                $('#my-follow-list').html(html);
+            },
+            error: function (err) {
+                console.log('Error:', err);
+            }
+        });
     }
 
     $.ajax({
@@ -29,40 +63,6 @@ $(document).ready(function () {
                     </tr>`;
             };
             $('#festival-table-body').html(html);
-        },
-        error: function (err) {
-            console.log('Error:', err);
-        }
-    });
-
-    $.ajax({
-        url: '/api/users/followed-festivals',
-        type: 'GET',
-        success: function (data) {
-            console.log(data);
-            let html = '';
-            for (let i = 0; i <data.length; i++) { // Loop through each festival
-                html += `
-                        <td>${data[i].title}</td>`;
-            };
-            $('#my-follow-festival').html(html);
-        },
-        error: function (err) {
-            console.log('Error:', err);
-        }
-    });
-
-    $.ajax({
-        url: '/api/users/follows/followers',
-        type: 'GET',
-        success: function (data) {
-            console.log(data);
-            let html = '';
-            for (let i = 0; i <data.length; i++) { // Loop through each festival
-                html += `
-                        <td>${data[i].username}</td>`;
-            };
-            $('#my-follow-list').html(html);
         },
         error: function (err) {
             console.log('Error:', err);
