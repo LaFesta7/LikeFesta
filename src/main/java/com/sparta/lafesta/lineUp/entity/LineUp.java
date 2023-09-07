@@ -17,16 +17,35 @@ public class LineUp {
     @Column(name = "id")
     private Long id;
 
-    //스포티파이api로 받아온 음악리스트
-    @Column(name = "music_list")
-    private String musicList;
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "artist")
+    private String artist;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @Column(name = "preview_url")
+    private String previewUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "festival_id")
     private Festival festival;
 
-    public LineUp(String musicList, Festival festival) {
-        this.musicList = musicList;
+    public LineUp(String title, String artist, String imageUrl, String previewUrl) {
+        this.title = title;
+        this.artist = artist;
+        this.imageUrl = imageUrl;
+        this.previewUrl = previewUrl;
         this.festival = festival;
     }
+
+    public void update(String title, String artist, String imageUrl, String previewUrl) {
+        this.title = title;
+        this.artist = artist;
+        this.imageUrl = imageUrl;
+        this.previewUrl = previewUrl;
+    }
+
 }
