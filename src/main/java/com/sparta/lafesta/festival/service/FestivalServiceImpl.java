@@ -236,6 +236,14 @@ public class FestivalServiceImpl implements FestivalService {
             .map(FestivalResponseDto::new).toList();
     }
 
+    //페스티벌 검색
+    @Override
+    @Transactional(readOnly = true)
+    public List<FestivalResponseDto> selectSearchedFestival(String keyword, Pageable pageable){
+        return festivalRepository.findByTitleContaining(keyword, pageable).stream()
+            .map(FestivalResponseDto::new).toList();
+    }
+
     // 페스티벌 오픈 알림을 보낼 페스티벌 가져오기
     @Override
     @Transactional(readOnly = true)

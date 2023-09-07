@@ -14,8 +14,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FestivalRepository extends JpaRepository<Festival, Long> {
 
-    Optional<Festival> findByFestivalFollowers(FestivalFollow festivalFollow);
-
     List<Festival> findAllByOpenDateBetween(LocalDateTime startOfDay, LocalDateTime endOfDay);
 
     Page<Festival> findAllBy(Pageable pageable);
@@ -25,4 +23,6 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
     List<Festival> findAllByEndDateBetween(LocalDateTime startOfDay, LocalDateTime endOfDay);
 
     Optional<Festival> findByTags(FestivalTag tags);
+
+    List<Festival> findByTitleContaining(String keyword, Pageable pageable);
 }

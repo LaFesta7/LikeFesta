@@ -115,4 +115,16 @@ public class FestivalController {
         List<FestivalResponseDto> results = festivalService.selectFestivalRanking(userDetails.getUser());
         return ResponseEntity.ok().body(results);
     }
+
+    @GetMapping("/users/festivals-search")
+    @Operation(summary = "페스티벌 키워드 검색", description = "키워드가 제목에 포함된 페스티벌을 조회합니다.")
+    public ResponseEntity<List<FestivalResponseDto>> selectSearchedFestival(
+        @Parameter(description = "검색을 위한 String 키워드") @RequestParam(value = "keyword") String keyword,
+        @Parameter(description = "페이징 처리를 위한 정보")
+        @PageableDefault(size=3, sort="createdAt", direction = Direction.DESC) Pageable pageable
+        ){
+        List<FestivalResponseDto> results = festivalService.selectSearchedFestival(keyword, pageable);
+        return ResponseEntity.ok().body(results);
+    }
+
 }
