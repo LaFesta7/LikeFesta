@@ -105,18 +105,6 @@ public class UserService {
         }
     }
 
-    //인플루언서 랭킹 조회
-    @Transactional(readOnly = true)
-    public List<SelectUserResponseDto> selectUserRanking(User user) {
-        //회원 확인
-        if (user == null) {
-            throw new IllegalArgumentException("로그인 해주세요");
-        }
-
-        return userRepositoryCustom.findTop3User().stream()
-                .map(SelectUserResponseDto::new).toList();
-    }
-    
     // 프로필 조회
     @Transactional(readOnly = true)
     public SelectUserResponseDto selectUserProfile(Long userId, User user) {
@@ -218,6 +206,18 @@ public class UserService {
         }
         User selectUser = findUser(user.getId());
         userRepository.delete(selectUser);
+    }
+
+    //인플루언서 랭킹 조회
+    @Transactional(readOnly = true)
+    public List<SelectUserResponseDto> selectUserRanking(User user) {
+        //회원 확인
+        if (user == null) {
+            throw new IllegalArgumentException("로그인 해주세요");
+        }
+
+        return userRepositoryCustom.findTop3User().stream()
+            .map(SelectUserResponseDto::new).toList();
     }
 
     // 인증 메일 발송 후 코드 DB 임시 저장하기

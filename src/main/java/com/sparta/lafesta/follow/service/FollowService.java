@@ -143,7 +143,7 @@ public class FollowService {
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        return followRepositoryCustom.findAllFestivalFollowers(userDetails.getUser(), pageable);
+        return followRepositoryCustom.findAllFollowFestival(userDetails.getUser(), pageable);
     }
 
     //페스티벌 팔로우 취소

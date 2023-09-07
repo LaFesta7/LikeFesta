@@ -31,6 +31,7 @@ QFestivalFollow qFestivalFollow = new QFestivalFollow("ff");
         .leftJoin(qUserFollow.followingUser, qUser2)
         .offset(pageable.getOffset())
         .where(qUser.eq(user))
+        .orderBy(qUserFollow.createdAt.desc())
         .limit(pageable.getPageSize())
         .fetch()
         .stream().map(SelectUserResponseDto::new).toList();
@@ -44,12 +45,13 @@ QFestivalFollow qFestivalFollow = new QFestivalFollow("ff");
         .leftJoin(qUserFollow.followedUser, qUser2)
         .offset(pageable.getOffset())
         .where(qUser.eq(user))
+        .orderBy(qUserFollow.createdAt.desc())
         .limit(pageable.getPageSize())
         .fetch()
         .stream().map(SelectUserResponseDto::new).toList();
   }
 
-  public List<FestivalResponseDto> findAllFestivalFollowers(User user, Pageable pageable){
+  public List<FestivalResponseDto> findAllFollowFestival(User user, Pageable pageable){
     return queryFactory
         .select(qFestival)
         .from(qFestival)
@@ -57,10 +59,9 @@ QFestivalFollow qFestivalFollow = new QFestivalFollow("ff");
         .leftJoin(qFestivalFollow.followingFestivalUser, qUser)
         .offset(pageable.getOffset())
         .where(qUser.eq(user))
-//        .orderBy(pageable.getSort())
+        .orderBy(qFestivalFollow.createdAt.desc())
         .limit(pageable.getPageSize())
         .fetch()
         .stream().map(FestivalResponseDto::new).toList();
-
   }
 }
