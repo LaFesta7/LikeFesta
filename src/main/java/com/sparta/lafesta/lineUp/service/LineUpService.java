@@ -3,6 +3,7 @@ package com.sparta.lafesta.lineUp.service;
 import com.sparta.lafesta.lineUp.dto.LineUpRequestDto;
 import com.sparta.lafesta.lineUp.dto.LineUpResponseDto;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface LineUpService {
@@ -10,9 +11,10 @@ public interface LineUpService {
     /**
      * 라인업 상세 조회
      * @param festivalId 조회할 페스티벌
+     * @param lineUpId 조회할 라인업
      * @return 라인업 상세 조회 결과
      */
-    List<LineUpResponseDto> findLineUp(Long festivalId);
+    List<LineUpResponseDto> findLineUps(Long festivalId, Long lineUpId) throws IOException;
 
     /**
      * 라인업 생성

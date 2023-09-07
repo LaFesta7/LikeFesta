@@ -17,23 +17,23 @@ public class LineUp {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "artist")
+    @Column(name = "artist", nullable = false)
     private String artist;
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
-    @Column(name = "preview_url")
+    @Column(name = "preview_url", nullable = false)
     private String previewUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "festival_id")
+    @JoinColumn(name = "festival_id", nullable = false)
     private Festival festival;
 
-    public LineUp(String title, String artist, String imageUrl, String previewUrl) {
+    public LineUp(String title, String artist, String imageUrl, String previewUrl, Festival festival) {
         this.title = title;
         this.artist = artist;
         this.imageUrl = imageUrl;
@@ -47,5 +47,4 @@ public class LineUp {
         this.imageUrl = imageUrl;
         this.previewUrl = previewUrl;
     }
-
 }
