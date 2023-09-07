@@ -23,9 +23,9 @@ public class FestivalCreatedEventListener implements ApplicationListener<Festiva
     @TransactionalEventListener
     public void onApplicationEvent(FestivalCreatedEvent event) {
         Festival festival = event.getFestival();
-        String title = festival.getTitle()  + " 게시 안내";
+        String title = "'" + festival.getTitle() + "' 게시 안내";
         String editor = festival.getUser().getNickname();
-        String detail = "팔로우 하신 " + editor + "님께서 " + festival.getTitle() + "을/를 게시했습니다.";
+        String detail = "팔로우 하신 '" + editor + "'님께서 '" + festival.getTitle() + "' 페스티벌을 게시했습니다.";
         LocalDateTime createdAt = festival.getCreatedAt();
         List<User> followers = event.getFollowers();
         for (User follower : followers) {
