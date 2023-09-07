@@ -1,5 +1,6 @@
 package com.sparta.lafesta.common.controller;
 
+import com.sparta.lafesta.common.exception.UnauthorizedException;
 import com.sparta.lafesta.common.jwt.JwtUtil;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.follow.service.FollowService;
@@ -82,5 +83,13 @@ public class ViewController {
     @GetMapping("/festivals/review-page")
     public String reviewPage() {
         return "review-show";
+    }
+
+    @GetMapping("/admin-page")
+    public String adminPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (!userDetails.getUser().getRole().getAuthority().equals("ROLE_ADMIN")) {
+            throw new UnauthorizedException("해당 페이지에 접근하실 수 없습니다.");
+        }
+        return "admin";
     }
 }

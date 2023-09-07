@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>LAFESTA 관리자 페이지</title>
+  <link rel="icon" href="/images/logo1.png" type="image/x-icon">
+
+  <script src="/js/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="/js/slides.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+
+  <link href="/css/slides.min.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" as="font"
+        href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
+  <link rel="stylesheet" href="/css/post.css">
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body class="slides horizontal simplifiedMobile animated">
+
+<nav class="panel top">
+  <div class="sections desktop">
+    <div class="left">
+      <a href="/" title="Slides Framework">
+        <img src="/images/logo-s1.png" width="270" height="240" alt="lafesta logo">
+      </a>
+    </div>
+    <div class="center">
+      <ul class="menu">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#organizer-request">주최사 가입 인증 요청</a></li>
+        <li><a href="#festival-request">페스티벌 게시 요청</a></li>
+        <li><a href="#users">유저 관리</a></li>
+        <li><a href="#tags">태그 관리</a></li>
+        <li><a href="#badges">뱃지 관리</a></li>
+      </ul>
+    </div>
+    <div class="right">
+      <a id="loginButton" class="button blue gradient" href="/api/users/login-page" style="display:none;">로그인</a>
+      <form id="logoutForm" method="get" action="/api/users/logout" style="display:none;">
+        <button class="button green gradient" type="submit">로그아웃</button>
+      </form>
+    </div>
+
+  </div>
+  <div class="sections compact hidden">
+    <div class="left"><a href="/" title="Slides Framework"></a></div>
+    <div class="right">
+            <span class="button actionButton sidebarTrigger" data-sidebar-id="1">
+                <svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#menu"></use></svg>
+            </span>
+    </div>
+  </div>
+</nav>
+
+<!-- 상단 바 -->
+<nav class="sidebar" data-sidebar-id="1">
+  <div class="content">
+    <a href="/" class="logo">
+      <svg width="37" height="30">
+        <use xmlns:xlink="http://www.w3.org/1999/xlink" src="/"></use>
+      </svg>
+    </a>
+    <ul class="mainMenu margin-top-3">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#organizer-request">주최사 가입 인증 요청</a></li>
+      <li><a href="#festival-request">페스티벌 게시 요청</a></li>
+      <li><a href="#users">유저 관리</a></li>
+      <li><a href="#tags">태그 관리</a></li>
+      <li><a href="#badges">뱃지 관리</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- 메인 페이지 -->
+<section class="slide fade-6 kenBurns">
+  <div class="content">
+    <div class="container">
+      <div class="wrap">
+        <div class="fix-12-12">
+          <ul class="flex fixedSpaces verticalCenter reverse">
+            <li class="col-6-12 left middle">
+              <h1 class="ae-1 fromLeft">모든 축제의 시작과 끝 LAFESTA</h1>
+              <p class="ae-2 fromLeft"><span class="opacity-8">라페스타와 함께 당신의 매일을 축제와 함께하세요.</span>
+              </p>
+              <a id="myButton7" class="button blue gradient ae-3 fromCenter cropLeft"
+                 href="/api/users/festivals-map">축제 등록하기</a>
+            </li>
+            <li class="col-6-12">
+              <img class="ae-4" width="605" src="/images/logo6.png" alt="iPhones Thumbnail"
+                   data-action="zoom"/>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="background" style="background-image:url(/images/background/img-21.jpg)"></div>
+</section>
+
+<script src="/js/main.js"></script>
+<script>
+</script>
+</body>
+</html>

@@ -68,3 +68,22 @@ $(document).ready(function () {
         }
     });
 });
+
+async function moveAdminPage() {
+    try {
+        const response = await fetch('/api/admin-page');
+
+        if (!response.ok) {
+            const errorMessage = await response.json();
+            const statusMessage = errorMessage.statusMessage;
+            console.error(statusMessage);
+            alert(statusMessage);
+
+            window.location.href = '/';
+        } else {
+            window.location.href = '/api/admin-page';
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
