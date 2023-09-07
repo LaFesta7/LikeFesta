@@ -12,6 +12,7 @@ $(document).ready(function () {
         getOrganizerRequests();
         getFestivalRequests();
         getUsers();
+        getTags();
     }
 });
 
@@ -195,7 +196,7 @@ function getUsers() {
 
 function alertUserWithdrawal(username, userId) {
     // 경고창을 띄웁니다.
-    const confirmation = confirm("'" + username + "'를 탈퇴 처리하시겠습니까?");
+    const confirmation = confirm("'" + username + "' 사용자를 탈퇴 처리하시겠습니까?");
 
     // 사용자가 확인을 누르면 메소드를 실행합니다.
     if (confirmation) {
@@ -210,6 +211,111 @@ function withdrawUser(userId) {
         success: function (data) {
             alert(data.statusMessage);
             getUsers();
+        },
+        error: function (err) {
+            alert(err.statusMessage);
+            console.log('Error:', err);
+        }
+    });
+}
+
+// 태그 관리
+function getTags() {
+    $.ajax({
+        url: '/api/tags',
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+            let html = '';
+            for (let i = 0; i < data.length; i++) { // Loop through each festival
+                html += `<tr>
+                    <td>${data[i].id}</td>
+                    <td id="tagName${data[i].id}">${data[i].title}</td>
+                    <td><a onclick="showTagInput('${data[i].title}', '${data[i].id}')">수정</a></td>
+                    <td><a onclick="alertTagDelete('${data[i].title}', '${data[i].id}')">삭제</a></td>
+                </tr>`;
+            }
+            ;
+            $('#tags-table-body').html(html);
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
+}
+
+function showTagInput(title, id) {
+    // 해당 테이블 셀을 찾습니다.
+    const cell = $(`#tagName${id}`);
+
+    // 셀 내용을 현재 내용으로 저장합니다.
+    const currentContent = cell.text();
+
+    // 수정 버튼을 '확인'으로 변경합니다.
+    cell.next().html('<a onclick="alertTagModify(\'' + currentContent + '\', ' + id + ')">확인</a>');
+
+    // input 요소를 생성하고 현재 내용으로 초기화합니다.
+    const input = $('<input>', {
+        type: 'text',
+        id: `tagInput${id}`,
+        value: currentContent
+    });
+
+    // 현재 셀을 비워주고 input 요소를 추가합니다.
+    cell.empty().append(input);
+}
+
+function alertTagModify(tagName, tagId) {
+    // 경고창을 띄웁니다.
+    const confirmation = confirm("'" + tagName + "' 태그를 수정하시겠습니까?");
+
+    // 사용자가 확인을 누르면 메소드를 실행합니다.
+    if (confirmation) {
+        modifyTag(tagId);
+    } else {
+        getTags();
+    }
+}
+
+function modifyTag(tagId) {
+    const tagInput = document.getElementById(`tagInput${tagId}`);
+    const requestDto = {
+        title: tagInput.value
+    };
+
+    $.ajax({
+        url: `/api/tags/${tagId}`,
+        type: 'PATCH',
+        data: JSON.stringify(requestDto), // 데이터 객체를 JSON 문자열로 변환하여 전송
+        contentType: 'application/json',
+        success: function (data) {
+            alert(data.title + '로 태그를 수정하였습니다.');
+            getTags();
+        },
+        error: function (err) {
+            alert(err.statusMessage);
+            console.log('Error:', err);
+        }
+    });
+}
+
+function alertTagDelete(tagName, tagId) {
+    // 경고창을 띄웁니다.
+    const confirmation = confirm("'" + tagName + "' 태그를 삭제하시겠습니까?");
+
+    // 사용자가 확인을 누르면 메소드를 실행합니다.
+    if (confirmation) {
+        deleteTag(tagId);
+    }
+}
+
+function deleteTag(tagId) {
+    $.ajax({
+        url: `/api/tags/${tagId}`,
+        type: 'DELETE',
+        success: function (data) {
+            alert(data.statusMessage);
+            getTags();
         },
         error: function (err) {
             alert(err.statusMessage);
