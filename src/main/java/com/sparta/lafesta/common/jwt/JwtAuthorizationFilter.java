@@ -3,7 +3,7 @@ package com.sparta.lafesta.common.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.lafesta.common.dto.ApiResponseDto;
 import com.sparta.lafesta.common.exception.NotFoundException;
-import com.sparta.lafesta.common.refreshtoken.entity.RefreshToken;
+import com.sparta.lafesta.common.refreshtoken.entity.UserToken;
 import com.sparta.lafesta.common.refreshtoken.repository.RefreshTokenRepository;
 import com.sparta.lafesta.common.security.UserDetailsServiceImpl;
 import com.sparta.lafesta.user.entity.UserRoleEnum;
@@ -40,8 +40,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
 
-        String accessToken = jwtUtil.getAccessTokenFromHeader(req);
-        String refreshToken = jwtUtil.getRefreshTokenFromHeader(req);
+        String[] tokens = jwtUtil.getTokensFromRequest(req);
+
+        String accessToken = tokens[0];
+        String refreshToken = tokens[1];
 
         if (StringUtils.hasText(accessToken)) {
 
@@ -54,7 +56,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     Claims infoFromRefreshToken = jwtUtil.getUserInfoFromToken(refreshToken);
 
                     String username = infoFromRefreshToken.getSubject();
-                    RefreshToken foundTokenDto = refreshTokenRepository.findById(username).orElseThrow(()
+                    UserToken foundTokenDto = refreshTokenRepository.findById(username).orElseThrow(()
                             -> new NotFoundException("Redis서버에서 RefreshToken 정보를 찾을 수 없습니다."));
 
                     if (foundTokenDto.getRefreshToken().substring(7).equals(refreshToken)) {
@@ -64,13 +66,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                         String roleStr = (String) infoFromRefreshToken.get(JwtUtil.AUTHORIZATION_KEY);
                         UserRoleEnum role = UserRoleEnum.valueOfRole(roleStr);
 
-                        accessToken = jwtUtil.createToken(username, role);
+                        accessToken = jwtUtil.createAccessToken(username, role);
                         refreshToken = jwtUtil.createRefreshToken(username, role);
 
                         res.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
                         res.addHeader(JwtUtil.REFRESH_TOKEN_HEADER, refreshToken);
 
-                        refreshTokenRepository.save(new RefreshToken(username, refreshToken, accessToken));
+                        refreshTokenRepository.save(new UserToken(username, refreshToken, accessToken));
                     }
                 } else {
                     res.setStatus(HttpServletResponse.SC_BAD_REQUEST);

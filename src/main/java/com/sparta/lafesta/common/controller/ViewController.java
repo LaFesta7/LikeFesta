@@ -7,12 +7,14 @@ import com.sparta.lafesta.social.service.KakaoService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.UnsupportedEncodingException;
 
 @Slf4j
 @Controller
@@ -41,8 +43,8 @@ public class ViewController {
     }
 
     @GetMapping("/users/login-page")
-    public String login(HttpServletRequest request, Model model) {
-        String jwtToken = jwtUtil.getAccessTokenFromHeader(request);
+    public String login(HttpServletRequest request, Model model) throws UnsupportedEncodingException {
+        String jwtToken = jwtUtil.getTokensFromRequest(request)[0]; // 인덱스 0은 AccessToken
 
         if (jwtToken != null && jwtUtil.validateToken(jwtToken)) {
             return "redirect:/";

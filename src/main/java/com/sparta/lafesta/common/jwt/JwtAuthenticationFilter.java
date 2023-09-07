@@ -1,18 +1,13 @@
 package com.sparta.lafesta.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.lafesta.common.dto.ApiResponseDto;
-import com.sparta.lafesta.common.refreshtoken.entity.RefreshToken;
-import com.sparta.lafesta.common.refreshtoken.repository.RefreshTokenRepository;
-import com.sparta.lafesta.user.dto.LoginRequestDto;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
-import com.sparta.lafesta.user.entity.UserRoleEnum;
+import com.sparta.lafesta.user.dto.LoginRequestDto;
+import com.sparta.lafesta.user.entity.User;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -23,11 +18,9 @@ import java.io.IOException;
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
-    private final RefreshTokenRepository refreshTokenRepository;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-        this.refreshTokenRepository = refreshTokenRepository;
         setFilterProcessesUrl("/api/users/login");
     }
 
@@ -51,29 +44,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
         log.info("로그인 성공 및 JWT 생성");
 
-        // refactor 토큰을 한번에 처리할 수 있게 합칠 수도 있지 않을까?
-        String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
-        UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
-
-        String accessToken = jwtUtil.createToken(username, role);
-        String refreshToken = jwtUtil.createRefreshToken(username, role); //refresh token 생성
-
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
-        response.addHeader(JwtUtil.REFRESH_TOKEN_HEADER, refreshToken); //헤더에 추가로 전달. todo 클라이언트에서 헤더값을 저장해주는 코드 필요.
-
-        refreshTokenRepository.save(new RefreshToken(((UserDetailsImpl) authResult.getPrincipal()).getUser().getUsername(),
-                                                        refreshToken, accessToken));
-
-        log.info("accessToken : " + accessToken);
-        log.info("refreshToken : " + refreshToken);
+        User user = ((UserDetailsImpl) authResult.getPrincipal()).getUser();
+        jwtUtil.addJwtToCookie(user, response);
 
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
         log.info("로그인 실패");
         response.setStatus(401);
     }
