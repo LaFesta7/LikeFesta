@@ -49,16 +49,6 @@ public class AdminController {
         return ResponseEntity.ok().body(result);
     }
 
-    @DeleteMapping("/users/{userId}/withdrawal")
-    @Operation(summary = "유저 삭제", description = "관리자 권한으로 유저를 삭제합니다.")
-    public ResponseEntity<ApiResponseDto> deleteUser(
-            @Parameter(name = "userId", description = "삭제할 user의 id", in = ParameterIn.PATH) @PathVariable Long userId,
-            @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
-        adminService.deleteUser(userId, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "해당 사용자의 삭제를 완료했습니다."));
-    }
-
     @GetMapping("/festival-requests")
     @Operation(summary = "페스티벌 게시 요청 미승인 목록 조회", description = "페스티벌 게시 요청 미승인 목록을 조회합니다.")
     public ResponseEntity<List<FestivaRequestlResponseDto>> selectFestivalRequestNotAdminApproval(
@@ -78,5 +68,15 @@ public class AdminController {
     ) {
         FestivaRequestlResponseDto result = adminService.modifyFestivalRequestAdminApproval(festivalRequestId, userDetails.getUser());
         return ResponseEntity.ok().body(result);
+    }
+
+    @DeleteMapping("/users/{userId}/withdrawal")
+    @Operation(summary = "유저 삭제", description = "관리자 권한으로 유저를 삭제합니다.")
+    public ResponseEntity<ApiResponseDto> deleteUser(
+            @Parameter(name = "userId", description = "삭제할 user의 id", in = ParameterIn.PATH) @PathVariable Long userId,
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        adminService.deleteUser(userId, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "해당 사용자의 삭제를 완료했습니다."));
     }
 }

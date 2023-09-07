@@ -51,16 +51,6 @@ public class AdminServiceImpl implements AdminService {
         return new OrganizerResponseDto(organizer);
     }
 
-    // 유저 삭제
-    @Override
-    @Transactional
-    public void deleteUser(Long userId, User user) {
-        // admin 권한 확인
-        checkAdminRole(user);
-
-        userRepository.delete(findUser(userId));
-    }
-
     // 페스티벌 게시 요청 미승인 목록 조회
     @Override
     @Transactional(readOnly = true)
@@ -88,6 +78,16 @@ public class AdminServiceImpl implements AdminService {
         festivalRequest.approveFestivalRequest();
 
         return new FestivaRequestlResponseDto(festivalRequest);
+    }
+
+    // 유저 삭제
+    @Override
+    @Transactional
+    public void deleteUser(Long userId, User user) {
+        // admin 권한 확인
+        checkAdminRole(user);
+
+        userRepository.delete(findUser(userId));
     }
 
     // admin 권한 확인
