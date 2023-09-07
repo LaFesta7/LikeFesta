@@ -11,6 +11,7 @@ $(document).ready(function () {
         $('#loginButton').hide();  // 로그인 버튼을 숨깁니다
         getOrganizerRequests();
         getFestivalRequests();
+        getUsers();
     }
 });
 
@@ -162,5 +163,57 @@ function approveFestivalRequest(festivalRequestId) {
                 reject(err);
             }
         });
+    });
+}
+
+// 유저 강제 탈퇴
+function getUsers() {
+    $.ajax({
+        url: '/api/admin/users',
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+            let html = '';
+            for (let i = 0; i < data.length; i++) { // Loop through each festival
+                html += `<tr>
+                    <td>${data[i].id}</td>
+                    <td>${data[i].role}</td>
+                    <td>${data[i].username}</td>
+                    <td>${data[i].nickname}</td>
+                    <td>${data[i].email}</td>
+                    <td><a id="checkbox${i}" onclick="alertUserWithdrawal('${data[i].username}', '${data[i].id}')">탈퇴</a></td>
+                </tr>`;
+            }
+            ;
+            $('#users-table-body').html(html);
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
+}
+
+function alertUserWithdrawal(username, userId) {
+    // 경고창을 띄웁니다.
+    const confirmation = confirm("'" + username + "'를 탈퇴 처리하시겠습니까?");
+
+    // 사용자가 확인을 누르면 메소드를 실행합니다.
+    if (confirmation) {
+        withdrawUser(userId);
+    }
+}
+
+function withdrawUser(userId) {
+    $.ajax({
+        url: `/api/admin/users/${userId}/withdrawal`,
+        type: 'DELETE',
+        success: function (data) {
+            alert(data.statusMessage);
+            getUsers();
+        },
+        error: function (err) {
+            alert(err.statusMessage);
+            console.log('Error:', err);
+        }
     });
 }
