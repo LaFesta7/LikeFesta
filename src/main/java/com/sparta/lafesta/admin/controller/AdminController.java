@@ -5,6 +5,8 @@ import com.sparta.lafesta.admin.service.AdminService;
 import com.sparta.lafesta.common.dto.ApiResponseDto;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.festivalRequest.dto.FestivaRequestlResponseDto;
+import com.sparta.lafesta.user.dto.SelectUserResponseDto;
+import com.sparta.lafesta.user.dto.UserInfoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -68,6 +70,17 @@ public class AdminController {
     ) {
         FestivaRequestlResponseDto result = adminService.modifyFestivalRequestAdminApproval(festivalRequestId, userDetails.getUser());
         return ResponseEntity.ok().body(result);
+    }
+
+    @GetMapping("/users")
+    @Operation(summary = "전체 유저 목록 조회", description = "전체 유저 목록을 조회합니다.")
+    public ResponseEntity<List<UserInfoResponseDto>> selectUsers(
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "페이지 처리에 필요한 기본 설정")
+            @PageableDefault(size=10, sort="id") Pageable pageable
+    ) {
+        List<UserInfoResponseDto> results = adminService.selectUsers(userDetails.getUser(), pageable);
+        return ResponseEntity.ok().body(results);
     }
 
     @DeleteMapping("/users/{userId}/withdrawal")
