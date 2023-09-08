@@ -237,7 +237,7 @@
 
             if (response.ok) {
                 alert('성공적으로 등록되었습니다. 로그인 페이지로 리디렉션합니다.');
-                window.location.href = '/login-page';
+                window.location.href = host + '/login-page';
             } else {
                 const responseData = await response.json();
                 alert(`회원가입에 실패했습니다. ${responseData.statusMessage}`);

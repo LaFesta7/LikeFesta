@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.net.URI;
 import java.util.UUID;
 
-@Slf4j(topic ="KAKAO Login")
+@Slf4j(topic = "KAKAO Login")
 @Service
 @RequiredArgsConstructor
 public class KakaoService {
@@ -156,5 +156,5 @@ public class KakaoService {
             userRepository.save(kakaoUser);
         }
         return kakaoUser;
- Z   }
+    }
 }
