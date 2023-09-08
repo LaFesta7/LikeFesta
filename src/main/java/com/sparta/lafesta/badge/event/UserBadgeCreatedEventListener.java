@@ -22,12 +22,12 @@ public class UserBadgeCreatedEventListener implements ApplicationListener<UserBa
     @TransactionalEventListener
     public void onApplicationEvent(UserBadgeCreatedEvent event) {
         UserBadge userBadge = event.getUserBadge();
-        String title = userBadge.getBadge().getTitle();
+        String title = "'" + userBadge.getBadge().getTitle() + "' 뱃지 획득";
         String detail = "'" + title + "' 뱃지를 획득했습니다.";
         LocalDateTime createdAt = userBadge.getCreatedAt();
         User user = userBadge.getUser();
         Notification notification = new Notification(title, detail, createdAt, user);
-        notificationService.saveNotification(notification);
+        notificationService.saveNotification(notification, user.getId());
         log.info("유저 뱃지 획득 이벤트 발생");
     }
 }
