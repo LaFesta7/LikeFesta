@@ -61,10 +61,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     String username = infoFromRefreshToken.getSubject();
                     UserToken foundTokenDto = findFoundTokenDtoFromRedis(username);
 
-                    if (foundTokenDto.getRefreshToken().substring(7).equals(refreshToken)) {
+                    if (foundTokenDto.getRefreshToken().equals(refreshToken)) {
                         //재발급
                         User user = findUserByUsername(username);
-                        jwtUtil.addJwtToCookie(user, res);
+                        tokens = jwtUtil.addJwtToCookie(user, res);
                     }
                 } else {
                     res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -78,6 +78,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             Claims info;
             try {
+                accessToken = tokens[0];
                 info = jwtUtil.getUserInfoFromToken(accessToken);
             } catch (Exception e) {
                 res.setStatus(HttpServletResponse.SC_BAD_REQUEST);

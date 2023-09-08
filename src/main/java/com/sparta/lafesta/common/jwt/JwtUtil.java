@@ -42,7 +42,7 @@ public class JwtUtil {
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer "; //-> Bearer 이 붙어 있으면 해당하는 값은 Token임을 알려주는 식별자.(규칙)
     // 토큰 만료시간
-    private final int ACCESS_TOKEN_TIME_SECONDS = 2 * 60 * 60; //2시간으로 세팅. 테스트시 임의로 수정해야함
+    private final int ACCESS_TOKEN_TIME_SECONDS = 30; //2시간으로 세팅. 테스트시 임의로 수정해야함
     private final long ACCESS_TOKEN_TIME = ACCESS_TOKEN_TIME_SECONDS * 1000L; //2시간으로 세팅. 테스트시 임의로 수정해야함
 
     //Token 블랙 리스트
@@ -80,7 +80,8 @@ public class JwtUtil {
 
     //// JWT를 생성 후 Cookie에 저장
     @Transactional
-    public void addJwtToCookie(User user, HttpServletResponse res) {
+    public String[] addJwtToCookie(User user, HttpServletResponse res) {
+        String[] tokens = new String[2];
         try {
 
             //토큰 생성
@@ -89,6 +90,9 @@ public class JwtUtil {
 
             String accessToken = createAccessToken(username, role);
             String refreshToken = createRefreshToken(username, role); //refresh token 생성
+
+            tokens[0] = accessToken;
+            tokens[1] = refreshToken;
 
             log.info("accessToken : " + accessToken);
             log.info("refreshToken : " + refreshToken);
@@ -110,6 +114,7 @@ public class JwtUtil {
         } catch (UnsupportedEncodingException e) {
             logger.error(e.getMessage());
         }
+        return tokens;
     }
 
     //엑세스 토큰 생성
