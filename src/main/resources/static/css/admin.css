@@ -1,0 +1,7 @@
+td {
+    vertical-align: middle;
+}
+
+#badge-tags-input-container input[type="text"] {
+    margin-bottom: 5px;
+}

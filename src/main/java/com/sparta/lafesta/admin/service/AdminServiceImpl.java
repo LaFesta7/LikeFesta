@@ -6,6 +6,8 @@ import com.sparta.lafesta.admin.dto.OrganizerResponseDto;
 import com.sparta.lafesta.festivalRequest.dto.FestivaRequestlResponseDto;
 import com.sparta.lafesta.festivalRequest.entity.FestivalRequest;
 import com.sparta.lafesta.festivalRequest.repository.FestivalRequestRepository;
+import com.sparta.lafesta.user.dto.SelectUserResponseDto;
+import com.sparta.lafesta.user.dto.UserInfoResponseDto;
 import com.sparta.lafesta.user.entity.User;
 import com.sparta.lafesta.user.entity.UserRoleEnum;
 import com.sparta.lafesta.user.repository.UserRepository;
@@ -51,16 +53,6 @@ public class AdminServiceImpl implements AdminService {
         return new OrganizerResponseDto(organizer);
     }
 
-    // 유저 삭제
-    @Override
-    @Transactional
-    public void deleteUser(Long userId, User user) {
-        // admin 권한 확인
-        checkAdminRole(user);
-
-        userRepository.delete(findUser(userId));
-    }
-
     // 페스티벌 게시 요청 미승인 목록 조회
     @Override
     @Transactional(readOnly = true)
@@ -88,6 +80,28 @@ public class AdminServiceImpl implements AdminService {
         festivalRequest.approveFestivalRequest();
 
         return new FestivaRequestlResponseDto(festivalRequest);
+    }
+
+    // 전체 유저 목록 조회
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserInfoResponseDto> selectUsers(User user, Pageable pageable) {
+        // admin 권한 확인
+        checkAdminRole(user);
+
+        return userRepository.findAll(pageable).stream().map(UserInfoResponseDto::new).toList();
+    }
+
+    // 유저 삭제
+    @Override
+    @Transactional
+    public void deleteUser(Long userId, User user) {
+        // admin 권한 확인
+        checkAdminRole(user);
+        if (findUser(userId).getRole().equals(UserRoleEnum.ADMIN)) {
+            throw new IllegalArgumentException("관리자는 삭제할 수 없습니다.");
+        }
+        userRepository.delete(findUser(userId));
     }
 
     // admin 권한 확인
