@@ -85,6 +85,12 @@ public class ViewController {
         return "review-show";
     }
 
+    @GetMapping("/users/notification-page")
+    public String notificationPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "notification";
+    }
+
+
     @GetMapping("/admin-page")
     public String adminPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (!userDetails.getUser().getRole().getAuthority().equals("ROLE_ADMIN")) {

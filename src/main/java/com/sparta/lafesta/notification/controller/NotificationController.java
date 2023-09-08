@@ -6,15 +6,18 @@ import com.sparta.lafesta.notification.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -36,4 +39,12 @@ public class NotificationController {
             @PathVariable Long notificationId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok().body(notificationService.readNotification(notificationId, userDetails.getUser()));
     }
+
+    // 알림 실시간 통신 SSE 적용
+    @GetMapping(value = "/users/notifications/subscribe")
+    public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info("subscribe");
+        return notificationService.connectNotification(userDetails.getUser().getId());
+    }
+
 }
