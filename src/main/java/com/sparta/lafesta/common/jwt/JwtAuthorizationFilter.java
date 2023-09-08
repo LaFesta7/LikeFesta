@@ -6,7 +6,8 @@ import com.sparta.lafesta.common.exception.NotFoundException;
 import com.sparta.lafesta.common.refreshtoken.entity.UserToken;
 import com.sparta.lafesta.common.refreshtoken.repository.RefreshTokenRepository;
 import com.sparta.lafesta.common.security.UserDetailsServiceImpl;
-import com.sparta.lafesta.user.entity.UserRoleEnum;
+import com.sparta.lafesta.user.entity.User;
+import com.sparta.lafesta.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,11 +30,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
+    private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, RefreshTokenRepository refreshTokenRepository) {
+    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, UserRepository userRepository, RefreshTokenRepository refreshTokenRepository) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
@@ -56,23 +59,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     Claims infoFromRefreshToken = jwtUtil.getUserInfoFromToken(refreshToken);
 
                     String username = infoFromRefreshToken.getSubject();
-                    UserToken foundTokenDto = refreshTokenRepository.findById(username).orElseThrow(()
-                            -> new NotFoundException("Redis서버에서 RefreshToken 정보를 찾을 수 없습니다."));
+                    UserToken foundTokenDto = findFoundTokenDtoFromRedis(username);
 
                     if (foundTokenDto.getRefreshToken().substring(7).equals(refreshToken)) {
                         //재발급
-
-                        // "USER" 로 저장되는 이유..? ROLE_USER가 아니라. 그냥 jwt에 담길때 이름만 String값으로 변환되어서 저장되서 그런가
-                        String roleStr = (String) infoFromRefreshToken.get(JwtUtil.AUTHORIZATION_KEY);
-                        UserRoleEnum role = UserRoleEnum.valueOfRole(roleStr);
-
-                        accessToken = jwtUtil.createAccessToken(username, role);
-                        refreshToken = jwtUtil.createRefreshToken(username, role);
-
-                        res.addHeader(JwtUtil.AUTHORIZATION_HEADER, accessToken);
-                        res.addHeader(JwtUtil.REFRESH_TOKEN_HEADER, refreshToken);
-
-                        refreshTokenRepository.save(new UserToken(username, refreshToken, accessToken));
+                        User user = findUserByUsername(username);
+                        jwtUtil.addJwtToCookie(user, res);
                     }
                 } else {
                     res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -120,5 +112,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private Authentication createAuthentication(String username) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    }
+
+    private UserToken findFoundTokenDtoFromRedis(String username) {
+        return refreshTokenRepository.findById(username).orElseThrow(()
+                -> new NotFoundException("Redis서버에서 RefreshToken 정보를 찾을 수 없습니다."));
+    }
+
+    private User findUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
     }
 }
