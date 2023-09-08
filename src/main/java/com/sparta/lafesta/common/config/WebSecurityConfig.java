@@ -71,6 +71,7 @@ public class WebSecurityConfig {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/users/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/users/login-page")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
                         .anyRequest().authenticated()
