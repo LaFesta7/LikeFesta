@@ -52,7 +52,7 @@ public class BadgeController {
         return ResponseEntity.ok().body(results);
     }
 
-    @PutMapping("/admin/badges/{badgeId}")
+    @PatchMapping("/admin/badges/{badgeId}")
     @Operation(summary = "뱃지 수정", description = "@PathVariable을 통해 badgeId를 받아와, 해당 뱃지를 수정합니다. Dto를 통해 정보를 받아옵니다.")
     public ResponseEntity<BadgeResponseDto> modifyBadge (
             @Parameter(name = "badgeId", description = "수정할 badge의 id", in = ParameterIn.PATH) @PathVariable Long badgeId,

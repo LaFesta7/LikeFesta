@@ -29,7 +29,7 @@ public class ReminderSendEventListener implements ApplicationListener<ReminderSe
         List<User> followers = event.getFollowers();
         for (User follower : followers) {
             Notification notification = new Notification(title, detail, createdAt, follower);
-            notificationService.saveNotification(notification);
+            notificationService.saveNotification(notification, follower.getId());
         }
         log.info("리마인더 이벤트 발생");
     }
