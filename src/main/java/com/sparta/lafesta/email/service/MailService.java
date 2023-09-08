@@ -3,10 +3,6 @@ package com.sparta.lafesta.email.service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-
-import java.io.UnsupportedEncodingException;
-import java.util.Random;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,6 +11,9 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Random;
 
 @Service
 public class MailService {
@@ -67,15 +66,15 @@ public class MailService {
         message.addRecipients(MimeMessage.RecipientType.TO, receiver); //받는 사람
         message.setSubject("[LaFesta] 이메일 인증 코드입니다."); //제목
 
-    Context context = new Context();
-    context.setVariable("ePw", ePw);
+        Context context = new Context();
+        context.setVariable("ePw", ePw);
 
-    String msg = "authentication-email.html";
+        String msg = "authentication-email.html";
 
-    String body = templateEngine.process(msg, context);
+        String body = templateEngine.process(msg, context);
 
-    message.setText(body, "utf-8", "html");//내용
-    message.setFrom(new InternetAddress(fromEmail, "LaFesta_Admin")); //보내는 사람
+        message.setText(body, "utf-8", "html");//내용
+        message.setFrom(new InternetAddress(fromEmail, "LaFesta_Admin")); //보내는 사람
 
         return message;
     }
@@ -107,7 +106,7 @@ public class MailService {
     }
 
     //인증 메일 발송
-    public String sendMessage(String receiver) throws Exception {
+    public String sendMessage(String receiver) throws Exception { //todo 메소드 이름을 sendVerificationCode? sendCode?
 
         ePw = createKey();
 

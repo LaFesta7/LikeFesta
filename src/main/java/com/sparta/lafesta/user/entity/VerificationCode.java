@@ -1,40 +1,25 @@
 package com.sparta.lafesta.user.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
-import java.time.LocalDateTime;
-
-@Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "verification_code")
+@RedisHash(value = "Verification-Code", timeToLive = 3 * 60) //3분
 public class VerificationCode {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false, unique = true)
     private String code;
 
-    @Column(nullable = false)
-    private LocalDateTime expirationTime;
-
-    @Column
-    private Boolean confirm = false;
-
-    public VerificationCode (String email, String code) {
+    public VerificationCode(String email, String code) {
         this.email = email;
         this.code = code;
-        this.expirationTime = LocalDateTime.now().plusMinutes(3);
-    }
-
-    public void verificationCodeConfirm() {
-        this.confirm = true;
     }
 }
