@@ -2,321 +2,372 @@
 <html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <title>LAFESTA 관리자 페이지</title>
-  <link rel="icon" href="/images/logo1.png" type="image/x-icon">
+    <title>LAFESTA 관리자 페이지</title>
+    <link rel="icon" href="/images/logo1.png" type="image/x-icon">
 
-  <script src="/js/jquery.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="/js/slides.min.js" type="text/javascript"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/slides.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
 
-  <link href="/css/slides.min.css" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" as="font"
-        href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
-  <link rel="stylesheet" href="/css/post.css">
-  <link rel="stylesheet" href="/css/main.css">
-  <link rel="stylesheet" href="/css/admin.css">
+    <link href="/css/slides.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" as="font"
+          href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
+    <link rel="stylesheet" href="/css/post.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/admin.css">
 </head>
 
 <body class="slides horizontal simplifiedMobile animated">
 
 <nav class="panel top">
-  <div class="sections desktop">
-    <div class="left">
-      <a href="/" title="Slides Framework">
-        <img src="/images/logo-s1.png" width="270" height="240" alt="lafesta logo">
-      </a>
-    </div>
-    <div class="center">
-      <ul class="menu">
-        <li><a href="#home">Home</a></li>
-        <li><a href="#organizer-request">주최사 가입 인증 요청</a></li>
-        <li><a href="#festival-request">페스티벌 게시 요청</a></li>
-        <li><a href="#users">유저 관리</a></li>
-        <li><a href="#tags">태그 관리</a></li>
-        <li><a href="#badges">뱃지 관리</a></li>
-      </ul>
-    </div>
-    <div class="right">
-      <a id="loginButton" class="button blue gradient" href="/api/users/login-page" style="display:none;">로그인</a>
-      <form id="logoutForm" method="get" action="/api/users/logout" style="display:none;">
-        <button class="button green gradient" type="submit">로그아웃</button>
-      </form>
-    </div>
+    <div class="sections desktop">
+        <div class="left">
+            <a href="/" title="Slides Framework">
+                <img src="/images/logo-s1.png" width="270" height="240" alt="lafesta logo">
+            </a>
+        </div>
+        <div class="center">
+            <ul class="menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#organizer-request">주최사 가입 인증 요청</a></li>
+                <li><a href="#festival-request">페스티벌 게시 요청</a></li>
+                <li><a href="#users">유저 관리</a></li>
+                <li><a href="#tags">태그 관리</a></li>
+                <li><a href="#badges">뱃지 관리</a></li>
+                <li><a href="#lineups">라인업 관리</a></li>
+            </ul>
+        </div>
+        <div class="right">
+            <a id="loginButton" class="button blue gradient" href="/api/users/login-page" style="display:none;">로그인</a>
+            <form id="logoutForm" method="get" action="/api/users/logout" style="display:none;">
+                <button class="button green gradient" type="submit">로그아웃</button>
+            </form>
+        </div>
 
-  </div>
-  <div class="sections compact hidden">
-    <div class="left"><a href="/" title="Slides Framework"></a></div>
-    <div class="right">
+    </div>
+    <div class="sections compact hidden">
+        <div class="left"><a href="/" title="Slides Framework"></a></div>
+        <div class="right">
             <span class="button actionButton sidebarTrigger" data-sidebar-id="1">
                 <svg><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#menu"></use></svg>
             </span>
+        </div>
     </div>
-  </div>
 </nav>
 
 <!-- 상단 바 -->
 <nav class="sidebar" data-sidebar-id="1">
-  <div class="content">
-    <a href="/" class="logo">
-      <svg width="37" height="30">
-        <use xmlns:xlink="http://www.w3.org/1999/xlink" src="/"></use>
-      </svg>
-    </a>
-    <ul class="mainMenu margin-top-3">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#organizer-request">주최사 가입 인증 요청</a></li>
-      <li><a href="#festival-request">페스티벌 게시 요청</a></li>
-      <li><a href="#users">유저 관리</a></li>
-      <li><a href="#tags">태그 관리</a></li>
-      <li><a href="#badges">뱃지 관리</a></li>
-    </ul>
-  </div>
+    <div class="content">
+        <a href="/" class="logo">
+            <svg width="37" height="30">
+                <use xmlns:xlink="http://www.w3.org/1999/xlink" src="/"></use>
+            </svg>
+        </a>
+        <ul class="mainMenu margin-top-3">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#organizer-request">주최사 가입 인증 요청</a></li>
+            <li><a href="#festival-request">페스티벌 게시 요청</a></li>
+            <li><a href="#users">유저 관리</a></li>
+            <li><a href="#tags">태그 관리</a></li>
+            <li><a href="#badges">뱃지 관리</a></li>
+            <li><a href="#lineups">라인업 관리</a></li>
+        </ul>
+    </div>
 </nav>
 
 <!-- 메인 페이지 -->
 <section class="slide fade-6 kenBurns">
-  <div class="content">
-    <div class="container">
-      <div class="wrap">
-        <div class="fix-12-12">
-          <ul class="flex fixedSpaces verticalCenter reverse">
-            <li class="col-6-12 left middle">
-              <h1 class="ae-1 fromLeft">모든 축제의 시작과 끝 LAFESTA</h1>
-              <p class="ae-2 fromLeft"><span class="opacity-8">라페스타와 함께 당신의 매일을 축제와 함께하세요.</span>
-              </p>
-              <a id="myButton7" class="button blue gradient ae-3 fromCenter cropLeft"
-                 href="/api/users/festivals-map">축제 등록하기</a>
-            </li>
-            <li class="col-6-12">
-              <img class="ae-4" width="605" src="/images/logo6.png" alt="iPhones Thumbnail"
-                   data-action="zoom"/>
-            </li>
-          </ul>
+    <div class="content">
+        <div class="container">
+            <div class="wrap">
+                <div class="fix-12-12">
+                    <ul class="flex fixedSpaces verticalCenter reverse">
+                        <li class="col-6-12 left middle">
+                            <h1 class="ae-1 fromLeft">모든 축제의 시작과 끝 LAFESTA</h1>
+                            <p class="ae-2 fromLeft"><span class="opacity-8">라페스타와 함께 당신의 매일을 축제와 함께하세요.</span>
+                            </p>
+                            <a id="myButton7" class="button blue gradient ae-3 fromCenter cropLeft"
+                               href="/api/users/festivals-map">축제 등록하기</a>
+                        </li>
+                        <li class="col-6-12">
+                            <img class="ae-4" width="605" src="/images/logo6.png" alt="iPhones Thumbnail"
+                                 data-action="zoom"/>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  <div class="background" style="background-image:url(/images/background/img-21.jpg)"></div>
+    <div class="background" style="background-image:url(/images/background/img-21.jpg)"></div>
 </section>
 
 <!-- 주최사 승인 요청 -->
 <section class="slide fade-6 kenBurns" data-name="organizer-request">
-  <div class="content">
-    <div class="container">
-      <div class="wrap">
-        <h1 class="ae-2 fromRight">Organizer Request List</h1>
-        <div class="board">
-          <ul class="post-list">
-            <div id="organizer-request-table">
-              <table>
-                <thead>
-                <tr>
-                  <th class="no" scope="col">ID</th>
-                  <th class="author" scope="col">Username</th>
-                  <th class="author" scope="col">Nickname</th>
-                  <th class="title" scope="col">Email</th>
-                  <th class="author" scope="col">Approval</th>
-                </tr>
-                </thead>
-                <tbody id="organizer-request-table-body">
-                </tbody>
-              </table>
+    <div class="content">
+        <div class="container">
+            <div class="wrap">
+                <h1 class="ae-2 fromRight">Organizer Request List</h1>
+                <div class="board">
+                    <ul class="post-list">
+                        <div id="organizer-request-table">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th class="no" scope="col">ID</th>
+                                    <th class="author" scope="col">Username</th>
+                                    <th class="author" scope="col">Nickname</th>
+                                    <th class="title" scope="col">Email</th>
+                                    <th class="author" scope="col">Approval</th>
+                                </tr>
+                                </thead>
+                                <tbody id="organizer-request-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </ul>
+                    <!-- 페이지 네비게이션 -->
+                    <div class="pagination" id="organizer-request-pagination">
+                        <a href="?page=1">1</a>
+                        <a href="?page=2">2</a>
+                        <a href="?page=3">3</a>
+                        <a href="?page=4">4</a>
+                        <a href="?page=5">5</a>
+                        <a href="?page=6">(쪽수설정)</a>
+                    </div>
+                </div>
             </div>
-          </ul>
-          <!-- 페이지 네비게이션 -->
-          <div class="pagination" id="organizer-request-pagination">
-            <a href="?page=1">1</a>
-            <a href="?page=2">2</a>
-            <a href="?page=3">3</a>
-            <a href="?page=4">4</a>
-            <a href="?page=5">5</a>
-            <a href="?page=6">(쪽수설정)</a>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-  <div class="background" style="background-image:url(/images/background/img-21.jpg)"></div>
+    <div class="background" style="background-image:url(/images/background/img-21.jpg)"></div>
 </section>
 
 <!-- 페스티벌 승인 요청 -->
 <section class="slide fade-6 kenBurns" data-name="festival-request">
-  <div class="content">
-    <div class="container">
-      <div class="wrap">
-        <h1 class="ae-2 fromRight">Festival Request List</h1>
-        <div class="board">
-          <ul class="post-list">
-            <div id="festival-request-table">
-              <table>
-                <thead>
-                <tr>
-                  <th class="no" scope="col">No.</th>
-                  <th class="title" scope="col">Festival name</th>
-                  <th class="author" scope="col">Place</th>
-                  <th class="title" scope="col">Content</th>
-                  <th class="time" scope="col">Date</th>
-                  <th class="author" scope="col">Official Link</th>
-                  <th class="author" scope="col">Nickname</th>
-                  <th class="author" scope="col">Approval</th>
-                </tr>
-                </thead>
-                <tbody id="festival-request-table-body">
-                </tbody>
-              </table>
+    <div class="content">
+        <div class="container">
+            <div class="wrap">
+                <h1 class="ae-2 fromRight">Festival Request List</h1>
+                <div class="board">
+                    <ul class="post-list">
+                        <div id="festival-request-table">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th class="no" scope="col">No.</th>
+                                    <th class="title" scope="col">Festival name</th>
+                                    <th class="author" scope="col">Place</th>
+                                    <th class="title" scope="col">Content</th>
+                                    <th class="time" scope="col">Date</th>
+                                    <th class="author" scope="col">Official Link</th>
+                                    <th class="author" scope="col">Nickname</th>
+                                    <th class="author" scope="col">Approval</th>
+                                </tr>
+                                </thead>
+                                <tbody id="festival-request-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </ul>
+                    <button style="margin-bottom: 20px; margin-top: 20px" class="button green gradient"
+                            onclick="batchApprovalProcess()">승인 처리
+                    </button>
+                    <!-- 페이지 네비게이션 -->
+                    <div class="pagination" id="festival-request-pagination">
+                        <a href="?page=1">1</a>
+                        <a href="?page=2">2</a>
+                        <a href="?page=3">3</a>
+                        <a href="?page=4">4</a>
+                        <a href="?page=5">5</a>
+                        <a href="?page=6">(쪽수설정)</a>
+                    </div>
+                </div>
             </div>
-          </ul>
-          <button style="margin-bottom: 20px; margin-top: 20px" class="button green gradient" onclick="batchApprovalProcess()">승인 처리</button>
-          <!-- 페이지 네비게이션 -->
-          <div class="pagination" id="festival-request-pagination">
-            <a href="?page=1">1</a>
-            <a href="?page=2">2</a>
-            <a href="?page=3">3</a>
-            <a href="?page=4">4</a>
-            <a href="?page=5">5</a>
-            <a href="?page=6">(쪽수설정)</a>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-  <div class="background" style="background-image:url(/images/background/img-21.jpg)"></div>
+    <div class="background" style="background-image:url(/images/background/img-21.jpg)"></div>
 </section>
 
 <!-- 유저 관리 -->
 <section class="slide fade-6 kenBurns" data-name="users">
-  <div class="content">
-    <div class="container">
-      <div class="wrap">
-        <h1 class="ae-2 fromRight">User Management</h1>
-        <div class="board">
-          <ul class="post-list">
-            <div id="users-table">
-              <table>
-                <thead>
-                <tr>
-                  <th class="no" scope="col">ID</th>
-                  <th class="author" scope="col">Role</th>
-                  <th class="author" scope="col">Username</th>
-                  <th class="author" scope="col">Nickname</th>
-                  <th class="title" scope="col">Email</th>
-                  <th class="author" scope="col">Withdrawal</th>
-                </tr>
-                </thead>
-                <tbody id="users-table-body">
-                </tbody>
-              </table>
+    <div class="content">
+        <div class="container">
+            <div class="wrap">
+                <h1 class="ae-2 fromRight">User Management</h1>
+                <div class="board">
+                    <ul class="post-list">
+                        <div id="users-table">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th class="no" scope="col">ID</th>
+                                    <th class="author" scope="col">Role</th>
+                                    <th class="author" scope="col">Username</th>
+                                    <th class="author" scope="col">Nickname</th>
+                                    <th class="title" scope="col">Email</th>
+                                    <th class="author" scope="col">Withdrawal</th>
+                                </tr>
+                                </thead>
+                                <tbody id="users-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </ul>
+                    <!-- 페이지 네비게이션 -->
+                    <div class="pagination" id="user-management-pagination">
+                        <a href="?page=1">1</a>
+                        <a href="?page=2">2</a>
+                        <a href="?page=3">3</a>
+                        <a href="?page=4">4</a>
+                        <a href="?page=5">5</a>
+                        <a href="?page=6">(쪽수설정)</a>
+                    </div>
+                </div>
             </div>
-          </ul>
-          <!-- 페이지 네비게이션 -->
-          <div class="pagination" id="user-management-pagination">
-            <a href="?page=1">1</a>
-            <a href="?page=2">2</a>
-            <a href="?page=3">3</a>
-            <a href="?page=4">4</a>
-            <a href="?page=5">5</a>
-            <a href="?page=6">(쪽수설정)</a>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-  <div class="background" style="background-image:url(/images/background/img-21.jpg)"></div>
+    <div class="background" style="background-image:url(/images/background/img-21.jpg)"></div>
 </section>
 
 <!-- 태그 관리 -->
 <section class="slide fade-6 kenBurns" data-name="tags">
-  <div class="content">
-    <div class="container">
-      <div class="wrap">
-        <h1 class="ae-2 fromRight">Tag Management</h1>
-        <div class="board">
-          <ul class="post-list">
-            <div id="tags-table">
-              <table>
-                <thead>
-                <tr>
-                  <th class="no" scope="col">ID</th>
-                  <th class="title" scope="col">Name</th>
-                  <th class="author" scope="col">Edit</th>
-                  <th class="author" scope="col">Delete</th>
-                </tr>
-                </thead>
-                <tbody id="tags-table-body">
-                </tbody>
-              </table>
+    <div class="content">
+        <div class="container">
+            <div class="wrap">
+                <h1 class="ae-2 fromRight">Tag Management</h1>
+                <div class="board">
+                    <ul class="post-list">
+                        <div id="tags-table">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th class="no" scope="col">ID</th>
+                                    <th class="title" scope="col">Name</th>
+                                    <th class="author" scope="col">Edit</th>
+                                    <th class="author" scope="col">Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tags-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </ul>
+                    <!-- 페이지 네비게이션 -->
+                    <div class="pagination" id="tags-management-pagination">
+                        <a href="?page=1">1</a>
+                        <a href="?page=2">2</a>
+                        <a href="?page=3">3</a>
+                        <a href="?page=4">4</a>
+                        <a href="?page=5">5</a>
+                        <a href="?page=6">(쪽수설정)</a>
+                    </div>
+                </div>
             </div>
-          </ul>
-          <!-- 페이지 네비게이션 -->
-          <div class="pagination" id="tags-management-pagination">
-            <a href="?page=1">1</a>
-            <a href="?page=2">2</a>
-            <a href="?page=3">3</a>
-            <a href="?page=4">4</a>
-            <a href="?page=5">5</a>
-            <a href="?page=6">(쪽수설정)</a>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-  <div class="background" style="background-image:url(/images/background/img-21.jpg)"></div>
+    <div class="background" style="background-image:url(/images/background/img-21.jpg)"></div>
 </section>
 
 <!-- 뱃지 관리 -->
 <section class="slide fade-6 kenBurns" data-name="badges">
-  <div class="content">
-    <div class="container">
-      <div class="wrap">
-        <h1 class="ae-2 fromRight">Badge Management</h1>
-        <div class="board">
-          <ul class="post-list">
-            <div id="badges-table">
-              <table>
-                <thead>
-                <tr>
-                  <th class="no" scope="col">ID</th>
-                  <th class="author" scope="col">Image</th>
-                  <th class="author" scope="col">Title</th>
-                  <th class="title" scope="col">Description</th>
-                  <th class="author" scope="col">Condition Type</th>
-                  <th class="author" scope="col">Condition Date</th>
-                  <th class="author" scope="col">Condition Standard</th>
-                  <th class="author" scope="col">Condition Tags</th>
-                  <th class="author" scope="col">Edit</th>
-                  <th class="author" scope="col">Delete</th>
-                </tr>
-                </thead>
-                <tbody id="badges-table-body">
-                </tbody>
-              </table>
+    <div class="content">
+        <div class="container">
+            <div class="wrap">
+                <h1 class="ae-2 fromRight">Badge Management</h1>
+                <div class="board">
+                    <ul class="post-list">
+                        <div id="badges-table">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th class="no" scope="col">ID</th>
+                                    <th class="author" scope="col">Image</th>
+                                    <th class="author" scope="col">Title</th>
+                                    <th class="title" scope="col">Description</th>
+                                    <th class="author" scope="col">Condition Type</th>
+                                    <th class="author" scope="col">Condition Date</th>
+                                    <th class="author" scope="col">Condition Standard</th>
+                                    <th class="author" scope="col">Condition Tags</th>
+                                    <th class="author" scope="col">Edit</th>
+                                    <th class="author" scope="col">Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody id="badges-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </ul>
+                    <button style="margin-bottom: 20px; margin-top: 20px" class="button green gradient"
+                            onclick="addNewRow()">생성
+                    </button>
+                    <!-- 페이지 네비게이션 -->
+                    <div class="pagination" id="badges-management-pagination">
+                        <a href="?page=1">1</a>
+                        <a href="?page=2">2</a>
+                        <a href="?page=3">3</a>
+                        <a href="?page=4">4</a>
+                        <a href="?page=5">5</a>
+                        <a href="?page=6">(쪽수설정)</a>
+                    </div>
+                </div>
             </div>
-          </ul>
-          <button style="margin-bottom: 20px; margin-top: 20px" class="button green gradient" onclick="addNewRow()">생성</button>
-          <!-- 페이지 네비게이션 -->
-          <div class="pagination" id="badges-management-pagination">
-            <a href="?page=1">1</a>
-            <a href="?page=2">2</a>
-            <a href="?page=3">3</a>
-            <a href="?page=4">4</a>
-            <a href="?page=5">5</a>
-            <a href="?page=6">(쪽수설정)</a>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-  <div class="background" style="background-image:url(/images/background/img-21.jpg)"></div>
+    <div class="background" style="background-image:url(/images/background/img-21.jpg)"></div>
 </section>
 
+<!-- 뱃지 관리 -->
+<section class="slide fade-6 kenBurns" data-name="lineups">
+    <div class="content">
+        <div class="container">
+            <div class="wrap">
+                <h1 class="ae-2 fromRight">Lineup Management</h1>
+                <div class="board">
+                    <ul class="post-list">
+                        <div id="post-form">
+                            <form action="/api/post/create" method="post">
+                                <div style="display: none;">
+                                    <!-- 선택한 트랙 리스트를 전송하기 위한 입력 필드 -->
+                                    <input type="text" name="selectedTracks" id="selectedTracksInput">
+                                </div>
+                                <button type="submit" id="post-id-submit">Add Line Up</button>
+                            </form>
+                        </div>
+                        <div>
+                            <h3>라인업에 추가할 음악 검색</h3>
+                            <input type="text" id="keywordInput" placeholder="키워드 입력">
+                            <button onclick="search()">검색</button>
+                        </div>
+                        <div style="display: none; flex-wrap: wrap; width:900px" id="content">
+                            <div style="display: flex; flex-wrap: wrap; align-content: center">
+                                <div style="flex-basis: 450px;">
+                                    <h2>검색 결과</h2>
+                                    <ul id="tracksList"></ul>
+                                </div>
+                                <div style="flex-basis: 400px; margin-left:25px;margin-right: 25px;">
+                                    <h2>추가할 리스트</h2>
+                                    <div id="selectedTrack" style="border-radius: 10px;">
+                                        <ul id="selectedTracksList"></ul>
+                                        <button type="button" id="confirmButton">확인</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="background" style="background-image:url(/images/background/img-21.jpg)"></div>
+</section>
+
+
 <script src="/js/admin.js"></script>
-<script>
-</script>
+<script src="/js/spotify.js"></script>
 </body>
 </html>

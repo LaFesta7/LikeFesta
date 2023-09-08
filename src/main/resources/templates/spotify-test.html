@@ -83,27 +83,22 @@
     </style>
 </head>
 <body>
-<div id="header-image">
+<!--<div id="header-image">
     <img src="/static/images/logo-s2.png" onclick="goHome()" class="logo-img">
     <script th:inline="javascript">
         function goHome(){
             window.location.href="/"
         }
+    </script>
+</div>-->
 
-    </script></div>
 <div id="post-form">
     <div style="margin-top: 30px; margin-bottom : 50px;"id="post-title">Festival Line Up List</div>
-
     <form action="/api/post/create" method="post">
-
-<!--    <input type="text" name="title" placeholder=" 페스티벌의 이름을 알려주세요." class="post-input-box">-->
-
-<!--        <input type="text" name="info" placeholder="                                 라인업의 설명을 작성해주세요" class="post-input-box">-->
         <div style="display: none;">
             <!-- 선택한 트랙 리스트를 전송하기 위한 입력 필드 -->
             <input type="text" name="selectedTracks" id="selectedTracksInput">
         </div>
-
         <button type="submit" id="post-id-submit">Add Line Up</button>
 
     </form>

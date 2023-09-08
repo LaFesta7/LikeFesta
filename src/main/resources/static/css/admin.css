@@ -5,3 +5,69 @@ td {
 #badge-tags-input-container input[type="text"] {
     margin-bottom: 5px;
 }
+
+body {
+    margin: 0 auto;
+    max-width: 900px;
+    padding: 20px;
+    text-align: center;
+}
+
+#header-image {
+    margin-top: 50px;
+    text-align: center;
+}
+
+#header-image .logo-img {
+    max-width: 200px;
+    height: auto;
+}
+
+#post-form {
+    margin-top: 20px;
+    text-align: center;
+}
+
+
+.post-input-box {
+    width: 60%;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+#post-id-submit{
+    width: 60%;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+#content{
+    align-content: center;
+}
+
+
+#tracksList,
+#selectedTracksList {
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#tracksList li,
+#selectedTracksList li {
+    flex-basis: 100%;
+    margin-bottom: 5px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#tracksList li img,
+#selectedTracksList li img {
+    max-width: 10%;
+    height: auto;
+    margin-bottom: 10px;
+}
