@@ -98,4 +98,10 @@ public class ViewController {
         }
         return "admin";
     }
+
+    //태그검색 후 리스트 보여주는 페이지
+    @GetMapping("/festivals/tag-search-page")
+    public String tagSearchPage() {
+        return "tag-list";
+    }
 }

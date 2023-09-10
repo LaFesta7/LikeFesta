@@ -30,6 +30,6 @@ public class KakaoLoginController {
         Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7)); // 토큰 앞에 "Bearer " 제거
         cookie.setPath("/"); // 모든 경로에서 접근 가능하도록 설정
         response.addCookie(cookie); // 응답에 쿠키 추가
-        return "index"; // 메인 페이지로 리다이렉트
+        return "/"; // 메인 페이지로 리다이렉트
     }
 }

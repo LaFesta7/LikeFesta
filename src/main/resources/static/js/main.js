@@ -7,6 +7,8 @@ $(document).ready(function () {
         $('#logoutForm').hide();  // 로그아웃 버튼을 숨깁니다
         $('#loginButton').show();  // 로그인 버튼을 표시합니다
         $('#notification-icon').hide();  // 알림 미표시
+        $('.slide[data-name="download"]').hide();
+        $('#myPageLink').hide();
     } else {
         $('#logoutForm').show();  // 로그아웃 버튼을 표시합니다
         $('#loginButton').hide();  // 로그인 버튼을 숨깁니다
@@ -19,16 +21,21 @@ $(document).ready(function () {
             $('#adminPageLink').show();
         }
 
+        // 'My Page' 섹션 표시
+        $('.slide[data-name="download"]').show();
+        $('#myPageLink').show();
+
+
         $.ajax({
             url: '/api/users/followed-festivals',
             type: 'GET',
             success: function (data) {
                 console.log(data);
                 let html = '';
-                for (let i = 0; i <data.length; i++) { // Loop through each festival
+                for (let i = 0; i < data.length; i++) { // Loop through each festival
                     html += `
                         <td>${data[i].title}</td>`;
-                };
+                }
                 $('#my-follow-festival').html(html);
             },
             error: function (err) {
@@ -42,11 +49,34 @@ $(document).ready(function () {
             success: function (data) {
                 console.log(data);
                 let html = '';
-                for (let i = 0; i <data.length; i++) { // Loop through each festival
+                for (let i = 0; i < data.length; i++) { // Loop through each festival
                     html += `
                         <td>${data[i].username}</td>`;
-                };
+                }
                 $('#my-follow-list').html(html);
+            },
+            error: function (err) {
+                console.log('Error:', err);
+            }
+        });
+
+        $.ajax({
+            url: '/api/festivals',
+            type: 'GET',
+            success: function (data) {
+                console.log(data);
+                let html = '';
+                for (let i = 0; i < data.length; i++) { // Loop through each festival
+                    html += `<tr>
+                        <td>${data[i].id}</td>
+                        <td><a href="/api/festivals/${data[i].id}" target="_blank">${data[i].title}</a></td>
+                        <td>${data[i].place}</td>
+                        <td>${data[i].content}</td>
+                        <td>${data[i].openDate} ~ ${data[i].endDate}</td>
+                        <td><a href="${data[i].officialLink}" target="_blank">Official Link</a></td>
+                    </tr>`;
+                }
+                $('#festival-table-body').html(html);
             },
             error: function (err) {
                 console.log('Error:', err);
@@ -55,22 +85,37 @@ $(document).ready(function () {
     }
 
     $.ajax({
-        url: '/api/festivals',
+        url: `/api/users/follows/followings`,
         type: 'GET',
         success: function (data) {
             console.log(data);
             let html = '';
-            for (let i = 0; i <data.length; i++) { // Loop through each festival
-                html += `<tr>
-                        <td>${data[i].id}</td>
-                        <td><a href="/api/festivals/${data[i].id}" target="_blank">${data[i].title}</a></td>
-                        <td>${data[i].place}</td>
-                        <td>${data[i].content}</td>
-                        <td>${data[i].openDate} ~ ${data[i].endDate}</td>
-                        <td><a href="${data[i].officialLink}" target="_blank">Official Link</a></td>
-                    </tr>`;
-            };
-            $('#festival-table-body').html(html);
+            for (let i = 0; i < data.length; i++) {
+                html += `
+                    <li class="followed">
+                        <a href="/api/users/${data[i].username}">${data[i].nickname}</a>
+                        <span class="heart">&#9829;</span>
+                    </li>
+                `;
+            }
+            $('#followers').html(html);
+            $('.heart').click(function () {
+                const isFollowed = $(this).closest('li').hasClass('followed');
+                const confirmationMessage = isFollowed ?
+                    "팔로우 취소하시겠습니까?" :
+                    "팔로우 하시겠습니까?";
+
+                if (window.confirm(confirmationMessage)) {
+                    // Toggle heart class and symbol
+                    if (isFollowed) {
+                        $(this).closest('li').removeClass('followed').addClass('unfollowed');
+                        $(this).html('&#9825;');  // Empty heart
+                    } else {
+                        $(this).closest('li').removeClass('unfollowed').addClass('followed');
+                        $(this).html('&#9829;');  // Filled heart
+                    }
+                }
+            });
         },
         error: function (err) {
             console.log('Error:', err);
