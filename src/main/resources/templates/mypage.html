@@ -56,6 +56,9 @@
                     <p><strong>Username</strong></p><p> ${data.username}</p>
                     <p><strong>Nickname</strong></p><p> ${data.nickname}</p>
                     <p><strong>Email</strong></p><p> ${data.email}</p>
+                    <p><strong>Introduce</strong></p><p> ${data.introduce}</p>
+                    <p><strong>Image</strong></p>
+                    <img width="200px" src="${data.files[0].uploadFileUrl}" alt="Image Description">
                 `;
                 $('#profile').html(html);
             },
