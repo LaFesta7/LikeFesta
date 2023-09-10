@@ -39,7 +39,6 @@ public class FestivalController {
     ) throws IOException {
 
         FestivalResponseDto result = festivalService.createFestival(requestDto, files, userDetails.getUser());
-//        FestivalResponseDto result = festivalService.createFestival(requestDto, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), result.getTitle()+"를 추가했습니다."));
     }
 

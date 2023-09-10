@@ -59,7 +59,6 @@ $(document).ready(function () {
                 console.log('Error:', err);
             }
         });
-
         $.ajax({
             url: '/api/festivals',
             type: 'GET',
@@ -69,7 +68,7 @@ $(document).ready(function () {
                 for (let i = 0; i < data.length; i++) { // Loop through each festival
                     html += `<tr>
                         <td>${data[i].id}</td>
-                        <td><a href="/api/festivals/${data[i].id}" target="_blank">${data[i].title}</a></td>
+                        <td><a href="/api/festivals/page/${data[i].id}" target="_blank">${data[i].title}</a></td>
                         <td>${data[i].place}</td>
                         <td>${data[i].content}</td>
                         <td>${data[i].openDate} ~ ${data[i].endDate}</td>
