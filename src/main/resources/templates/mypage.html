@@ -56,6 +56,13 @@
                     <p><strong>Username</strong></p><p> ${data.username}</p>
                     <p><strong>Nickname</strong></p><p> ${data.nickname}</p>
                     <p><strong>Email</strong></p><p> ${data.email}</p>
+                    <p><strong>Introduce</strong></p><p> ${data.introduce}</p>
+                    <p><strong>Image</strong></p>
+                    <div class="circular-image">
+                    <img src="${data.files[0].uploadFileUrl ? data.files[0].uploadFileUrl
+                    : 'https://vignette.wikia.nocookie.net/the-sun-vanished/images/5/5d/Twitter-avi-gender-balanced-figure.png/revision/latest?cb=20180713020754'}"
+                    alt="Image Description" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
                 `;
                 $('#profile').html(html);
             },
