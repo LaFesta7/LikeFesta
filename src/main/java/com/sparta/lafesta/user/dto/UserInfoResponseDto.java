@@ -14,6 +14,7 @@ public class UserInfoResponseDto {
     private String username;
     private String email;
     private String nickname;
+    private String introduce;
     private List<FileOnS3Dto> files;
 
     public UserInfoResponseDto(User user) {
@@ -24,5 +25,6 @@ public class UserInfoResponseDto {
         this.nickname = user.getNickname();
         this.files = user.getUserFileOnS3s().stream().
                 map(FileOnS3Dto::new).toList();
+        this.introduce = user.getIntroduce();
     }
 }

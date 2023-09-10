@@ -15,185 +15,58 @@
 <body>
 <form id="festival-submit-form">
     <div style="margin-left: 30px">
-        <label for="festival-name">페스티벌 이름</label>
-        <input type="text" id="festival-name" name="festival-name" required><br><br>
+        <label for="titleInput">페스티벌 이름</label>
+        <input type="text" id="titleInput" name="titleInput" required><br><br>
 
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); width: 100%">
             <div style="width: 90%">
-                <label for="start-datetime">시작 일시</label>
-                <input type="datetime-local" id="start-datetime" name="start-datetime" required><br><br>
+                <label for="openDateInput">시작 일시</label>
+                <input type="datetime-local" id="openDateInput" name="openDateInput" required><br><br>
             </div>
 
             <div style="width: 90%">
-                <label for="end-datetime">종료 일시</label>
-                <input type="datetime-local" id="end-datetime" name="end-datetime" required><br><br>
+                <label for="endDateInput">종료 일시</label>
+                <input type="datetime-local" id="endDateInput" name="endDateInput" required><br><br>
             </div>
         </div>
 
-        <label for="festival-place">페스티벌 장소</label>
-        <input type="text" id="festival-place" name="festival-place" required><br><br>
+        <label for="placeInput">페스티벌 장소</label>
+        <input type="text" id="placeInput" name="placeInput" required><br><br>
 
-        <label for="festival-description">페스티벌 설명</label>
-        <textarea id="festival-description" name="festival-description" required></textarea><br><br>
+        <label for="contentInput">페스티벌 설명</label>
+        <textarea id="contentInput" name="contentInput" required></textarea><br><br>
 
-        <label for="festival-image">페스티벌 이미지</label>
-        <input type="file" id="festival-image" name="festival-image" accept="image/*"><br>
+        <label for="imageInput">페스티벌 이미지</label>
+        <input type="file" id="imageInput" name="imageInput" accept="image/*"><br>
         <img id="preview-image" width="200" alt=""><br><br>
 
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); width: 100%">
             <div style="width: 90%">
-                <label for="reservation-open-datetime">예매 오픈 일시</label>
-                <input type="datetime-local" id="reservation-open-datetime" name="reservation-open-datetime"
+                <label for="reservationOpenDateInput">예매 오픈 일시</label>
+                <input type="datetime-local" id="reservationOpenDateInput" name="reservationOpenDateInput"
                        required><br><br>
             </div>
 
             <div style="width: 90%">
-                <label for="reservation-place">예매처</label>
-                <input type="text" id="reservation-place" name="reservation-place" required><br><br>
+                <label for="reservationPlaceInput">예매처</label>
+                <input type="text" id="reservationPlaceInput" name="reservationPlaceInput" required><br><br>
             </div>
         </div>
-        <label for="festival-link">페스티벌 웹사이트/링크</label>
-        <input type="url" id="festival-link" name="festival-link" required><br><br>
-
+        <label for="officialLinkInput">페스티벌 웹사이트/링크</label>
+        <input type="url" id="officialLinkInput" name="officialLinkInput" required><br><br>
+        <label for="addTagInput">태그</label>
+        <div id="tags-input-container">
+            <a id="addTagInput" onclick="addTagInput()" style="color: #3b5998">추가</a>
+        </div>
+        <br><br>
         <input type="submit" id="festival-submit" name="festival-submit" onclick="submitFestivalPost()"
                value="페스티벌 정보 작성">
+        <input type="submit" onclick="redirectFestivalMap()" value="페스티벌 맵 돌아가기" style="background-color: crimson">
 
     </div>
 
 </form>
 
-<script>
-    // <form> 요소에서 데이터 가져오기
-    const title = document.getElementById('festival-name');
-    const place = document.getElementById('festival-place');
-    const content = document.getElementById('festival-description');
-    const openDate = document.getElementById('start-datetime');
-    const endDate = document.getElementById('end-datetime');
-    const reservationOpenDate = document.getElementById('reservation-open-datetime');
-    const reservationPlace = document.getElementById('reservation-place');
-    const officialLink = document.getElementById('festival-link');
-    // 이미지 파일을 가져옵니다.
-    const imageFile = document.getElementById('festival-image').files[0];
-
-    // 위도, 경도 정보
-    // URL에서 쿼리 문자열을 가져옵니다.
-    var queryString = window.location.search;
-
-    // URLSearchParams를 사용하여 쿼리 문자열을 파싱합니다.
-    var queryParams = new URLSearchParams(queryString);
-    const latitude = queryParams.get('lat');
-    const longitude = queryParams.get('lng');
-
-    let auth;
-
-    // 이미지 파일 미리보기
-    // 파일 인풋 엘리먼트 가져오기
-    const fileInput = document.getElementById('festival-image');
-
-    // 이미지 미리보기를 위한 img 엘리먼트 가져오기
-    const previewImage = document.getElementById('preview-image');
-
-    // 파일 선택 시 이벤트 리스너 추가
-    fileInput.addEventListener('change', function () {
-        // 선택한 파일 가져오기
-        const file = fileInput.files[0];
-
-        if (file) {
-            // 선택한 파일이 이미지인지 확인
-            if (file.type.startsWith('image/')) {
-                // 이미지 파일인 경우, 미리보기를 위해 FileReader 사용
-                const reader = new FileReader();
-
-                reader.onload = function (e) {
-                    // 파일 불러오기가 완료되면 미리보기 이미지 업데이트
-                    previewImage.src = e.target.result;
-                };
-
-                // 파일을 읽어옵니다.
-                reader.readAsDataURL(file);
-            } else {
-                alert('이미지 파일을 선택하세요.');
-                fileInput.value = ''; // 파일 선택 취소
-            }
-        }
-    });
-
-    $(document).ready(function () {
-        auth = 'Bearer ' + getToken();
-    });
-
-    // 쿠키에서 인증 토큰 가져오기
-    function getToken() {
-        let auth = getCookie('Authorization');
-
-        if (auth === undefined) {
-            return '';
-        }
-        // 쿠키 값을 디코딩하여 반환
-        return decodeURIComponent(auth);
-    }
-
-    // 쿠키 가져오는 함수
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-    }
-
-    // 페스티벌 작성
-    function submitFestivalPost() {
-        console.log("페스티벌 작성 시도")
-
-        // DTO 객체 생성
-        const requestDto = {
-            title: title.value,
-            place: place.value,
-            latitude: latitude,
-            longitude: longitude,
-            content: content.value,
-            openDate: openDate.value,
-            endDate: endDate.value,
-            reservationOpenDate: reservationOpenDate.value,
-            reservationPlace: reservationPlace.value,
-            officialLink: officialLink.value,
-        };
-
-        // FormData 객체를 생성하고 이미지 파일을 추가합니다.
-        // FormData 객체 생성
-        const formData = new FormData();
-
-        // 이미지 파일을 추가
-        formData.append('files', imageFile);
-
-        // JSON 문자열을 Blob 객체로 변환하여 FormData에 추가
-        const jsonRequestDto = JSON.stringify(requestDto);
-        const jsonBlob = new Blob([jsonRequestDto], {type: 'application/json'});
-        formData.append('requestDto', jsonBlob);
-
-
-
-        // 서버로 데이터를 전송
-        fetch(`/api/festivals`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `${auth}`,
-                'Content-Type': `multipart/form-data; boundary=-----------MULTIPART_BOUNDARY-----------`,
-                // 'Content-Type': 'application/json',
-            },
-            body: formData,
-            // body: JSON.stringify(requestDto),
-        })
-            .then(response => {
-                return response.json(); // 응답을 JSON으로 파싱
-            })
-            .then(responseData => {
-                alert('페스티벌 작성 완료');
-            })
-            .catch(error => {
-                console.error('에러 발생:', error);
-            });
-    }
-
-</script>
+<script src="/js/festival-post.js"></script>
 </body>
 </html>
