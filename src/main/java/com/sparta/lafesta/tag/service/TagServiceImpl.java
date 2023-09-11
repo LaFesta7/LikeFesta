@@ -11,6 +11,7 @@ import com.sparta.lafesta.tag.entity.FestivalTag;
 import com.sparta.lafesta.tag.entity.Tag;
 import com.sparta.lafesta.tag.repository.FestivalTagRepository;
 import com.sparta.lafesta.tag.repository.TagRepository;
+import com.sparta.lafesta.tag.repository.TagRepositoryCustom;
 import com.sparta.lafesta.user.entity.User;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
     private final FestivalTagRepository festivalTagRepository;
     private final FestivalRepository festivalRepository;
+    private final TagRepositoryCustom tagRepositoryCustom;
 
 
     //태그 전체 조회
@@ -196,5 +198,10 @@ public class TagServiceImpl implements TagService {
         return tagRepository.findByTitle(title).orElseThrow(() ->
                 new IllegalArgumentException("선택한 태그는 존재하지 않습니다.")
         );
+    }
+
+    //페스티벌로 태그 목록 찾기
+    public List<Tag> findTagByFestival (Festival festival){
+        return tagRepositoryCustom.findTagByFestival(festival);
     }
 }

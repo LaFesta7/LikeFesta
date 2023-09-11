@@ -11,6 +11,7 @@ import com.sparta.lafesta.user.entity.User;
 import com.sparta.lafesta.user.entity.UserRoleEnum;
 import com.sparta.lafesta.user.entity.VerificationCode;
 import com.sparta.lafesta.user.repository.UserRepository;
+import com.sparta.lafesta.user.repository.UserRepositoryCustom;
 import com.sparta.lafesta.user.repository.VerificationCodeRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,6 +36,7 @@ public class UserService {
     //CRUD
     private final MailService mailService;
     private final UserRepository userRepository;
+    private final UserRepositoryCustom userRepositoryCustom;
     private final VerificationCodeRepository verificationCodeRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -214,11 +216,9 @@ public class UserService {
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        return userRepository.findTop3User().stream()
-                .map(SelectUserResponseDto::new).toList();
+        return userRepositoryCustom.findTop3User().stream()
+            .map(SelectUserResponseDto::new).toList();
     }
-
-
 
     // 인증 메일 발송 후 코드 DB 임시 저장하기
     @Transactional

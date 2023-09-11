@@ -12,9 +12,5 @@ public interface UserFollowRepository extends JpaRepository<UserFollow, Long> {
 
     Optional<UserFollow> findByFollowedUserAndFollowingUser(User followedUser, User followingUser);
 
-    List<UserFollow> findAllByFollowingUser(User follower, Pageable pageable);
-
-    List<UserFollow> findAllByFollowedUser(User followedUser, Pageable pageable);
-
     List<UserFollow> findAllByFollowedUser(User followedUser);
 }

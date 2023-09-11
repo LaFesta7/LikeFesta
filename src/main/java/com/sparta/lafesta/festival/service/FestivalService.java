@@ -90,6 +90,15 @@ public interface FestivalService {
     List<FestivalResponseDto> selectFestivalRanking(User user);
 
     /**
+     * 페스티벌 키워드 검색
+     *
+     * @param keyword 검색할 키워드
+     * @param pageable 페이징 처리를 위한 정보
+     * @return 페스티벌 검색 결과
+     */
+    List<FestivalResponseDto> selectSearchedFestival(String keyword, Pageable pageable);
+
+    /**
      * 페스티벌 오픈 알림을 보낼 페스티벌 가져오기
      *
      * @return 페스티벌 오픈 알림을 보낼 페스티벌 가져오기 결과

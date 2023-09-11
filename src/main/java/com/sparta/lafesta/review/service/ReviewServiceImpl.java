@@ -15,6 +15,7 @@ import com.sparta.lafesta.review.dto.ReviewResponseDto;
 import com.sparta.lafesta.review.entity.Review;
 import com.sparta.lafesta.review.event.ReviewCreatedEventPublisher;
 import com.sparta.lafesta.review.repostiroy.ReviewRepository;
+import com.sparta.lafesta.review.repostiroy.ReviewRepositoryCustom;
 import com.sparta.lafesta.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ import java.util.List;
 public class ReviewServiceImpl implements ReviewService {
     //CRUD
     private final ReviewRepository reviewRepository;
+    private final ReviewRepositoryCustom reviewRepositoryCustom;
     private final FestivalService festivalService;
 
     //S3
@@ -199,7 +201,7 @@ public class ReviewServiceImpl implements ReviewService {
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        return reviewRepository.findTop3Review().stream()
+        return reviewRepositoryCustom.findTop3Review().stream()
             .map(ReviewResponseDto::new).toList();
     }
 
