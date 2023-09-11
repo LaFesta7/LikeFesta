@@ -15,6 +15,7 @@
     <link rel="stylesheet" as="font"
           href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
     <link rel="stylesheet" href="/css/slides.css">
+    <link rel="stylesheet" href="/css/mypage.css">
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
@@ -34,16 +35,15 @@
 <div class="login-box">
     <h2>Modify Profile</h2>
     <form id="modifyForm">
-        <div class="user-box">
-            <input type="text" id="nicknameInput" required="">
-            <label>Nickname</label>
+        <div id="profile-edit" class="user-box">
+
         </div>
-        <a href="#" id="submitButton">
+        <a href="/api/users/profile" id="submitButton">
             <span></span>
             <span></span>
             <span></span>
             <span></span>
-            수정하기
+            완료
         </a>
     </form>
 </div>

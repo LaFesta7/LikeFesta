@@ -190,7 +190,7 @@ public class UserController {
             @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws Exception {
         userService.sendMailAndCreateVerificationCodePassword(userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "인증 메일이 발송되었습니다."));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "현재 저장된 이메일로 인증 메일이 발송되었습니다."));
     }
 
     // 인증코드 확인
