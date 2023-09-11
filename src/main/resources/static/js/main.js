@@ -59,6 +59,24 @@ $(document).ready(function () {
                 console.log('Error:', err);
             }
         });
+
+        $.ajax({
+            url: '/api/users/{userId}/badges',
+            type: 'GET',
+            success: function (data) {
+                console.log(data);
+                let html = '';
+                    html += `
+                            <div class="image-container">${data.image}</div>
+                            <p class="tiny opacity-6">${data.title}</p>
+`;
+                $('#badge-list').html(html);
+            },
+            error: function (err) {
+                console.log('Error:', err);
+            }
+        });
+
         $.ajax({
             url: '/api/festivals',
             type: 'GET',
