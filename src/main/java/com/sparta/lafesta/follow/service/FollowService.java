@@ -76,14 +76,14 @@ public class FollowService {
 
 //    유저 팔로잉 목록 조회 - 내가 팔로우 하는 유저
     @Transactional(readOnly = true)
-    public List<SelectUserResponseDto> selectFollowingUsers(UserDetailsImpl userDetails, Pageable pageable){
+    public List<SelectUserResponseDto> selectFollowingUsers(UserDetailsImpl userDetails, Pageable pageable, Long lastFollowId){
         User follower = userDetails.getUser();
 
         if(follower == null){
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        return followRepositoryCustom.findAllFollowings(userDetails.getUser(), pageable);
+        return followRepositoryCustom.findAllFollowings(userDetails.getUser(), pageable, lastFollowId);
     }
 
     //유저 팔로우 취소
