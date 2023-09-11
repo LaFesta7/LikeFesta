@@ -53,13 +53,6 @@ QFestivalFollow qFestivalFollow = new QFestivalFollow("ff");
         .stream().map(SelectUserResponseDto::new).toList();
   }
 
-  private BooleanExpression ltFollowId(Long lastFollowId){
-    if(lastFollowId == null){
-      return null;
-    }
-    return qUser2.id.lt(lastFollowId);
-  }
-
   //페스티벌 팔로잉 목록 조회
   public List<FestivalResponseDto> findAllFollowFestival(User user, Pageable pageable){
     return queryFactory
@@ -73,5 +66,13 @@ QFestivalFollow qFestivalFollow = new QFestivalFollow("ff");
         .limit(pageable.getPageSize())
         .fetch()
         .stream().map(FestivalResponseDto::new).toList();
+  }
+
+//No Offset을 위한 함수
+  private BooleanExpression ltFollowId(Long lastFollowId){
+    if(lastFollowId == 0l || lastFollowId == null){
+      return null;
+    }
+    return qUser2.id.lt(lastFollowId);
   }
 }

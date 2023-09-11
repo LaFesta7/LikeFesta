@@ -46,11 +46,16 @@
 </div>
 <script src="/js/follower.js"></script>
 <script>
-    $(document).ready(function () {
+    $(document).ready(
+        function (){
+            let lastFollowId = 0;
+            loadFollow(lastFollowId);
+
+        function loadFollow(lastFollowId) {
         $.ajax({
-            url: `/api/users/follows/followings`,
+            url: `/api/users/follows/followings?lt=${lastFollowId}`,
             type: 'GET',
-            success: function(data) {
+            success: function (data) {
                 console.log(data);
                 let html = '';
                 for (let i = 0; i < data.length; i++) {
@@ -61,12 +66,21 @@
                     </li>
                 `;
                 }
-                $('#followers').html(html);
+                if(lastFollowId == 0){
+                    $('#followers').html(html);
+                }else{
+                $('#followers').append(html);
+                }
 
-                let lastFollowId = data[data.length - 1].id;
-                $("#load-follow").click(function(){
-                    loadFollow(lastFollowId);
-                });
+                lastFollowId = data[data.length - 1].id;
+
+                    $("#load-follow").click(function () {
+                        // if(lastFollowId < data.get(data.size() -1).followedBy){
+                        //     alert("마지막 목록입니다.");
+                        // }else {
+                                loadFollow(lastFollowId);
+                        // }
+                    });
 
                 $('.heart').click(function() {
                         const isFollowed = $(this).closest('li').hasClass('followed');
@@ -90,35 +104,7 @@
                 console.log('Error:', err);
             }
         });
-
-    });
-    function loadFollow(lastFollowId) {
-        $.ajax({
-            url: `/api/users/follows/followings?lt=${lastFollowId}`,
-            type: 'GET',
-            success: function(data) {
-                console.log(data);
-                let html = '';
-                for (let i = 0; i < data.length; i++) {
-                    html += `
-                            <li class="followed">
-                                <a href="/api/users/${data[i].username}">${data[i].nickname}</a>
-                                <span class="heart">&#9829;</span>
-                            </li>
-                        `;
-                }
-                $('#followers').append(html).slideDown();
-                let lastFollowId = data[data.length - 1].id;
-                $("#load-follow").click(function(){
-                    // if(data.length == 0){
-                    //     alert("마지막 목록입니다.")
-                    // }
-                    loadFollow(lastFollowId);
-                });
-            }, error: function (err) {
-                console.log('Error:', err);
-            }
+        }
         });
-    }
 </script>
 </html>
