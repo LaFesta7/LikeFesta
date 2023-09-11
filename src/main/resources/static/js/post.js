@@ -1,49 +1,53 @@
 $(document).ready(function () {
+    const url = window.location.href;
+    const festivalId = url.substr(url.lastIndexOf('/') + 1);
     $.ajax({
-            url: `/api/festivals/1`,
+        url: `/api/festivals/page/${festivalId}`,
         type: 'GET',
-        success: function (data) {
-            console.log(data);
-            let html = `
+        success: function (festivals) {
+            console.log(festivals);
+            for (let i = 1; i <= festivals.length; i++) {
+                let html = `
             <div class="festival-header">
-                <h1>${data.title}</h1>
+                <h1>${festivals.title}</h1>
                     <br>
                     <p> 시작일 </p>
-                    <p>${data.openDate}</p>
+                    <p>${festivals.openDate}</p>
                     <p> 종료일 </p>
-                    <p>${data.endDate}</p>
+                    <p>${festivals.endDate}</p>
                     <br>
                     <p> 위치 </p>
-                    p>${data.place}</p>
+                    <p>${festivals.place}</p>
             </div>
                     <div class="festival-content">
                     <img src="/images/best1.jpg" alt="축제 이미지" class="festival-image">
-                    <p class="festival-description">${data.content}</p>
+                    <p class="festival-description">${festivals.content}</p>
                     <div id="post-review"></div>
                     </div>
                 `;
-            $('#festival-post').html(html);
-            $.ajax({
-                url: `/api/festivals/1/reviews`,
-                type: 'GET',
-                success: function (data) {
-                    console.log(data);
-                    let html = '';
-                    for (let i = 0; i <data.length; i++) {
-                        html += `
+                $('#festival-post').append(html);
+                $.ajax({
+                    url: `/api/festivals/${festivals.id}/reviews`,
+                    type: 'GET',
+                    success: function (reviews) {
+                        console.log(reviews);
+                        let reviewHtml  = '';
+                        for (let j = 0; j < reviews.length; j++) {
+                            reviewHtml += `
                         <div class="reviews">
                             <div class="review-item">
-                                <p><a href="/api/festivals/1/reviews/${data[i].id}">${data[i].title}</a><strong>${data[i].userNickname}</strong></p>
+                                <p><a href="/api/festivals/${festivals[i].id}/reviews/${reviews[j].id}">${reviews[j].title}</a><strong>${reviews[j].userNickname}</strong></p>
                             </div>      
                         </div>       
                         `;
+                        }
+                        $('.post-review').eq(i).html(reviewHtml);
+                    },
+                    error: function (err) {
+                        console.log('Error:', err);
                     }
-                    $('#post-review').html(html);
-                },
-                error: function (err) {
-                    console.log('Error:', err);
-                }
-            });
+                });
+            }
         },
         error: function (err) {
             console.log('Error:', err);

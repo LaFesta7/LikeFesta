@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -69,14 +70,12 @@
 </div>
 
 <script th:inline="javascript">
-
     const href = location.href;
     const queryString = href.substring(href.indexOf("?") + 1)
     if (queryString === 'error') {
         const errorDiv = document.getElementById('login-failed');
         errorDiv.style.display = 'block';
     }
-
     const host = 'http://' + window.location.host;
 
     function onLogin() {
@@ -102,11 +101,9 @@
         const token = Cookies.get('Authorization');
 
         if(token) {
-            // 사용자가 이미 로그인했으면, http://localhost:8080/ 로 리디렉션
             window.location.href = 'http://localhost:8080/';
         }
-
     });
-
 </script>
 </body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>테스트 페이지</title>
+    <link rel="icon" href="/images/logo1.png" type="image/x-icon">
+
+    <style>
+        body {
+            margin: 0 auto;
+            max-width: 900px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #header-image {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        #header-image .logo-img {
+            max-width: 200px;
+            height: auto;
+        }
+
+        #post-form {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+
+        .post-input-box {
+            width: 60%;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        #post-id-submit{
+            width: 60%;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        #content{
+            align-content: center;
+        }
+
+
+        #tracksList,
+        #selectedTracksList {
+            display: flex;
+            flex-wrap: wrap;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #tracksList li,
+        #selectedTracksList li {
+            flex-basis: 100%;
+            margin-bottom: 5px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        #tracksList li img,
+        #selectedTracksList li img {
+            max-width: 10%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+
+
+
+    </style>
+</head>
+<body>
+<!--<div id="header-image">
+    <img src="/static/images/logo-s2.png" onclick="goHome()" class="logo-img">
+    <script th:inline="javascript">
+        function goHome(){
+            window.location.href="/"
+        }
+    </script>
+</div>-->
+
+<div id="post-form">
+    <div style="margin-top: 30px; margin-bottom : 50px;"id="post-title">Festival Line Up List</div>
+    <form action="/api/post/create" method="post">
+        <div style="display: none;">
+            <!-- 선택한 트랙 리스트를 전송하기 위한 입력 필드 -->
+            <input type="text" name="selectedTracks" id="selectedTracksInput">
+        </div>
+        <button type="submit" id="post-id-submit">Add Line Up</button>
+
+    </form>
+</div>
+
+<div>
+    <h3>Spotify 음악 검색</h3>
+    <input type="text" id="keywordInput" placeholder="키워드 입력">
+    <button onclick="search()">검색</button>
+
+</div>
+
+<div style="display: none; flex-wrap: wrap; width:900px" id="content">
+    <div style="display: flex; flex-wrap: wrap; align-content: center">
+        <div style="flex-basis: 450px;">
+            <h2>검색 결과</h2>
+            <ul id="tracksList"></ul>
+        </div>
+
+        <div style="flex-basis: 400px; margin-left:25px;margin-right: 25px;" >
+            <h2>추가할 리스트</h2>
+            <div id="selectedTrack" style="border-radius: 10px;">
+                <ul id="selectedTracksList"></ul>
+                <button type="button" id="confirmButton">확인</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // 선택한 트랙을 컨테이너에 추가하는 함수
+    function addSelectedTrack(track) {
+
+        // 'li' HTML 요소 생성
+        const selectedTrackItem = document.createElement('li');
+        // 트랙 이름과 아티스트 이름을 텍스트로 설정
+        selectedTrackItem.textContent = track.name + ' - ' + track.artists[0].name;
+
+        // 삭제 버튼 생성
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = '삭제하기';
+        deleteButton.style.backgroundColor = "rgba(255,255,255,0)";
+        deleteButton.style.border = "none";
+
+        // 삭제 버튼 클릭 이벤트 설정
+        deleteButton.addEventListener('click', function () {
+            selectedTrackItem.remove(); // 아이템 제거
+            // 선택된 트랙의 배경색 변경
+            document.getElementById('selectedTrack').style.backgroundColor = 'rgba(255,142,142,0.59)';
+        });
+
+        // 삭제 버튼을 'li' 요소에 추가
+        selectedTrackItem.appendChild(deleteButton);
+        selectedTracksContainer.appendChild(selectedTrackItem);
+
+        // 선택된 트랙 정보를 배열에 저장
+        selectedTracks.push({
+            name: track.name,
+            artist: track.artists[0].name,
+            imageUrl: track.album.images[0].url, // 이미지 URL 추가
+            previewUrl: track.preview_url // 미리보기 URL 추가
+        });
+    }
+
+    // 선택한 트랙을 담을 컨테이너
+    const selectedTracksContainer = document.getElementById('selectedTracksList');
+
+    // 선택한 트랙을 저장하는 배열
+    const selectedTracks = [];
+
+    // 검색 결과를 표시하는 함수
+    function displaySearchResults(data) {
+        console.log(data);
+        const tracks = data.tracks.items; // 트랙 정보 가져오기
+        const tracksList = document.getElementById('tracksList'); // 결과를 표시할 요소 가져오기
+        tracksList.innerHTML = '';
+
+        // 검색된 트랙을 반복하여 표시
+        for (let i = 0; i < tracks.length; i++) {
+            const track = tracks[i];
+            const artist = track.artists[0].name;
+            const title = track.name;
+            const previewUrl = track.preview_url;
+            const imageUrl = track.album.images[0].url;
+
+            // 결과를 표시하기 위한 HTML 요소 생성
+            const listItem = document.createElement('li');
+            const artistElement = document.createElement('div');
+            const titleElement = document.createElement('div');
+            const previewUrlElement = document.createElement('audio');
+            const imageElement = document.createElement('img');
+
+            artistElement.textContent = 'Artist: ' + artist;
+            titleElement.textContent = 'Title: ' + title;
+
+            if (previewUrl) {
+                previewUrlElement.src = previewUrl;
+                previewUrlElement.controls = true; // controls 속성 추가
+            } else {
+                previewUrlElement.textContent = '프리뷰 없음';
+            }
+
+            imageElement.src = imageUrl;
+
+            listItem.appendChild(imageElement);
+            listItem.appendChild(artistElement);
+            listItem.appendChild(titleElement);
+            listItem.appendChild(previewUrlElement);
+
+            listItem.addEventListener('click', function () {
+                addSelectedTrack(track);
+                document.getElementById('selectedTrack').style.backgroundColor='rgba(255,142,142,0.59)';
+            });
+
+            tracksList.appendChild(listItem);
+        }
+    }
+
+    // 검색 실행 함수
+    function search() {
+        const keywordInput = document.getElementById("keywordInput");
+        const keyword = keywordInput.value;
+
+        if (!keyword) {
+            alert("검색어를 입력해주세요")
+            console.error('검색어를 입력해주세요.');
+            return;
+        }
+        document.getElementById('content').style.display='flex';
+        getAccessToken()
+            .then(accessToken => {
+                const headers = {
+                    'Authorization': 'Bearer ' + accessToken,
+                    'Host': 'api.spotify.com',
+                    'Content-type': 'application/json'
+                };
+
+                const url = 'https://api.spotify.com/v1/search?type=track&market=KR&limit=10&q=' + encodeURIComponent(keyword);
+
+                return fetch(url, {
+                    method: 'GET',
+                    headers: headers
+                });
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                displaySearchResults(data); // 검색 결과를 표시하는 함수 호출
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    // Spotify API 액세스 토큰 가져오는 함수
+    function getAccessToken() {
+        const CLIENT_ID = '09747bb54dd84b9db6474668b8e3b4f3';
+        const CLIENT_SECRET = 'f1cbdc0c78234a3297492acc1e097998';
+        const authUrl = 'https://accounts.spotify.com/api/token';
+
+        const params = new URLSearchParams();
+        params.append('grant_type', 'client_credentials');
+        params.append('client_id', CLIENT_ID);
+        params.append('client_secret', CLIENT_SECRET);
+
+        return fetch(authUrl, {
+            method: 'POST',
+            body: params
+        })
+            .then(response => response.json())
+            .then(data => data.access_token)
+            .catch(error => {
+                console.error('Error:', error);
+                return 'error';
+            });
+    }
+
+    // "확인" 버튼 클릭 시 이벤트 설정
+    document.getElementById("confirmButton").addEventListener("click", function () {
+        const selectedTracksInput = document.getElementById('selectedTracksInput');
+        // 선택된 트랙 리스트를 JSON 문자열로 변환
+        selectedTracksInput.value = JSON.stringify(selectedTracks);
+        // 선택된 트랙의 배경색 변경
+        document.getElementById('selectedTrack').style.backgroundColor = 'rgba(190,255,126,0.59)';
+    });
+
+    // "제출" 버튼 클릭 시 이벤트 설정
+    document.getElementById("post-id-submit").addEventListener("click", function () {
+        const form = document.getElementById("post-form");
+        const formData = new FormData(form);
+        const jsonObject = {};
+
+        for (const pair of formData.entries()) {
+            jsonObject[pair[0]] = pair[1];
+        }
+        // 숨겨진 입력 필드의 값을 설정
+        const selectedTracksInput = document.getElementById('selectedTracksInput');
+        selectedTracksInput.value = jsonObject.selectedTracks;
+        // 선택한 트랙 리스트를 JSON 문자열로 변환하여 설정
+        jsonObject.selectedTracks = JSON.stringify(selectedTracks);
+
+        const jsonData = JSON.stringify(jsonObject);
+        console.log(jsonData);
+    });
+</script>
+
+</body>
+</html>

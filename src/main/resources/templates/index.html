@@ -34,11 +34,11 @@
         <div class="center">
             <ul class="menu">
                 <li><a href="/">Home</a></li>
-                <li><a href="#videos">Festival Map</a></li>
+<!--                <li><a href="#videos">Festival Map</a></li>-->
                 <li><a href="#features">Festival</a></li>
                 <li><a href="#case">Ranking</a></li>
                 <li><a href="#pricing">Tag</a></li>
-                <li><a href="#download">My Page</a></li>
+                <li id="myPageLink"><a href="#download">My Page</a></li>
                 <li><a id="adminPageLink" style="display: none" onclick="moveAdminPage()">Admin Page</a></li>
             </ul>
         </div>
@@ -56,7 +56,6 @@
                 <button class="button green gradient" type="submit">로그아웃</button>
             </form>
         </div>
-
     </div>
     <div class="sections compact hidden">
         <div class="left"><a href="/" title="Slides Framework"></a></div>
@@ -78,7 +77,7 @@
         </a>
         <ul class="mainMenu margin-top-3">
             <li><a href="/">Home</a></li>
-            <li><a href="#lafestamap">Festival Map</a></li>
+<!--            <li><a href="#lafestamap">Festival Map</a></li>-->
             <li><a href="#festival">Festival</a></li>
             <li><a href="#rank">Ranking</a></li>
             <li><a href="#tag">Tag</a></li>
@@ -99,9 +98,8 @@
                             <p class="ae-2 fromLeft"><span class="opacity-8">라페스타와 함께 당신의 매일을 축제와 함께하세요.</span>
                             </p>
                             <a id="myButton7" class="button blue gradient ae-3 fromCenter cropLeft"
-                               href="/api/users/festivals-map">축제
-                                찾으러가기</a><a
-                                class="button white ae-4 fromCenter" href="/">축제참여 인증하기</a>
+                               href="/api/users/festivals-map">축제 찾으러가기</a>
+                            <!--<a class="button white ae-4 fromCenter" href="/">축제참여 인증하기</a>-->
                         </li>
                         <li class="col-6-12">
                             <img class="ae-4" width="605" src="/images/logo6.png" alt="iPhones Thumbnail"
@@ -116,7 +114,7 @@
 </section>
 
 <!-- 페스티벌 맵? -->
-<section class="slide fade-6 kenBurns" data-name="videos">
+<!--<section class="slide fade-6 kenBurns" data-name="videos">
     <div class="content">
         <div class="container">
             <div class="wrap">
@@ -128,7 +126,7 @@
         </div>
     </div>
     <div class="background" style="background-image:url(/images/background/img-15.jpg)"></div>
-</section>
+</section>-->
 
 <!--페스티벌 랭킹-->
 <div class="popup autoplay" data-popup-id="60-1">
@@ -262,9 +260,7 @@
                             class="opacity-8">태그로 원하는 페스티벌을 찾아보세요.</span></p>
                     <form action="/" autocomplete="off" class="slides-form margin-bottom-3">
                         <input type="text" class="ae-3" name="tag" placeholder="Festival Tag"/>
-                        <button id="getTagsBtn" type="submit" class="button blue gradient ae-4" name="submit">Search for
-                            Tags
-                        </button>
+                        <button id="getTagsBtn" type="submit" class="button blue gradient ae-4" name="submit" onclick="window.open('/api/festivals/tag-search-page','window_name','width=430,height=500,location=no,status=no,scrollbars=yes');">태그로 검색하기</button>
                     </form>
                 </div>
             </div>
@@ -282,28 +278,30 @@
                     <div class="fix-7-12">
                         <p class="margin-bottom-2 ae-1"><span class="opacity-6">Profile Page</span></p>
                         <h1 class="ae-2 huge fromAbove margin-bottom-2">프로필 페이지</h1>
-                        <a id="myButton1" href="/api/users/profile" class="button green gradient ae-3">My Profile</a>
-                        <a id="myButton2" href="/api/users/badge" class="button green gradient ae-3">보유 벳찌</a>
-                        <a id="myButton" href="/api/users/profile/followings-page" class="button green gradient ae-3">팔로우 List</a>
+                        <a id="myButton1" href="/api/users/profile" class="button blue gradient ae-4">My Profile</a>
+                        <a id="myButton2" href="/api/users/badge" class="button blue gradient ae-4">보유 벳찌</a>
+<!--                        <a id="myButton" href="/api/users/profile/followings-page" class="button green gradient ae-3">팔로우 List</a>-->
                     </div>
                     <ul class="grid fixedSpaces left margin-top-10">
-                        <li class="col-3-12 col-tablet-1-2 col-phablet-1-1 ae-4 fromLeft">
+                        <li id="badge-list" class="col-3-12 col-tablet-1-2 col-phablet-1-1 ae-4 fromLeft">
                             <h3>대표 벳찌</h3>
                             <div class="image-container">
-                                <img src="/images/logo-s3.png" alt="이미지 설명">
+                                <!--대표 벳찌 이미지 url-->
                             </div>
-                            <p class="tiny opacity-6">라페스타 개근</p>
-                        </li>
-                        <li class="col-3-12 col-tablet-1-2 col-phablet-1-1 ae-5 fromLeft">
-                            <h3>추후 구현 예정</h3>
-                            <p id="my-review" class="tiny opacity-6"></p>
+                            <p class="tiny opacity-6">
+                                <!--벳찌 이름-->
+                            </p>
                         </li>
                         <li class="col-3-12 col-tablet-1-2 col-phablet-1-1 ae-6 fromLeft">
                             <h3>페스티벌 팔로우 List</h3>
                             <p id="my-follow-festival" class="tiny opacity-6"></p>
                         </li>
+                        <li class="col-3-12 col-tablet-1-2 col-phablet-1-1 ae-5 fromLeft">
+                            <h3>팔로우 List</h3>
+                            <ul id="followers"></ul>
+                        </li>
                         <li class="col-3-12 col-tablet-1-2 col-phablet-1-1 ae-7 fromLeft">
-                            <h3>유저 팔로워 List</h3>
+                            <h3>팔로워 List</h3>
                             <p id="my-follow-list" class="tiny opacity-6"></p>
                         </li>
                     </ul>
@@ -315,7 +313,5 @@
 </section>
 
 <script src="/js/main.js"></script>
-<script>
-</script>
 </body>
 </html>

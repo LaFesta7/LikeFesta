@@ -12,8 +12,8 @@ public class SocialLoginWaitConfig {
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
         return restTemplateBuilder // login wait time 의 timeout 설정
-                .setConnectTimeout(Duration.ofSeconds(5))
-                .setReadTimeout(Duration.ofSeconds(5))
+                .setConnectTimeout(Duration.ofSeconds(7))
+                .setReadTimeout(Duration.ofSeconds(7))
                 .build();
     }
 }

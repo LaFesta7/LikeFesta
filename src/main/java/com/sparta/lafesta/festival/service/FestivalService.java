@@ -117,4 +117,5 @@ public interface FestivalService {
      * @return 가져온 페스티벌
      */
     Festival findFestival(Long festivalId);
+    
 }

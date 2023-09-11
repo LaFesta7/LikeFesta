@@ -3,17 +3,22 @@ package com.sparta.lafesta.common.controller;
 import com.sparta.lafesta.common.exception.UnauthorizedException;
 import com.sparta.lafesta.common.jwt.JwtUtil;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
+import com.sparta.lafesta.festival.dto.FestivalResponseDto;
+import com.sparta.lafesta.festival.service.FestivalService;
 import com.sparta.lafesta.follow.service.FollowService;
 import com.sparta.lafesta.social.service.KakaoService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Slf4j
 @Controller
@@ -22,9 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ViewController {
     private final KakaoService kakaoService;
     private final JwtUtil jwtUtil;
-
-    @Autowired
-    private FollowService followService;
+    private final FestivalService festivalService;
 
     @GetMapping("/")
     public String home() {
@@ -70,11 +73,6 @@ public class ViewController {
         return "mypage-modify";
     }
 
-    @GetMapping("/festivals/page")
-    public String festivalPage() {
-        return "festival";
-    }
-
     @GetMapping("/festivals/post-page")
     public String festivalEdit(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "festival-post";
@@ -90,12 +88,31 @@ public class ViewController {
         return "notification";
     }
 
-
     @GetMapping("/admin-page")
     public String adminPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (!userDetails.getUser().getRole().getAuthority().equals("ROLE_ADMIN")) {
             throw new UnauthorizedException("해당 페이지에 접근하실 수 없습니다.");
         }
         return "admin";
+    }
+
+    //태그검색 후 리스트 보여주는 페이지
+    @GetMapping("/festivals/tag-search-page")
+    public String tagSearchPage() {
+        return "tag-list";
+    }
+
+    @GetMapping("/festivals/page/{festivalId}")
+    @ResponseBody
+    public ResponseEntity<FestivalResponseDto> festivalPage(
+            @PathVariable Long festivalId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        FestivalResponseDto festivalDetails = festivalService.selectFestival(festivalId, userDetails.getUser());
+        if (festivalDetails != null) {
+            return ResponseEntity.ok(festivalDetails);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

@@ -5,6 +5,7 @@ import com.sparta.lafesta.common.s3.entity.FestivalFileOnS3;
 import com.sparta.lafesta.festival.dto.FestivalRequestDto;
 import com.sparta.lafesta.follow.entity.FestivalFollow;
 import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
+import com.sparta.lafesta.lineUp.entity.LineUp;
 import com.sparta.lafesta.review.entity.Review;
 import com.sparta.lafesta.tag.entity.FestivalTag;
 import com.sparta.lafesta.user.entity.User;
@@ -79,6 +80,9 @@ public class Festival extends Timestamped {
 
     @OneToMany(mappedBy = "festival", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<FestivalTag> tags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "festival", orphanRemoval = true)
+    private  List<LineUp> lineUps = new ArrayList<>();
 
     ////생성자 - 약속된 형태로만 생성가능하도록 합니다.
 
