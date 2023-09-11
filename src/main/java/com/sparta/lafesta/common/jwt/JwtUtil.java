@@ -97,9 +97,11 @@ public class JwtUtil {
     public String substringToken(String tokenValue) {
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(7);
+        } else {
+            return tokenValue;
         }
-        logger.error("Not Found Token");
-        throw new NullPointerException("Not Found Token");
+//        logger.error("Not Found Token");
+//        throw new NullPointerException("Not Found Token");
     }
 
     //5.JWT 검증
