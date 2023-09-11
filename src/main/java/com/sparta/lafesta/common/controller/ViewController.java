@@ -68,7 +68,7 @@ public class ViewController {
 
     @GetMapping("/users/profile/edit-page")
     public String editProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return "mypage-modify";
+        return "mypage-edit";
     }
 
     @GetMapping("/festivals/{festivalId}/page")
@@ -79,6 +79,11 @@ public class ViewController {
     @GetMapping("/festivals/post-page")
     public String festivalEdit(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "festival-post";
+    }
+
+    @GetMapping("/festivals/{festivalId}/edit-page")
+    public String editProfile(@PathVariable Long festivalId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "festival-edit";
     }
 
     @GetMapping("/festivals/review-page")
