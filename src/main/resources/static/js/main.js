@@ -20,7 +20,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '/api/users/profile',
+            url: '/api/users/my-profile',
             type: 'GET',
             success: function (data) {
                 console.log(data);

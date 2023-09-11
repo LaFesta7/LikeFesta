@@ -78,7 +78,7 @@ public class UserController {
     }
 
     // 나의 프로필 조회
-    @GetMapping("/users/profile")
+    @GetMapping("/users/my-profile")
     @Operation(summary = "나의 프로필 조회", description = "나의 프로필을 조회합니다.")
     public ResponseEntity<SelectUserResponseDto> selectMyProfile(
             @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails

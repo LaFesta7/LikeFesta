@@ -49,7 +49,7 @@ public class ViewController {
         return "login";
     }
 
-    @GetMapping("/users/profile-page")
+    @GetMapping("/users/profile")
     public String festival1(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "mypage";
     }
