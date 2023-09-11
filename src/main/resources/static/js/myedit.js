@@ -50,7 +50,7 @@ $(document).ready(function () {
                         <p id="imageName" style="font-size: 16px; color: white">${data.files[0].keyName}</p>
                         <div class="circular-image">
                             <img id="preview" 
-                                src="${data.files[0].uploadFileUrl ? data.files[0].uploadFileUrl 
+                                src="${data.files[0] ? data.files[0].uploadFileUrl 
                                 : 'https://vignette.wikia.nocookie.net/the-sun-vanished/images/5/5d/Twitter-avi-gender-balanced-figure.png/revision/latest?cb=20180713020754'}" 
                                 alt="Image Preview" style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
