@@ -47,7 +47,7 @@ $(document).ready(function () {
                     <div class="right" style="margin-top: -60px"><a href="#" onclick="passwordEdit()">수정</a></div>
                     <div class="user-box">
                         <p style="top: -20px; left: 0; color: #03e9f4; font-size: 12px;">Image</p>
-                        <p id="imageName" style="font-size: 16px; color: white">${data.files[0].keyName}</p>
+                        <p id="imageName" style="font-size: 16px; color: white">${data.files[0]} ? data.files[0].keyName : null</p>
                         <div class="circular-image">
                             <img id="preview" 
                                 src="${data.files[0] ? data.files[0].uploadFileUrl 
