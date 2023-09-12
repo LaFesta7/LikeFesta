@@ -105,6 +105,12 @@ public class UserService {
         }
     }
 
+    // 내 프로필 조회
+    @Transactional(readOnly = true)
+    public SelectUserResponseDto selectMyProfile(User user) {
+        return new SelectUserResponseDto(findUser(user.getId()));
+    }
+
     // 프로필 조회
     @Transactional(readOnly = true)
     public SelectUserResponseDto selectUserProfile(Long userId, User user) {

@@ -20,6 +20,28 @@ $(document).ready(function () {
         }
 
         $.ajax({
+            url: '/api/users/my-profile',
+            type: 'GET',
+            success: function (data) {
+                console.log(data);
+                let html = '';
+                const representativeBadges = data.representativeBadges;
+                for (let i = 0; i <representativeBadges.length; i++) { // Loop through each festival
+                    html += `
+                        <div class="image-container">
+                                    <img src="${representativeBadges[i].fileUrl}" alt="뱃지 이미지">
+                        </div>
+                        <p class="tiny opacity-6">${representativeBadges[i].title}</p>
+                        `;
+                };
+                $('#representative-badges').html(html);
+            },
+            error: function (err) {
+                console.log('Error:', err);
+            }
+        });
+
+        $.ajax({
             url: '/api/users/followed-festivals',
             type: 'GET',
             success: function (data) {
