@@ -8,13 +8,12 @@ import com.sparta.lafesta.social.service.KakaoService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
 @Controller
@@ -77,7 +76,7 @@ public class ViewController {
     }
 
     @GetMapping("/festivals/{festivalId}/page")
-    public String festivalPage(@PathVariable Long festivalId) {
+    public String festivalPage() {
         return "festival";
     }
 
@@ -87,12 +86,12 @@ public class ViewController {
     }
 
     @GetMapping("/festivals/{festivalId}/edit-page")
-    public String editProfile(@PathVariable Long festivalId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String editFestival(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "festival-edit";
     }
 
     @GetMapping("/festivals/{fesitvalId}/reviews/{riviewId}/page")
-    public String reviewPage(@PathVariable Long festivalId, @PathVariable Long riviewId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String reviewPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "review";
     }
 
