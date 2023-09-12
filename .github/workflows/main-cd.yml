@@ -51,6 +51,8 @@ jobs:
       - name: application.properties 파일 생성
         run: |
           cd ./src/main/resources
+          touch ./application.properties
+          echo "${{secrets.APPLICATION_PROPERTIES}}" > ./application.properties
           touch ./application-s3.properties
           echo "${{secrets.APPLICATION_S3_PROPERTIES}}" > ./application-s3.properties
           touch ./application-redis.properties
