@@ -89,17 +89,17 @@ function getComments() {
         success: function (data) {
             console.log(data);
             let html = '';
-            for (let i = 0; i <data.length; i++) {
+            for (let i = 0; i < data.length; i++) {
                 // 현재 사용자의 이름과 댓글 작성자의 이름을 비교하여 수정 및 삭제 버튼의 가시성 설정
                 const isCurrentUser = userName === data[i].username;
                 html += `
                     <div class="comment">
                         <div class="comment-author" style="color: #5F5F5F; font-size: 12px">${data[i].userNickname}</div>
-                        <div style="display: flex; justify-content: space-between;">
-                            <div class="comment-content" style="font-size: 16px">${data[i].content}</div>
+                        <div class="comment-content-container" id="comment-container${data[i].id}" style="display: flex; justify-content: space-between;">
+                            <p id="comment${data[i].id}" class="comment-content" style="font-size: 16px">${data[i].content}</p>
                             <div id="commentUDContainer" style="float: right; margin-top: 10px">
                                 ${isCurrentUser ? `
-                                    <a href="#" style="color: #5F5F5F; font-size: 14px" onclick="editComment(${data[i].id})">수정</a>
+                                    <a href="#" style="color: #5F5F5F; font-size: 14px" onclick="showCommentInput(${data[i].id}, '${data[i].content}')">수정</a>
                                     <a href="#" style="color: #5F5F5F; font-size: 14px; margin-left: 10px" onclick="alertDeleteComment(${data[i].id})">삭제</a>
                                 ` : ''}
                             </div>
@@ -164,6 +164,102 @@ function postComment() {
         error: function (err) {
             console.log('Error:', err);
             alert(err.responseText.statusMessage);
+        }
+    });
+}
+
+
+function showCommentInput(commentId, currentContent) {
+    // 댓글 내용을 포함하는 컨테이너 div를 찾습니다.
+    const commentContainer = $(`#comment-container${commentId}`);
+
+    // 새로운 입력 요소를 생성합니다.
+    const input = $('<textarea>', {
+        rows: 2,
+        id: `commentInput${commentId}`,
+        style: 'width: 85%; font-size: 16px; margin-top: 10px',
+    });
+    input.val(currentContent);
+
+    // 수정을 확인하는 버튼을 만듭니다.
+    const saveButton = $('<a>', {
+        href: '#',
+        style: 'color: #5F5F5F; font-size: 14px; margin-left: 10px; margin-top:20px',
+        click: function() {
+            alertCommentModify(commentId);
+        }
+    }).text('확인');
+
+    // 수정을 취소하는 버튼을 만듭니다.
+    const cancelButton = $('<a>', {
+        href: '#',
+        style: 'color: #5F5F5F; font-size: 14px; margin-left: 10px; margin-top:20px',
+        click: function() {
+            getComments();
+        }
+    }).text('취소');
+
+    // 내용을 입력 요소와 버튼으로 대체합니다.
+    commentContainer.empty().append(input).append(saveButton).append(cancelButton);
+}
+
+function alertCommentModify(commentId) {
+    // 경고창을 띄웁니다.
+    const confirmation = confirm("댓글을 수정하시겠습니까?");
+
+    // 사용자가 확인을 누르면 메소드를 실행합니다.
+    if (confirmation) {
+        modifyComment(commentId);
+    } else {
+        getComments();
+    }
+}
+
+function modifyComment(commentId) {
+    const commentInput = document.getElementById(`commentInput${commentId}`);
+    const requestDto = {
+        content: commentInput.value
+    };
+
+    $.ajax({
+        url: `/api/festivals/${festivalId}/reviews/${reviewId}/comments/${commentId}`,
+        type: 'PUT',
+        data: JSON.stringify(requestDto), // 데이터 객체를 JSON 문자열로 변환하여 전송
+        contentType: 'application/json',
+        success: function (data) {
+            alert('댓글 수정 완료!');
+            getComments();
+        },
+        error: function (err) {
+            alert(err.statusMessage);
+            console.log('Error:', err);
+            getComments();
+        }
+    });
+}
+
+function alertDeleteComment(commentId) {
+    // 경고창을 띄웁니다.
+    const confirmation = confirm("댓글을 삭제하시겠습니까?");
+
+    // 사용자가 확인을 누르면 메소드를 실행합니다.
+    if (confirmation) {
+        deleteComment(commentId);
+    }
+}
+
+function deleteComment(commentId) {
+    const apiUrl = `/api/festivals/${festivalId}/reviews/${reviewId}`
+    $.ajax({
+        url: apiUrl + `/comments/${commentId}`,
+        type: 'DELETE',
+        success: function (data) {
+            alert(data.statusMessage);
+            getReview();
+        },
+        error: function (err) {
+            console.log('Error:', err);
+            alert(err.statusMessage);
         }
     });
 }
