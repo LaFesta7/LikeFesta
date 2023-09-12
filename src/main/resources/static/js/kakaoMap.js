@@ -1,3 +1,29 @@
+$(document).ready(function () {
+    // 쿠키에서 'Authorization' 토큰을 가져옵니다.
+    const token = Cookies.get('Authorization');
+
+    // JWT 토큰의 권한 확인
+    const tokenPayload = parseJwtPayload(token); // JWT 토큰을 해석하여 payload를 가져오는 함수로 직접 구현해야 합니다.
+    const role = tokenPayload.auth;
+    if (role === 'USER') {
+        $('#festival-post-button').hide();
+        $('#festival-request-post-button').show();
+    } else {
+        $('#festival-post-button').show();
+        $('#festival-request-post-button').hide();
+    }
+});
+
+function parseJwtPayload(token) {
+    const base64Url = token.split('.')[1]; // JWT의 두 번째 부분이 페이로드입니다.
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); // URL 안전한 Base64 문자열로 변환
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join('')); // Base64 디코딩 및 URL 디코딩
+
+    return JSON.parse(jsonPayload); // JSON 문자열을 객체로 파싱
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     // Your previous code
     const FESTIVAL_TABLE_BODY = document.getElementById('festival-table-body');
