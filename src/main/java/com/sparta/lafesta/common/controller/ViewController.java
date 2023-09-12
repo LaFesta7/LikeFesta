@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -67,7 +68,7 @@ public class ViewController {
 
     @GetMapping("/users/profile/edit-page")
     public String editProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return "mypage-modify";
+        return "mypage-edit";
     }
 
     @GetMapping("/users/withdrawal-page")
@@ -75,14 +76,19 @@ public class ViewController {
         return "withdrawal";
     }
 
-    @GetMapping("/festivals/page")
-    public String festivalPage() {
+    @GetMapping("/festivals/{festivalId}/page")
+    public String festivalPage(@PathVariable Long festivalId) {
         return "festival";
     }
 
     @GetMapping("/festivals/post-page")
     public String festivalEdit(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "festival-post";
+    }
+
+    @GetMapping("/festivals/{festivalId}/edit-page")
+    public String editProfile(@PathVariable Long festivalId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "festival-edit";
     }
 
     @GetMapping("/festivals/review-page")

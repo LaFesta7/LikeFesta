@@ -14,10 +14,12 @@ $(document).ready(function () {
         // JWT 토큰의 권한 확인
         const tokenPayload = parseJwtPayload(token); // JWT 토큰을 해석하여 payload를 가져오는 함수로 직접 구현해야 합니다.
         const role = tokenPayload.auth;
-
         if (role === 'ADMIN') {
             $('#adminPageLink').show();
         }
+
+        // 토큰 만료시간 확인
+        checkTokenExpiration(tokenPayload);
 
         $.ajax({
             url: '/api/users/my-profile',
@@ -85,10 +87,10 @@ $(document).ready(function () {
             for (let i = 0; i <data.length; i++) { // Loop through each festival
                 html += `<tr>
                         <td>${data[i].id}</td>
-                        <td><a href="/api/festivals/${data[i].id}" target="_blank">${data[i].title}</a></td>
+                        <td><a href="/api/festivals/${data[i].id}/page" target="_blank">${data[i].title}</a></td>
                         <td>${data[i].place}</td>
                         <td>${data[i].content}</td>
-                        <td>${data[i].openDate} ~ ${data[i].endDate}</td>
+                        <td>${formatDate(new Date(data[i].openDate))} ~ ${formatDate(new Date(data[i].endDate))}</td>
                         <td><a href="${data[i].officialLink}" target="_blank">Official Link</a></td>
                     </tr>`;
             };
@@ -110,6 +112,39 @@ function parseJwtPayload(token) {
     return JSON.parse(jsonPayload); // JSON 문자열을 객체로 파싱
 }
 
+// 토큰 만료 시간을 확인하는 함수
+function checkTokenExpiration(tokenPayload) {
+    if (tokenPayload) {
+        // 토큰의 만료 시간 (UTC 밀리초 단위) 가져오기
+        const expirationTime = tokenPayload.exp * 1000; // 초를 밀리초로 변환
+
+        // 현재 시간 (UTC 밀리초 단위) 가져오기
+        const currentTime = Date.now();
+
+        // 만료 시간까지 남은 시간 계산
+        const timeRemaining = expirationTime - currentTime;
+
+        if (timeRemaining <= 0) {
+            // 토큰이 만료되었으므로 새로고침 또는 로그아웃 등의 작업 수행
+            refreshPage(); // 페이지 새로고침 함수 호출
+        } else {
+            // 만료 시간까지 남은 시간 (밀리초)이 timeRemaining에 저장됩니다.
+            // 필요에 따라 이 값을 활용할 수 있습니다.
+            console.log(`토큰 만료까지 남은 시간: ${timeRemaining} 밀리초`);
+
+            // 만료 시간까지 남은 시간 후에 새로고침 수행
+            setTimeout(refreshPage, timeRemaining);
+        }
+    }
+}
+
+// 페이지 새로고침 함수
+function refreshPage() {
+    // 페이지 새로고침 코드
+    window.location.reload();
+}
+
+// 관리자 페이지 이동하기
 async function moveAdminPage() {
     try {
         const response = await fetch('/api/admin-page');
@@ -127,4 +162,8 @@ async function moveAdminPage() {
     } catch (error) {
         console.error(error);
     }
+}
+
+function formatDate(serverDate) {
+    return `${serverDate.getFullYear()}. ${serverDate.getMonth() + 1}. ${serverDate.getDate()}. T ${serverDate.getHours()} : ${serverDate.getMinutes()}`;
 }
