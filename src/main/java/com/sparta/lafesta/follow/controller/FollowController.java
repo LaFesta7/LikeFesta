@@ -41,9 +41,11 @@ public class FollowController {
     public ResponseEntity<List<SelectUserResponseDto>> selectFollowers(
             @Parameter(description = "권한 확인 및 조회 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
         @Parameter(description = "페이지 처리에 필요한 기본 설정")
-        @PageableDefault(size=20, sort="createdAt", direction = Direction.DESC) Pageable pageable
+        @PageableDefault(size=5) Pageable pageable,
+        @Parameter(description = "No offset 페이지 넘기기에 필요한 기본 설정")
+        @RequestParam(value = "lt", required = false)Long lt
         ){
-        List<SelectUserResponseDto> results = followService.selectFollowers(userDetails, pageable);
+        List<SelectUserResponseDto> results = followService.selectFollowers(userDetails, pageable, lt);
         return ResponseEntity.ok().body(results);
     }
 
@@ -52,12 +54,14 @@ public class FollowController {
     public ResponseEntity<List<SelectUserResponseDto>> selectFollowingUsers(
             @Parameter(description = "권한 확인 및 조회 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "페이지 처리에 필요한 기본 설정")
-            @PageableDefault(size=20, sort="createdAt", direction = Direction.DESC) Pageable pageable
+            @PageableDefault(size=5) Pageable pageable,
+            @Parameter(description = "No offset 페이지 넘기기에 필요한 기본 설정")
+            @RequestParam(value = "lt", required = false)Long lt
     ){
         if(userDetails == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);  // 401 Unauthorized 응답
         }
-        List<SelectUserResponseDto> results = followService.selectFollowingUsers(userDetails, pageable);
+        List<SelectUserResponseDto> results = followService.selectFollowingUsers(userDetails, pageable, lt);
         return ResponseEntity.ok().body(results);
     }
 
@@ -80,9 +84,11 @@ public class FollowController {
     public ResponseEntity<List<FestivalResponseDto>> selectFollowingFestivals(
             @Parameter(description = "권한 확인 및 조회 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
         @Parameter(description = "페이지 처리에 필요한 기본 설정")
-        @PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable
+        @PageableDefault(size=5) Pageable pageable,
+        @Parameter(description = "No offset 페이지 넘기기에 필요한 기본 설정")
+        @RequestParam(value = "lt", required = false)Long lt
         ){
-        List<FestivalResponseDto> results = followService.selectFollowingFestivals(userDetails, pageable);
+        List<FestivalResponseDto> results = followService.selectFollowingFestivals(userDetails, pageable, lt);
         return ResponseEntity.ok().body(results);
     }
 
