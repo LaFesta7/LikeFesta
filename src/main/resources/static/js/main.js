@@ -82,23 +82,6 @@ $(document).ready(function () {
             });
         }
 
-        $.ajax({
-            url: '/api/users/followed-festivals',
-            type: 'GET',
-            success: function (data) {
-                console.log(data);
-                let html = '';
-                for (let i = 0; i <data.length; i++) { // Loop through each festival
-                    html += `
-                        <td>${data[i].title}</td>`;
-                };
-                $('#my-follow-festival').html(html);
-            },
-            error: function (err) {
-                console.log('Error:', err);
-            }
-        });
-
         function loadFollower(lastFollowId){
             $.ajax({
                 url: `/api/users/follows/followers?lt=${lastFollowId}`,
@@ -133,28 +116,69 @@ $(document).ready(function () {
         }
     }
 
-    $.ajax({
-        url: '/api/festivals',
-        type: 'GET',
-        success: function (data) {
-            console.log(data);
-            let html = '';
-            for (let i = 0; i <data.length; i++) { // Loop through each festival
-                html += `<tr>
-                        <td>${data[i].id}</td>
-                        <td><a href="/api/festivals/${data[i].id}/page" target="_blank">${data[i].title}</a></td>
-                        <td>${data[i].place}</td>
-                        <td>${data[i].content}</td>
-                        <td>${formatDate(new Date(data[i].openDate))} ~ ${formatDate(new Date(data[i].endDate))}</td>
-                        <td><a href="${data[i].officialLink}" target="_blank">Official Link</a></td>
+    let pageNum = 0;
+    loadFestivals(pageNum);
+
+    function loadFestivals(pageNum) {
+        $.ajax({
+            url: `/api/festivals?page=${pageNum}`,
+            type: 'GET',
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+
+                let html = '';
+                data.content.forEach(function (festival){
+                    html += `<tr>
+                        <td>${festival.id}</td>
+                        <td><a href="/api/festivals/${festival.id}/page" target="_blank">${festival.title}</a></td>
+                        <td>${festival.place}</td>
+                        <td>${festival.content}</td>
+                        <td>${formatDate(
+                        new Date(festival.openDate))} ~ ${formatDate(
+                        new Date(festival.endDate))}</td>
+                        <td><a href="${festival.officialLink}" target="_blank">Official Link</a></td>
                     </tr>`;
-            };
-            $('#festival-table-body').html(html);
-        },
-        error: function (err) {
-            console.log('Error:', err);
-        }
-    });
+                });
+                $('#festival-table-body').html(html);
+
+                // makePagination(data);
+            },
+            error: function (err) {
+                console.log('Error:', err);
+            }
+        });
+    }
+
+    // function makePagination(page) {
+    //     let pagination = $("#pagination");
+    //     pagination.empty();
+    //
+    //     let cur = page.number; // 0부터 센다.
+    //     let endPage = Math.ceil((cur + 1) / 10.0) * 10; // 1~10
+    //     let startPage = endPage - 9; // 1~10
+    //     if (endPage > page.totalPages - 1) // totalPage는 1부터 센다 그래서 1을 빼줌
+    //     {
+    //         endPage = page.totalPages;
+    //     }
+    //
+    //     if (cur > 0) // 이전 버튼
+    //     {
+    //         pagination.append(
+    //             `<li><a onclick="loadFestivals(${cur - 1})">이전</a></li>`);
+    //     }
+    //
+    //     for (let i = startPage; i <= endPage; i++) { // 페이지네이션
+    //         pagination.append(
+    //             `<li><a onclick="loadFestivals(${i - 1})">${i}</a></li>`);
+    //     }
+    //     if (cur + 1 < page.totalPages) // 다음 버튼
+    //     {
+    //         pagination.append(
+    //             `<li><a onclick="loadFestivals(${cur + 1})">다음</a></li>`);
+    //     }
+    // }
+
 });
 
 function parseJwtPayload(token) {

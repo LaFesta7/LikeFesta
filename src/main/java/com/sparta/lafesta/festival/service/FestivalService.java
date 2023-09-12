@@ -9,6 +9,7 @@ import com.sparta.lafesta.user.entity.User;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,7 +33,7 @@ public interface FestivalService {
      * @param pageable 페이징 처리를 위한 정보
      * @return 전체 페스티벌 조회 결과
      */
-    List<FestivalResponseDto> selectFestivals(Pageable pageable);
+    Page<FestivalResponseDto> selectFestivals(Pageable pageable);
 
     /**
      * 페스티벌 상세 조회

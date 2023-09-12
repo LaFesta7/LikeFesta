@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,9 +100,9 @@ public class FestivalServiceImpl implements FestivalService {
     // 페스티벌 전체 조회
     @Override
     @Transactional(readOnly = true)
-    public List<FestivalResponseDto> selectFestivals(Pageable pageable) {
-        return festivalRepository.findAllBy(pageable).stream()
-                .map(FestivalResponseDto::new).toList();
+    public Page<FestivalResponseDto> selectFestivals(Pageable pageable) {
+        return festivalRepository.findAllBy(pageable)
+                .map(FestivalResponseDto::new);
     }
 
 
