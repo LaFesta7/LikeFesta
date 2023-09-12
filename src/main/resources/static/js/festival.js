@@ -16,6 +16,10 @@ const pathSegments = currentURL.split('/');
 const festivalId = pathSegments[pathSegments.length - 2];
 
 $(document).ready(function () {
+    getFestival();
+});
+
+function getFestival() {
     $.ajax({
         url: `/api/festivals/${festivalId}`,
         type: 'GET',
@@ -65,33 +69,40 @@ $(document).ready(function () {
             $('#festival-post').html(html);
             showUDContainer(role, userName, data.editorName);
 
-            // $.ajax({
-            //     url: `/api/festivals/1/reviews`,
-            //     type: 'GET',
-            //     success: function (data) {
-            //         console.log(data);
-            //         let html = '';
-            //         for (let i = 0; i <data.length; i++) {
-            //             html += `
-            //             <div class="reviews">
-            //                 <div class="review-item">
-            //                     <p><a href="/api/festivals/1/reviews/${data[i].id}">${data[i].title}</a><strong>${data[i].userNickname}</strong></p>
-            //                 </div>
-            //             </div>
-            //             `;
-            //         }
-            //         $('#post-review').html(html);
-            //     },
-            //     error: function (err) {
-            //         console.log('Error:', err);
-            //     }
-            // });
+            getReviews();
         },
         error: function (err) {
             console.log('Error:', err);
         }
     });
-});
+}
+
+function getReviews() {
+    const apiUrl = `/api/festivals/${festivalId}/reviews`
+    $.ajax({
+        url: apiUrl,
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+            let html = '';
+            for (let i = 0; i < data.length; i++) {
+                html += `
+                <div class="reviews">
+                    <div class="review-item">
+                        <p><a href="${apiUrl}/${data[i].id}/page" style="margin-left: 20px">${data[i].title}</a>
+                            <strong style="float: right; margin-right: 20px">${data[i].userNickname}</strong>
+                        </p>
+                    </div>
+                </div>
+                `;
+            }
+            $('#post-review').html(html);
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
+}
 
 function formatDate(serverDate) {
     return `${serverDate.getFullYear()}년 ${serverDate.getMonth() + 1}월 ${serverDate.getDate()}일 ${serverDate.getHours()}시 ${serverDate.getMinutes()}분`;

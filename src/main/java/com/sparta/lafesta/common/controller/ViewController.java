@@ -91,9 +91,9 @@ public class ViewController {
         return "festival-edit";
     }
 
-    @GetMapping("/festivals/review-page")
+    @GetMapping("/festivals/{fesitvalId}/reviews/{riviewId}/page")
     public String reviewPage() {
-        return "review-show";
+        return "review";
     }
 
     @GetMapping("/users/notification-page")
