@@ -70,7 +70,7 @@ function getFestival() {
                     </div>
                 `;
             $('#festival-post').html(html);
-            showUDContainer(role, userName, data.editorName);
+            showFestivalUDContainer(role, userName, data.editorName);
             showReviewPostBtn();
             getReviews();
         },
@@ -133,7 +133,7 @@ function parseJwtPayload(token) {
     return JSON.parse(jsonPayload); // JSON 문자열을 객체로 파싱
 }
 
-function showUDContainer(role, userName, editorName) {
+function showFestivalUDContainer(role, userName, editorName) {
     if (role === 'ADMIN' || userName === editorName) {
         $('#festivalUDContainer').show();
     } else {
