@@ -63,12 +63,15 @@ function getFestival() {
                     </div>
                     <img src="${data.files[0] ? data.files[0].uploadFileUrl : '/images/best1.jpg'}" alt="축제 이미지" class="festival-image">
                     <p class="festival-description">${data.content}</p>
-                    <div id="post-review"></div>
+                    <div id="moveReviewPostBtn" style="float: right; display: none;">
+                        <input type="submit" value="리뷰 작성" style="margin-left: 10px" onclick="moveReviewPost()">
+                    </div>
+                    <div id="post-review" style="margin-top: 80px"></div>
                     </div>
                 `;
             $('#festival-post').html(html);
             showUDContainer(role, userName, data.editorName);
-
+            showReviewPostBtn();
             getReviews();
         },
         error: function (err) {
@@ -102,6 +105,18 @@ function getReviews() {
             console.log('Error:', err);
         }
     });
+}
+
+function moveReviewPost(){
+    window.location.href = `/api/festivals/${festivalId}/reviews/post-page`;
+}
+
+function showReviewPostBtn(role) {
+    if (role === 'ADMIN') {
+        $('#moveReviewPostBtn').hide();
+    } else {
+        $('#moveReviewPostBtn').show();
+    }
 }
 
 function formatDate(serverDate) {

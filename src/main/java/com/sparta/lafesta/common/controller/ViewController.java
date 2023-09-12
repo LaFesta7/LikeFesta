@@ -82,7 +82,7 @@ public class ViewController {
     }
 
     @GetMapping("/festivals/post-page")
-    public String festivalEdit(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String postFestival(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "festival-post";
     }
 
@@ -92,8 +92,13 @@ public class ViewController {
     }
 
     @GetMapping("/festivals/{fesitvalId}/reviews/{riviewId}/page")
-    public String reviewPage() {
+    public String reviewPage(@PathVariable Long festivalId, @PathVariable Long riviewId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "review";
+    }
+
+    @GetMapping("/festivals/{fesitvalId}/reviews/post-page")
+    public String postReview(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "review-post";
     }
 
     @GetMapping("/users/notification-page")

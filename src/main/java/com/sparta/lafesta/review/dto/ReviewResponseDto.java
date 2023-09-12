@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 public class ReviewResponseDto {
     private Long id;
+    private Long festivalId;
     private String festivalTitle;
     private String userNickname;
     private String title;
@@ -20,6 +21,7 @@ public class ReviewResponseDto {
 
     public ReviewResponseDto(Review review) {
         this.id = review.getId();
+        this.festivalId = review.getFestival().getId();
         this.festivalTitle = review.getFestival().getTitle();
         this.userNickname = review.getUser().getNickname();
         this.title = review.getTitle();
