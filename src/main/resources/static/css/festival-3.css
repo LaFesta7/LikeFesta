@@ -76,6 +76,17 @@ skewX(-45deg);
     animation: shining 1.5s infinite;
 }
 
+.festival-edit {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 40%;
+    text-align: left;
+    border: 2px solid #4CAF50;  /* 밝은 초록색 테두리 추가 */
+    margin: 0 auto;
+}
+
 /*@keyframes shining {*/
 /*    100% {*/
 /*        left: 140%;*/
