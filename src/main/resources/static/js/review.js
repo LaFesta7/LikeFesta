@@ -54,6 +54,14 @@ function getReview() {
                         <button class="delete" onclick="alertDeletePost()">Delete</button>
                     </div>
                 </div>
+                <div class="comment-post-container-before"></div>
+                <div style="margin-top: 20px">
+                    <strong>Comments</strong>
+                </div>
+                <div id="comment-post" class="comment-post-container" style="margin-top: 20px">
+                    <textarea id="commentInput" name="commentInput" rows="2" required=""></textarea>
+                    <button type="submit" class="comment-post" onclick="postComment()">작성</button>
+                </div>
                 <div id="review-comment"></div>
                 `;
             $('#review-page').html(html);
@@ -121,6 +129,31 @@ function deleteReview() {
         error: function (err) {
             console.log('Error:', err);
             alert(err.statusMessage);
+        }
+    });
+}
+
+function postComment() {
+    const content = document.querySelector('#commentInput').value;
+
+    // DTO 객체 생성
+    const requestDto = {
+        content: content,
+    };
+
+    // 서버로 데이터를 전송
+    $.ajax({
+        url: `/api/festivals/${festivalId}/reviews/${reviewId}/comments`,
+        type: 'POST',
+        data: JSON.stringify(requestDto),
+        contentType: 'application/json',
+        success: function (data) {
+            alert(data.statusMessage);
+            getReview();
+        },
+        error: function (err) {
+            console.log('Error:', err);
+            alert(err.responseText.statusMessage);
         }
     });
 }
