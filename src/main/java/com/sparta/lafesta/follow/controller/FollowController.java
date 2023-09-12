@@ -41,7 +41,7 @@ public class FollowController {
     public ResponseEntity<List<SelectUserResponseDto>> selectFollowers(
             @Parameter(description = "권한 확인 및 조회 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
         @Parameter(description = "페이지 처리에 필요한 기본 설정")
-        @PageableDefault(size=20, sort="createdAt", direction = Direction.DESC) Pageable pageable
+        @PageableDefault(size=5, sort="createdAt", direction = Direction.DESC) Pageable pageable
         ){
         List<SelectUserResponseDto> results = followService.selectFollowers(userDetails, pageable);
         return ResponseEntity.ok().body(results);
@@ -52,7 +52,7 @@ public class FollowController {
     public ResponseEntity<List<SelectUserResponseDto>> selectFollowingUsers(
             @Parameter(description = "권한 확인 및 조회 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "페이지 처리에 필요한 기본 설정")
-            @PageableDefault(size=2, sort="createdAt", direction = Direction.DESC) Pageable pageable,
+            @PageableDefault(size=5) Pageable pageable,
             @Parameter(description = "No offset 페이지 넘기기에 필요한 기본 설정")
             @RequestParam(value = "lt", required = false)Long lt
     ){

@@ -49,6 +49,7 @@
     $(document).ready(
         function (){
             let lastFollowId = 0;
+
             loadFollow(lastFollowId);
 
         function loadFollow(lastFollowId) {
@@ -66,6 +67,7 @@
                     </li>
                 `;
                 }
+
                 if(lastFollowId == 0){
                     $('#followers').html(html);
                 }else{
@@ -74,13 +76,10 @@
 
                 lastFollowId = data[data.length - 1].id;
 
-                    $("#load-follow").click(function () {
-                        // if(lastFollowId < data.get(data.size() -1).followedBy){
-                        //     alert("마지막 목록입니다.");
-                        // }else {
-                                loadFollow(lastFollowId);
-                        // }
-                    });
+                const loadBtn = document.querySelector('#load-follow');
+                loadBtn.onclick = function () {
+                    loadFollow(lastFollowId)
+                }
 
                 $('.heart').click(function() {
                         const isFollowed = $(this).closest('li').hasClass('followed');
@@ -106,5 +105,6 @@
         });
         }
         });
+
 </script>
 </html>
