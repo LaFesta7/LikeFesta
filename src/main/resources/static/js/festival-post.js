@@ -131,10 +131,21 @@ function addTagInput() {
     input.id = `tagInput${tagInputCount}`;
     tagInputCount++;
 
-    // 컨테이너에 인풋 필드를 추가합니다.
+    // 삭제 버튼을 생성합니다.
+    const removeButton = document.createElement('button');
+    removeButton.textContent = 'x';
+
+    // 삭제 버튼을 클릭하면 해당 input 요소를 제거합니다.
+    removeButton.addEventListener('click', function () {
+        container.removeChild(input); // input 요소 제거
+        container.removeChild(removeButton); // 삭제 버튼 제거
+    });
+
+    // 컨테이너에 인풋 필드와 삭제 버튼을 추가합니다.
     container.insertBefore(input, document.getElementById('addTagInput')); // 추가 버튼 위에 삽입
+    container.insertBefore(removeButton, document.getElementById('addTagInput')); // 삭제 버튼도 추가 버튼 위에 삽입
 }
 
 function redirectFestivalMap() {
-    window.location.href = '/api/users/festivals-map';
+    window.location.href = `/api/users/festivals-map`;
 }
