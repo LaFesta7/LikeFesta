@@ -19,39 +19,77 @@ $(document).ready(function () {
             $('#adminPageLink').show();
         }
 
-        $.ajax({
-            url: '/api/users/followed-festivals',
-            type: 'GET',
-            success: function (data) {
-                console.log(data);
-                let html = '';
-                for (let i = 0; i <data.length; i++) { // Loop through each festival
-                    html += `
-                        <td>${data[i].title}</td>`;
-                };
-                $('#my-follow-festival').html(html);
-            },
-            error: function (err) {
-                console.log('Error:', err);
-            }
-        });
+        let lastFesFollowId = 0;
+        let lastFollowId = 0
 
-        $.ajax({
-            url: '/api/users/follows/followers',
-            type: 'GET',
-            success: function (data) {
-                console.log(data);
-                let html = '';
-                for (let i = 0; i <data.length; i++) { // Loop through each festival
-                    html += `
-                        <td>${data[i].username}</td>`;
-                };
-                $('#my-follow-list').html(html);
-            },
-            error: function (err) {
-                console.log('Error:', err);
-            }
-        });
+        loadFestivalFollow(lastFesFollowId);
+        loadFollower(lastFollowId);
+
+        function loadFestivalFollow(lastFesFollowId) {
+            $.ajax({
+                url: `/api/users/followed-festivals?lt=${lastFesFollowId}`,
+                type: 'GET',
+                success: function (data) {
+                    console.log(data);
+                    let html = '';
+                    for (let i = 0; i < data.length; i++) { // Loop through each festival
+                        html += `
+                        <li>
+                        <td>${data[i].title}</td>
+                        </li>`;
+                    }
+                    ;
+                    if(lastFesFollowId == 0){
+                        $('#my-follow-festival').html(html);
+                    }else{
+                        $('#my-follow-festival').append(html);
+                    }
+
+                    lastFesFollowId = data[data.length - 1].id;
+
+                    const loadBtn = document.querySelector('#load-festival-follow');
+                    loadBtn.onclick = function () {
+                        loadFestivalFollow(lastFesFollowId);
+                    }
+                },
+                error: function (err) {
+                    console.log('Error:', err);
+                }
+            });
+        }
+
+        function loadFollower(lastFollowId){
+            $.ajax({
+                url: `/api/users/follows/followers?lt=${lastFollowId}`,
+                type: 'GET',
+                success: function (data) {
+                    console.log(data);
+                    let html = '';
+                    for (let i = 0; i < data.length; i++) { // Loop through each festival
+                        html += `
+                        <li>
+                        <td>${data[i].username}</td>
+                        </li>`;
+                    }
+                    ;
+                    if(lastFollowId == 0){
+                        $('#my-follow-list').html(html);
+                    }else{
+                        $('#my-follow-list').append(html);
+                    }
+
+                    lastFollowId = data[data.length - 1].id;
+
+                    const loadBtn = document.querySelector('#load-follow');
+                    loadBtn.onclick = function () {
+                        loadFollower(lastFollowId);
+                    }
+                },
+                error: function (err) {
+                    console.log('Error:', err);
+                }
+            });
+        }
     }
 
     $.ajax({
