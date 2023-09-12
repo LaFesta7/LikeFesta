@@ -51,7 +51,7 @@ function getReview() {
                     <div class="like-button">${data.likeCnt}</div>
                     <div id="reviewUDContainer" class="edit-delete">
                         <a href="${apiUrl}/edit-page" class="edit">Edit</a>
-                        <button class="delete" onclick="alertDeletePost()">Delete</button>
+                        <button class="delete" onclick="alertDeleteReview()">Delete</button>
                     </div>
                 </div>
                 <div class="comment-post-container-before"></div>
@@ -90,12 +90,22 @@ function getComments() {
             console.log(data);
             let html = '';
             for (let i = 0; i <data.length; i++) {
+                // 현재 사용자의 이름과 댓글 작성자의 이름을 비교하여 수정 및 삭제 버튼의 가시성 설정
+                const isCurrentUser = userName === data[i].username;
                 html += `
-                        <div class="comment">
-                          <div class="comment-author" style="color: #5F5F5F; font-size: 12px">${data[i].userNickname}</div>
-                          <div class="comment-content" style="font-size: 16px">${data[i].content}</div>
+                    <div class="comment">
+                        <div class="comment-author" style="color: #5F5F5F; font-size: 12px">${data[i].userNickname}</div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <div class="comment-content" style="font-size: 16px">${data[i].content}</div>
+                            <div id="commentUDContainer" style="float: right; margin-top: 10px">
+                                ${isCurrentUser ? `
+                                    <a href="#" style="color: #5F5F5F; font-size: 14px" onclick="editComment(${data[i].id})">수정</a>
+                                    <a href="#" style="color: #5F5F5F; font-size: 14px; margin-left: 10px" onclick="alertDeleteComment(${data[i].id})">삭제</a>
+                                ` : ''}
+                            </div>
                         </div>
-                        `;
+                    </div>
+                `;
             }
             $('#review-comment').html(html);
         },
@@ -105,7 +115,7 @@ function getComments() {
     });
 }
 
-function alertDeletePost() {
+function alertDeleteReview() {
     // 경고창을 띄웁니다.
     const confirmation1 = confirm("리뷰를 삭제하시겠습니까?");
 
