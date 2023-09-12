@@ -71,6 +71,11 @@ public class ViewController {
         return "mypage-edit";
     }
 
+    @GetMapping("/users/withdrawal-page")
+    public String withdrawUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "withdrawal";
+    }
+
     @GetMapping("/festivals/{festivalId}/page")
     public String festivalPage(@PathVariable Long festivalId) {
         return "festival";

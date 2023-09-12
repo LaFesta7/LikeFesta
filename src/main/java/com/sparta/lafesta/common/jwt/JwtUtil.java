@@ -48,7 +48,7 @@ public class JwtUtil {
     // 토큰 만료시간
     private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
     //    private final long TOKEN_TIME = 60 * 1000L;
-    @Value("${JWT_SECRET_KEY}") // Base64 Encode 한 SecretKey
+    @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey
 
     private String secretKey; //application.properties에 선언되어 있는 값을 가져온다.
     private Key key;
@@ -97,9 +97,11 @@ public class JwtUtil {
     public String substringToken(String tokenValue) {
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(7);
+        } else {
+            return tokenValue;
         }
-        logger.error("Not Found Token");
-        throw new NullPointerException("Not Found Token");
+//        logger.error("Not Found Token");
+//        throw new NullPointerException("Not Found Token");
     }
 
     //5.JWT 검증

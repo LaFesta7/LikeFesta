@@ -11,6 +11,7 @@ import com.sparta.lafesta.festival.dto.FestivalResponseDto;
 import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.festival.event.FestivalCreatedEventPublisher;
 import com.sparta.lafesta.festival.repository.FestivalRepository;
+import com.sparta.lafesta.festival.repository.FestivalRepositoryCustom;
 import com.sparta.lafesta.like.festivalLike.entity.FestivalLike;
 import com.sparta.lafesta.like.festivalLike.repository.FestivalLikeRepository;
 import com.sparta.lafesta.notification.dto.ReminderDto;
@@ -44,6 +45,7 @@ public class FestivalServiceImpl implements FestivalService {
 
     //CRUD
     private final FestivalRepository festivalRepository;
+    private final FestivalRepositoryCustom festivalRepositoryCustom;
 
     //S3
     private final S3UploadService s3UploadService;
@@ -117,7 +119,6 @@ public class FestivalServiceImpl implements FestivalService {
     public FestivalResponseDto modifyFestival(Long festivalId, FestivalRequestDto requestDto,
                                               List<MultipartFile> files, User user) throws IOException {
         Festival festival = findFestival(festivalId);
-
         // 주최사는 본인이 작성한 글만 수정 가능
         if (user.getRole().getAuthority().equals("ROLE_ORGANIZER")
                 && !festival.getUser().getId().equals(user.getId())) {
@@ -129,7 +130,6 @@ public class FestivalServiceImpl implements FestivalService {
                 && festival.getUser().getRole().getAuthority().equals("ROLE_ORGANIZER")) {
             throw new UnauthorizedException("주최사가 작성한 글은 관리자 권한으로 수정할 수 없습니다.");
         }
-
         //첨부파일 변경
         if (files != null) {
             modifyFiles(festival, files);
@@ -137,14 +137,18 @@ public class FestivalServiceImpl implements FestivalService {
         //페스티벌 정보 변경
         festival.modify(requestDto);
 
-        //이전 태그 정보 삭제
-        deleteFestivalTag(festival);
-        //새로운 태그 생성 및 추가
-        createFestivalTag(festival, requestDto.getTagList());
+        List<Tag> oldTag = tagService.findTagByFestival(festival);
+        List<TagRequestDto> newTag = requestDto.getTagList();
+
+        if(!compareTags(oldTag, newTag)) {
+            //이전 태그 정보 삭제
+            deleteFestivalTag(festival);
+            //새로운 태그 생성 및 추가
+            createFestivalTag(festival, requestDto.getTagList());
+        }
 
         return new FestivalResponseDto(festival);
     }
-
 
     // 페스티벌 삭제
     @Override
@@ -170,7 +174,6 @@ public class FestivalServiceImpl implements FestivalService {
             tagService.deleteUnusedTag(festivalTag.getTag());
         }
     }
-
 
     // 페스티벌 좋아요 추가
     @Override
@@ -230,7 +233,15 @@ public class FestivalServiceImpl implements FestivalService {
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        return festivalRepository.findTop3Festival().stream()
+        return festivalRepositoryCustom.findTop3Festival().stream()
+            .map(FestivalResponseDto::new).toList();
+    }
+
+    //페스티벌 검색
+    @Override
+    @Transactional(readOnly = true)
+    public List<FestivalResponseDto> selectSearchedFestival(String keyword, Pageable pageable){
+        return festivalRepository.findByTitleContaining(keyword, pageable).stream()
             .map(FestivalResponseDto::new).toList();
     }
 
@@ -375,5 +386,27 @@ public class FestivalServiceImpl implements FestivalService {
             //사용되지 않는 태그는 삭제
             tagService.deleteUnusedTag(festivalTag.getTag());
         }
+    }
+
+    //태그 리스트가 이전과 동일한지 여부 확인
+    private boolean compareTags(List<Tag> oldTag, List<TagRequestDto> newTag){
+        int count = 0;
+        if(oldTag.size() == newTag.size()){
+            for(TagRequestDto tag : newTag){
+                for(Tag old: oldTag){
+                    if(old.getTitle().equals(tag.getTitle())){
+                        count +=1;
+                    }
+                }
+            }
+            System.out.println("count"+count);
+            System.out.println(newTag.size());
+            if(count == newTag.size()){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        return false;
     }
 }

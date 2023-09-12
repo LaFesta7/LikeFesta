@@ -75,6 +75,14 @@ public interface BadgeService {
     void createUserBadge(User user, Badge badge);
 
     /**
+     * 나의 뱃지 보유 목록 조회
+     * @param user       권한 확인
+     * @param pageable 페이징 정보
+     * @return 뱃지 보유 목록 조회 결과
+     */
+    List<UserBadgeResponseDto> selectMyBadges(User user, Pageable pageable);
+
+    /**
      * 유저 뱃지 보유 목록 조회
      * @param userId 조회활 유저 id
      * @param user       권한 확인
@@ -85,10 +93,9 @@ public interface BadgeService {
 
     /**
      * 유저 대표 뱃지 설정/해제
-     * @param userId 설정할 유저 id
      * @param badgeId 설정할 뱃지 id
      * @param user       권한 확인
      * @return 대표 뱃지 목록
      */
-    UserBadgeResponseDto modifyUserBadgeRepresentative(Long userId, Long badgeId, User user);
+    UserBadgeResponseDto modifyUserBadgeRepresentative(Long badgeId, User user);
 }
