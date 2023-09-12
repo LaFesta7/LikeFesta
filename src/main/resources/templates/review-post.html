@@ -10,11 +10,12 @@
     <link rel="icon" href="/images/logo1.png" type="image/x-icon">
 
     <link href="/css/slides.min.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" as="font" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
+    <link rel="stylesheet" as="font"
+          href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
     <link rel="stylesheet" href="/css/slides.css">
 
-<!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
-    <script src="/js/slides.js"></script>
+    <!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+<!--    <script src="/js/slides.js"></script>-->
     <script src="/js/jquery.min.js"></script>
     <script src="/js/plugins.js"></script>
 
@@ -80,27 +81,25 @@
 
 <!-- 제목과 내용 입력 칸, 첨부 파일 버튼, 글 작성 완료 버튼 추가 시작 -->
 <div class="post-form">
-    <form action="#" method="post" enctype="multipart/form-data">
-        <div>
-            <label for="titleInput">제목</label>
-            <input type="text" id="titleInput" name="titleInput" required>
-        </div>
+    <div>
+        <label for="titleInput">제목</label>
+        <input type="text" id="titleInput" name="titleInput" required>
+    </div>
 
-        <div>
-            <label for="contentInput">내용</label>
-            <textarea id="contentInput" name="contentInput" rows="4" required></textarea>
-        </div>
+    <div>
+        <label for="contentInput">내용</label>
+        <textarea id="contentInput" name="contentInput" rows="4" required></textarea>
+    </div>
 
-        <div>
-            <label for="imageInput">첨부파일</label>
-            <input type="file" id="imageInput" name="imageInput">
-            <img id="preview-image" width="200" alt=""><br><br>
-        </div>
+    <div>
+        <label for="imageInput">첨부파일</label>
+        <input type="file" id="imageInput" name="imageInput">
+        <img id="preview-image" width="200" alt=""><br><br>
+    </div>
 
-        <div>
-            <button type="submit" onclick="postReview()">작성완료</button>
-        </div>
-    </form>
+    <div>
+        <button type="submit" onclick="postReview()">작성완료</button>
+    </div>
 </div>
 <script src="/js/review-post.js"></script>
 </body>
