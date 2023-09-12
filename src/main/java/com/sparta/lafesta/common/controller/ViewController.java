@@ -90,6 +90,21 @@ public class ViewController {
         return "festival-edit";
     }
 
+    @GetMapping("/festival-requests/{festivalRequestId}/page")
+    public String festivalRequestPage() {
+        return "festival-request";
+    }
+
+    @GetMapping("/festival-requests/post-page")
+    public String postFestivalRequest(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "festival-request-post";
+    }
+
+    @GetMapping("/festival-requests/{festivalRequestId}/edit-page")
+    public String editFestivalRequest(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "festival-request-edit";
+    }
+
     @GetMapping("/festivals/{fesitvalId}/reviews/{riviewId}/page")
     public String reviewPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "review";
