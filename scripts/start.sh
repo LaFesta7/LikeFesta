@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PROJECT_ROOT="/home/ubuntu/app"
-JAR_FILE="$PROJECT_ROOT/build/libs/Lafesta-0.0.1-SNAPSHOT.jar"
+JAR_FILE="$PROJECT_ROOT/build/libs/LaFesta-0.0.1-SNAPSHOT.jar"
 
 APP_LOG="$PROJECT_ROOT/application.log"
 ERROR_LOG="$PROJECT_ROOT/error.log"
