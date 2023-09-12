@@ -37,6 +37,7 @@
     <ul id="followers">
         <!-- 팔로워 이름과 버튼이 여기에 자동으로 채워집니다 -->
     </ul>
+    <button><a id="load-follow" class="load-follow">more</a></button>
     <div id="status-window">
         <h3>LAFESTA 최고의</h3>
         <h3>인플루언서는 누구?</h3>
@@ -45,9 +46,15 @@
 </div>
 <script src="/js/follower.js"></script>
 <script>
-    $(document).ready(function () {
+    $(document).ready(
+        function (){
+            let lastFollowId = 0;
+
+            loadFollow(lastFollowId);
+
+        function loadFollow(lastFollowId) {
         $.ajax({
-            url: `/api/users/follows/followings`,
+            url: `/api/users/follows/followings?lt=${lastFollowId}`,
             type: 'GET',
             success: function (data) {
                 console.log(data);
@@ -60,7 +67,19 @@
                     </li>
                 `;
                 }
-                $('#followers').html(html);
+
+                if(lastFollowId == 0){
+                    $('#followers').html(html);
+                }else{
+                $('#followers').append(html);
+                }
+
+                lastFollowId = data[data.length - 1].id;
+
+                const loadBtn = document.querySelector('#load-follow');
+                loadBtn.onclick = function () {
+                    loadFollow(lastFollowId)
+                }
 
                 $('.heart').click(function() {
                         const isFollowed = $(this).closest('li').hasClass('followed');
@@ -84,6 +103,8 @@
                 console.log('Error:', err);
             }
         });
-    });
+        }
+        });
+
 </script>
 </html>

@@ -64,26 +64,26 @@ public class FollowService {
 
     //유저 팔로워 목록 조회 - 나를 팔로우 하는 유저
     @Transactional(readOnly = true)
-    public List<SelectUserResponseDto> selectFollowers(UserDetailsImpl userDetails, Pageable pageable){
+    public List<SelectUserResponseDto> selectFollowers(UserDetailsImpl userDetails, Pageable pageable, Long lastFollowId){
         User followedUser = userDetails.getUser();
 
         if(followedUser == null){
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        return followRepositoryCustom.findAllFollowers(userDetails.getUser(), pageable);
+        return followRepositoryCustom.findAllFollowers(userDetails.getUser(), pageable, lastFollowId);
     }
 
 //    유저 팔로잉 목록 조회 - 내가 팔로우 하는 유저
     @Transactional(readOnly = true)
-    public List<SelectUserResponseDto> selectFollowingUsers(UserDetailsImpl userDetails, Pageable pageable){
+    public List<SelectUserResponseDto> selectFollowingUsers(UserDetailsImpl userDetails, Pageable pageable, Long lastFollowId){
         User follower = userDetails.getUser();
 
         if(follower == null){
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        return followRepositoryCustom.findAllFollowings(userDetails.getUser(), pageable);
+        return followRepositoryCustom.findAllFollowings(userDetails.getUser(), pageable, lastFollowId);
     }
 
     //유저 팔로우 취소
@@ -136,14 +136,14 @@ public class FollowService {
 
     //페스티벌 팔로우 목록 조회
     @Transactional(readOnly = true)
-    public List<FestivalResponseDto> selectFollowingFestivals(UserDetailsImpl userDetails, Pageable pageable){
+    public List<FestivalResponseDto> selectFollowingFestivals(UserDetailsImpl userDetails, Pageable pageable, Long lastFollow){
         User followingUser = userDetails.getUser();
 
         if(followingUser == null){
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        return followRepositoryCustom.findAllFollowFestival(userDetails.getUser(), pageable);
+        return followRepositoryCustom.findAllFollowFestival(userDetails.getUser(), pageable, lastFollow);
     }
 
     //페스티벌 팔로우 취소
