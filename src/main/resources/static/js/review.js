@@ -31,8 +31,9 @@ function parseJwtPayload(token) {
 }
 
 function getReview() {
+    const apiUrl = `/api/festivals/${festivalId}/reviews/${reviewId}`;
     $.ajax({
-        url: `/api/festivals/${festivalId}/reviews/${reviewId}`,
+        url: apiUrl,
         type: 'GET',
         success: function (data) {
             console.log(data);
@@ -49,7 +50,7 @@ function getReview() {
                 <div class="actions">
                     <div class="like-button">${data.likeCnt}</div>
                     <div id="reviewUDContainer" class="edit-delete">
-                        <a href="review-edit.html" class="edit">Edit</a>
+                        <a href="${apiUrl}/edit-page" class="edit">Edit</a>
                         <button class="delete" onclick="alertDeletePost()">Delete</button>
                     </div>
                 </div>

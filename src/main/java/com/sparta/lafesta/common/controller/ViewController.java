@@ -100,6 +100,11 @@ public class ViewController {
         return "review-post";
     }
 
+    @GetMapping("/festivals/{fesitvalId}/reviews/{riviewId}/edit-page")
+    public String editReview(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "review-edit";
+    }
+
     @GetMapping("/users/notification-page")
     public String notificationPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "notification";
