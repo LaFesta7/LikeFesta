@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>LAFESTA 리뷰작성</title>
+    <link rel="icon" href="/images/logo1.png" type="image/x-icon">
+
+    <link href="/css/slides.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" as="font" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
+    <link rel="stylesheet" href="/css/slides.css">
+
+    <script src="/js/slides.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/plugins.js"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .post-form {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-form label {
+            font-weight: 500;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .post-form input, .post-form textarea, .post-form button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .post-form input:focus, .post-form textarea:focus {
+            border-color: #007BFF;
+            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+        }
+
+        .post-form button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .post-form button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body class="background" style="background-image:url(/images/background/img-12.jpeg)">
+
+<div class="left">
+    <a href="/" title="Slides Framework">
+        <img src="/images/logo-s1.png" width="270" height="240" alt="lafesta logo">
+    </a>
+</div>
+
+<!-- 제목과 내용 입력 칸, 첨부 파일 버튼, 글 작성 완료 버튼 추가 시작 -->
+<div class="post-form">
+    <form action="#" method="post" enctype="multipart/form-data">
+        <div>
+            <label for="title">제목</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+
+        <div>
+            <label for="content">내용</label>
+            <textarea id="content" name="content" rows="4" required></textarea>
+        </div>
+
+        <div>
+            <label for="file">첨부파일</label>
+            <input type="file" id="file" name="file">
+        </div>
+
+        <div>
+            <button type="submit">작성완료</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

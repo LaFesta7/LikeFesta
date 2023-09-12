@@ -1,0 +1,68 @@
+
+.festival-header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.festival-content {
+    background-color: #FFFFFF;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.festival-image {
+    width: 100%;
+}
+
+.festival-description {
+    margin-top: 20px;
+}
+
+.reviews {
+    margin-top: 40px;
+}
+
+.festival-wrapper {
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    width: 50%;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8); /* 약간 투명한 배경색 */
+    display: flex;
+}
+
+.festival-header {
+    text-align: center;
+    margin-bottom: 20px;  /* 헤더와 컨텐트 사이의 간격 */
+}
+
+.festival-content {
+    /* 기존 스타일에서 일부 변경 사항 제거 */
+    width: 100%;
+    flex: 2; /* flex-grow: 기존의 wrapper 내용은 더 큰 공간 차지 */
+    margin-right: 20px; /* 리뷰 영역과의 간격 */
+}
+
+.festival-image {
+    width: 100%; /* 이미지 최대 너비 설정 */
+    height: auto; /* 자동 높이 */
+    display: block;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* 리뷰 예시 스타일 */
+.review-item {
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.reviews {
+    flex: 1; /* flex-grow: 리뷰 영역은 상대적으로 작은 공간 차지 */
+}

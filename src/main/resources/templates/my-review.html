@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>LAFESTA</title>
+    <link rel="icon" href="/images/logo1.png" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/login.css">
+    <link href="/css/slides.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" as="font"
+          href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
+    <link rel="stylesheet" href="/css/slides.css">
+
+    <script src="/js/slides.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/plugins.js"></script>
+</head>
+
+<body class="background" style="background-image:url(/images/background/img-12.jpeg)"></body>
+
+<div class="left">
+    <a href="/" title="Slides Framework">
+        <img src="/images/logo-s1.png" width="270" height="240" alt="lafesta logo">
+    </a>
+</div>
+
+<div class="login-box">
+    <h2>내 리뷰 임시저장</h2>
+    <form>
+        <div class="user-box">
+            <input type="text" name="" required="">
+            <label>Username</label>
+        </div>
+        <div class="user-box">
+            <input type="password" name="" required="">
+            <label>Password</label>
+        </div>
+        <div class="user-box">
+            <input type="email" name="" required="">
+            <label>Email</label>
+            <button type="button" id="emailConfirmBtn">확인</button>
+        </div>
+        <!-- 이메일 인증키 입력칸 (기본적으로 숨김) -->
+        <div class="user-box" id="emailConfirmBox" style="display: none;">
+            <input type="text" name="emailConfirmKey" required="">
+            <label>이메일 인증키</label>
+            <button type="button" id="emailConfirmKeyBtn">확인</button>
+        </div>
+        <div class="user-box">
+            <input type="password" name="" required="">
+            <label>Nickname</label>
+        </div>
+        <!-- 사용자 유형 선택 토글 -->
+        <div class="user-box">
+            <select id="userType">
+                <option value="user">일반 사용자</option>
+                <option value="admin">관리자</option>
+                <option value="organizer">주최사</option>
+            </select>
+        </div>
+        <a href="#">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            Submit
+        </a>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // 이메일 확인 버튼 클릭 이벤트
+        $("#emailConfirmBtn").click(function () {
+            // 여기에 이메일 인증 로직을 추가
+
+            // 인증키 입력칸을 표시
+            $("#emailConfirmBox").show();
+        });
+    });
+</script>
+</html>

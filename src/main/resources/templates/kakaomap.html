@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>LAFESTA</title>
+    <link rel="icon" href="/images/logo1.png" type="image/x-icon">
+
+    <link href="/css/slides.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" as="font"
+          href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
+    <link rel="stylesheet" href="/css/slides.css">
+    <link rel="stylesheet" href="/css/mapStyle.css">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+    <script src="/js/slides.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/plugins.js"></script>
+    <script src="/js/kakaoMap.js"></script>
+</head>
+
+<body class="background"></body>
+
+<div class="left">
+    <a href="/" title="Slides Framework">
+        <img src="/images/logo-s1.png" width="270" height="240" alt="lafesta logo">
+    </a>
+</div>
+
+<div style="margin-top: -100px; margin-right: 20px; text-align: right">
+    <a class="button" id="festival-post-button" href="javascript:void(0);">
+        페스티벌 작성
+    </a>
+</div>
+
+<div class="map_wrap">
+    <div id="map" style="width:100%;height:88%;position:relative;overflow:hidden;"></div>
+
+    <div id="menu_wrap" class="bg_white">
+        <div class="option">
+            <div>
+                <form onsubmit="searchPlaces(); return false;">
+                    키워드 : <input name="keyword" type="text" value="워터밤 페스티벌" id="keyword" size="15">
+                    <button type="submit">검색하기</button>
+                </form>
+            </div>
+        </div>
+        <hr>
+        <ul id="placesList"></ul>
+        <div id="pagination"></div>
+        <div id="clickLatlng"></div>
+    </div>
+</div>
+
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b3cc7fb9af6a14c0ff4e82df164f3740"></script>
+
+<script>
+    $(document).ready(function () {
+        const auth = getToken();
+    });
+
+    // 쿠키에서 인증 토큰 가져오기
+    function getToken() {
+        let auth = Cookies.get('Authorization');
+
+        if (auth === undefined) {
+            return '';
+        }
+        return auth;
+    }
+
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+        mapOption = {
+            center: new kakao.maps.LatLng(37.5171395, 127.0708922), // 지도의 중심좌표
+            level: 3 // 지도의 확대 레벨
+        };
+
+    // 지도를 생성합니다
+    var map = new kakao.maps.Map(mapContainer, mapOption);
+
+    // 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
+    var mapTypeControl = new kakao.maps.MapTypeControl();
+
+    // 지도에 컨트롤을 추가해야 지도위에 표시됩니다
+    // kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
+    map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+
+    // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
+    var zoomControl = new kakao.maps.ZoomControl();
+    map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+
+    var markers = [];
+    var currentMarker = null;
+
+    var marker = new kakao.maps.Marker({
+        position: map.getCenter()
+    });
+
+    marker.setMap(map);
+
+    let latlng;
+    let lat;
+    let lng;
+
+    kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
+        // 클릭한 위도, 경도 정보를 가져옵니다
+        latlng = mouseEvent.latLng;
+        lat = latlng.getLat(); // 위도
+        lng = latlng.getLng(); // 경도
+
+        // 이전에 생성된 마커가 없는 경우에만 새로운 마커를 생성합니다
+        if (!currentMarker) {
+            currentMarker = new kakao.maps.Marker({
+                position: latlng
+            });
+            currentMarker.setMap(map);
+        } else {
+            // 현재 마커가 있는 경우, 마커를 이동시킵니다
+            currentMarker.setPosition(latlng);
+        }
+    });
+
+    document.getElementById('festival-post-button').addEventListener('click', function () {
+        // 확인 대화상자 표시
+        var confirmation = confirm('해당 위치에 페스티벌을 작성하시겠습니까?');
+
+        // 사용자가 "확인"을 선택한 경우
+        if (confirmation) {
+            // 위에서 얻은 위도와 경도 정보를 사용하여 URL을 동적으로 생성
+            var url = `/api/festivals/post-page?lat=${lat}&lng=${lng}`;
+
+            // 생성된 URL로 이동
+            window.location.href = url;
+        }
+        // "취소"를 선택한 경우 아무 동작도 하지 않음
+    });
+
+    // 커스텀 오버레이는 아래와 같이 사용자가 자유롭게 컨텐츠를 구성하고 이벤트를 제어할 수 있기 때문에
+    // 별도의 이벤트 메소드를 제공하지 않습니다
+    var content = '<div class="wrap">' +
+        '    <div class="info">' +
+        '        <div class="title">' +
+        '            워터밤 페스티벌' +
+        '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' +
+        '        </div>' +
+        '        <div class="body">' +
+        '            <div class="img">' +
+        '                <img src="/images/maplogo.jpg" width="73" height="70">' +
+        '           </div>' +
+        '            <div class="desc">' +
+        '                <div class="ellipsis">서울 어딘가 경기장에서</div>' +
+        '                <div class="jibun ellipsis">(우) 05292 (지번) 스파르타 게더게더</div>' +
+        '                <div><a href="http://waterbombfestival.com/" target="_blank" class="link">홈페이지</a><a> / </a><a href="/api/festivals/page" target="_blank" class="link">축제 정보</a></div>' +
+        '            </div>' +
+        '        </div>' +
+        '    </div>' +
+        '</div>';
+
+    // 마커 위에 커스텀오버레이를 표시합니다
+    // 마커를 중심으로 커스텀 오버레이를 표시하기위해 CSS를 이용해 위치를 설정했습니다
+    var overlay = new kakao.maps.CustomOverlay({
+        content: content,
+        map: map,
+        position: marker.getPosition()
+    });
+
+
+    // 커스텀 오버레이를 닫기 위해 호출되는 함수입니다
+    function closeOverlay() {
+        overlay.setMap(null);
+    }
+
+    // 장소 검색 객체를 생성합니다
+    var ps = new kakao.maps.services.Places();
+
+    // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
+    var infowindow = new kakao.maps.InfoWindow({zIndex: 1});
+
+
+    // 키워드로 장소를 검색합니다
+    searchPlaces();
+
+    // 키워드 검색을 요청하는 함수입니다
+    function searchPlaces() {
+
+        var keyword = document.getElementById('keyword').value;
+
+        if (!keyword.replace(/^\s+|\s+$/g, '')) {
+            alert('키워드를 입력해주세요!');
+            return false;
+        }
+
+        // 장소검색 객체를 통해 키워드로 장소검색을 요청합니다
+        ps.keywordSearch(keyword, placesSearchCB);
+    }
+
+    // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
+    function placesSearchCB(data, status, pagination) {
+        if (status === kakao.maps.services.Status.OK) {
+
+            // 정상적으로 검색이 완료됐으면
+            // 검색 목록과 마커를 표출합니다
+            displayPlaces(data);
+
+            // 페이지 번호를 표출합니다
+            displayPagination(pagination);
+
+        } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+
+            alert('검색 결과가 존재하지 않습니다.');
+            return;
+
+        } else if (status === kakao.maps.services.Status.ERROR) {
+
+            alert('검색 결과 중 오류가 발생했습니다.');
+            return;
+
+        }
+    }
+
+    // 검색 결과 목록과 마커를 표출하는 함수입니다
+    function displayPlaces(places) {
+
+        var listEl = document.getElementById('placesList'),
+            menuEl = document.getElementById('menu_wrap'),
+            fragment = document.createDocumentFragment(),
+            bounds = new kakao.maps.LatLngBounds(),
+            listStr = '';
+
+        // 검색 결과 목록에 추가된 항목들을 제거합니다
+        removeAllChildNods(listEl);
+
+        // 지도에 표시되고 있는 마커를 제거합니다
+        removeMarker();
+
+        for (var i = 0; i < places.length; i++) {
+
+            // 마커를 생성하고 지도에 표시합니다
+            var placePosition = new kakao.maps.LatLng(places[i].y, places[i].x),
+                marker = addMarker(placePosition, i),
+                itemEl = getListItem(i, places[i]); // 검색 결과 항목 Element를 생성합니다
+
+            // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+            // LatLngBounds 객체에 좌표를 추가합니다
+            bounds.extend(placePosition);
+
+            // 마커와 검색결과 항목에 mouseover 했을때
+            // 해당 장소에 인포윈도우에 장소명을 표시합니다
+            // mouseout 했을 때는 인포윈도우를 닫습니다
+            (function (marker, title) {
+                kakao.maps.event.addListener(marker, 'mouseover', function () {
+                    displayInfowindow(marker, title);
+                });
+
+                kakao.maps.event.addListener(marker, 'mouseout', function () {
+                    infowindow.close();
+                });
+
+                itemEl.onmouseover = function () {
+                    displayInfowindow(marker, title);
+                };
+
+                itemEl.onmouseout = function () {
+                    infowindow.close();
+                };
+            })(marker, places[i].place_name);
+
+            fragment.appendChild(itemEl);
+        }
+
+        // 검색결과 항목들을 검색결과 목록 Element에 추가합니다
+        listEl.appendChild(fragment);
+        menuEl.scrollTop = 0;
+
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+        map.setBounds(bounds);
+    }
+
+    // 검색결과 항목을 Element로 반환하는 함수입니다
+    function getListItem(index, places) {
+
+        var el = document.createElement('li'),
+            itemStr = '<span class="markerbg marker_' + (index + 1) + '"></span>' +
+                '<div class="info">' +
+                '   <h5>' + places.place_name + '</h5>';
+
+        if (places.road_address_name) {
+            itemStr += '    <span>' + places.road_address_name + '</span>' +
+                '   <span class="jibun gray">' + places.address_name + '</span>';
+        } else {
+            itemStr += '    <span>' + places.address_name + '</span>';
+        }
+
+        itemStr += '  <span class="tel">' + places.phone + '</span>' +
+            '</div>';
+
+        el.innerHTML = itemStr;
+        el.className = 'item';
+
+        return el;
+    }
+
+    // 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
+    function addMarker(position, idx, title) {
+        var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png', // 마커 이미지 url, 스프라이트 이미지를 씁니다
+            imageSize = new kakao.maps.Size(36, 37),  // 마커 이미지의 크기
+            imgOptions = {
+                spriteSize: new kakao.maps.Size(36, 691), // 스프라이트 이미지의 크기
+                spriteOrigin: new kakao.maps.Point(0, (idx * 46) + 10), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
+                offset: new kakao.maps.Point(13, 37) // 마커 좌표에 일치시킬 이미지 내에서의 좌표
+            },
+            markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
+            marker = new kakao.maps.Marker({
+                position: position, // 마커의 위치
+                image: markerImage
+            });
+
+        markers.push(marker);  // 배열에 생성된 마커를 추가합니다
+
+        return marker;
+    }
+
+    // 지도 위에 표시되고 있는 마커를 모두 제거합니다
+    function removeMarker() {
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(null);
+        }
+        markers = [];
+    }
+
+    // 검색결과 목록 하단에 페이지번호를 표시는 함수입니다
+    function displayPagination(pagination) {
+        var paginationEl = document.getElementById('pagination'),
+            fragment = document.createDocumentFragment(),
+            i;
+
+        // 기존에 추가된 페이지번호를 삭제합니다
+        while (paginationEl.hasChildNodes()) {
+            paginationEl.removeChild(paginationEl.lastChild);
+        }
+
+        for (i = 1; i <= pagination.last; i++) {
+            var el = document.createElement('a');
+            el.href = "#";
+            el.innerHTML = i;
+
+            if (i === pagination.current) {
+                el.className = 'on';
+            } else {
+                el.onclick = (function (i) {
+                    return function () {
+                        pagination.gotoPage(i);
+                    }
+                })(i);
+            }
+
+            fragment.appendChild(el);
+        }
+        paginationEl.appendChild(fragment);
+    }
+
+    // 검색결과 목록 또는 마커를 클릭했을 때 호출되는 함수입니다
+    // 인포윈도우에 장소명을 표시합니다
+    function displayInfowindow(marker, title) {
+        var content = '<div style="padding:5px;z-index:1;">' + title + '</div>';
+
+        infowindow.setContent(content);
+        infowindow.open(map, marker);
+    }
+
+    // 검색결과 목록의 자식 Element를 제거하는 함수입니다
+    function removeAllChildNods(el) {
+        while (el.hasChildNodes()) {
+            el.removeChild(el.lastChild);
+        }
+    }
+</script>
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title>LAFESTA Post</title>
+  <link rel="icon" href="/images/logo1.png" type="image/x-icon">
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
+  <link rel="stylesheet" href="/css/post-detail.css">
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+</head>
+<body>
+
+<div id="review-page" class="post-container">
+  <div  class="post-header">
+    <div class="post-title"><!--글 제목--></div>
+    <div class="post-meta"><!--게시글 작성자--></div>
+    <div class="post-meta"><!--글 작성시간--></div>
+  </div >
+  <img src="/images/best2.jpg" alt="Review Image" class="post-image">
+  <div class="post-content">
+    <!--내용-->
+  </div>
+  <div class="actions">
+    <div class="like-button"><!--좋아요--></div>
+    <div class="edit-delete">
+      <a href="review-edit.html" class="edit">Edit</a>
+      <button class="delete" onclick="deletePost()">Delete</button>
+    </div>
+  </div>
+  <div id="review-comment" class="comments-section">
+    <div class="comment">
+      <div class="comment-author"><!--댓글작성자 이름--></div>
+      <div class="comment-content"><!--댓글 내용--></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function deletePost() {
+    var r = confirm("포스트를 삭제하시겠습니까?");
+    if (r == true) {
+      window.location.href = "index.html";
+    }
+  }
+</script>
+<script src="/js/review-post.js"></script>
+</body>
+</html>

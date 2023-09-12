@@ -1,0 +1,83 @@
+form {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 40%;
+    text-align: left;
+    border: 2px solid #4CAF50;  /* 밝은 초록색 테두리 추가 */
+    margin: 0 auto;
+}
+
+body {
+    /* 기존 스타일 유지하면서 아래의 스타일 추가 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* 높이를 화면 높이만큼 설정 */
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="datetime-local"],
+input[type="url"],
+textarea,
+input[type="file"] {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 2px solid #4CAF50;  /* 밝은 초록색 테두리 추가 */
+    border-radius: 5px;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    background: none;  /* 배경색 제거 */
+}
+
+input[type="text"]:focus,
+input[type="datetime-local"]:focus,
+input[type="url"]:focus,
+textarea:focus,
+input[type="file"]:focus {
+    box-shadow: 0 0 10px #4CAF50;  /* 초록색 포커스 효과 */
+    transform: scale(1.05);
+}
+
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+    box-shadow: 0 0 10px #4CAF50;  /* 초록색 호버 효과 */
+}
+
+input[type="submit"]:before {
+    content: '';
+    display: block;
+    position: absolute;
+    background: rgba(255,255,255,0.5);
+    width: 60px;
+    height: 100%;
+    left: -90px;
+skewX(-45deg);
+    animation: shining 1.5s infinite;
+}
+
+/*@keyframes shining {*/
+/*    100% {*/
+/*        left: 140%;*/
+/*    }*/
+/*}*/
