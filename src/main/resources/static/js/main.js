@@ -271,8 +271,8 @@ function getRank() {
             // 데이터를 슬라이더에 동적으로 추가
             for (let i = 0; i < data.length; i++) {
                 const slide = `
-                <div class="rank" onclick="moveFestival(data[i].id)">
-                    <img class="wide" src="${data[i].files[0].uploadFileUrl}" alt=""/>
+                <div class="rank" onclick="moveFestival(${data[i].id})">
+                    <img class="wide" src="${data[i].files[0].uploadFileUrl}" alt="">
                     <strong id="rank${data[i].id}" style="font-size: 30px; color: white; background-color: #5F5F5F; margin-left: 10px">${i + 1}. ${data[i].title}</strong>
                 </div>
             `;
@@ -303,7 +303,7 @@ function getRank() {
             // 데이터를 슬라이더에 동적으로 추가
             for (let i = 0; i < data.length; i++) {
                 const slide = `
-                <div class="rank" onclick="moveReview(data[i].festivalId, data[i].id)">
+                <div class="rank" onclick="moveReview(${data[i].festivalId}, ${data[i].id})">
                     <img class="wide" src="${data[i].files[0].uploadFileUrl}" alt=""/>
                     <strong id="rank${data[i].id}" style="font-size: 30px; color: white; background-color: #5F5F5F; margin-left: 10px">${i + 1}. ${data[i].festivalTitle} : ${data[i].title}</strong>
                 </div>
@@ -335,7 +335,7 @@ function getRank() {
             // 데이터를 슬라이더에 동적으로 추가
             for (let i = 0; i < data.length; i++) {
                 const slide = `
-                <div class="rank" onclick="moveProfile(data[i].id)">
+                <div class="rank" onclick="moveProfile(${data[i].id})">
                     <img class="wide" src="${data[i].files[0].uploadFileUrl}" alt=""/>
                     <strong id="rank${data[i].id}" style="font-size: 30px; color: white; background-color: #5F5F5F; margin-left: 10px">${i + 1}. ${data[i].nickname}</strong>
                 </div>
@@ -357,11 +357,11 @@ function moveFestival(festivalId) {
 }
 
 function moveReview(festivalId, reviewId) {
-    window.location.href = `/festivals/${festivalId}/reviews/${reviewId}/page`;
+    window.location.href = `/api/festivals/${festivalId}/reviews/${reviewId}/page`;
 }
 
 function moveProfile(userId) {
-    window.location.href = `/users/${userId}/profile-page`;
+    window.location.href = `/api/users/${userId}/profile-page`;
 }
 
 function formatDate(serverDate) {
