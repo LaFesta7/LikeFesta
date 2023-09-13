@@ -5,6 +5,7 @@ import com.sparta.lafesta.badge.dto.BadgeResponseDto;
 import com.sparta.lafesta.badge.dto.UserBadgeResponseDto;
 import com.sparta.lafesta.badge.entity.Badge;
 import com.sparta.lafesta.user.entity.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,7 +35,7 @@ public interface BadgeService {
      * @param pageable 페이징 정보
      * @return 뱃지 전체 조회 결과
      */
-    List<BadgeResponseDto> selectBadges(User user, Pageable pageable);
+    Page<BadgeResponseDto> selectBadges(User user, Pageable pageable);
 
     /**
      * 뱃지 수정

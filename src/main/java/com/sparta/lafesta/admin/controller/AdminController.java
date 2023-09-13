@@ -13,14 +13,13 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -32,12 +31,12 @@ public class AdminController {
 
     @GetMapping("/users/organizer-requests")
     @Operation(summary = "주최사 가입 인증 요청 목록 조회", description = "주최사 가입 인증 요청한 목록을 전체 조회합니다.")
-    public ResponseEntity<List<OrganizerResponseDto>> selectOrganizerRequests(
+    public ResponseEntity<Page<OrganizerResponseDto>> selectOrganizerRequests(
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "페이지 처리에 필요한 기본 설정")
             @PageableDefault(size=10, sort="id") Pageable pageable
     ) {
-        List<OrganizerResponseDto> results = adminService.selectOrganizerRequests(userDetails.getUser(), pageable);
+        Page<OrganizerResponseDto> results = adminService.selectOrganizerRequests(userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(results);
     }
 
@@ -53,12 +52,12 @@ public class AdminController {
 
     @GetMapping("/festival-requests")
     @Operation(summary = "페스티벌 게시 요청 미승인 목록 조회", description = "페스티벌 게시 요청 미승인 목록을 조회합니다.")
-    public ResponseEntity<List<FestivaRequestlResponseDto>> selectFestivalRequestNotAdminApproval(
+    public ResponseEntity<Page<FestivaRequestlResponseDto>> selectFestivalRequestNotAdminApproval(
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "페이지 처리에 필요한 기본 설정")
             @PageableDefault(size=10, sort="createdAt") Pageable pageable
     ) {
-        List<FestivaRequestlResponseDto> results = adminService.selectFestivalRequestNotAdminApproval(userDetails.getUser(), pageable);
+        Page<FestivaRequestlResponseDto> results = adminService.selectFestivalRequestNotAdminApproval(userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(results);
     }
 
@@ -74,12 +73,12 @@ public class AdminController {
 
     @GetMapping("/users")
     @Operation(summary = "전체 유저 목록 조회", description = "전체 유저 목록을 조회합니다.")
-    public ResponseEntity<List<UserInfoResponseDto>> selectUsers(
+    public ResponseEntity<Page<UserInfoResponseDto>> selectUsers(
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "페이지 처리에 필요한 기본 설정")
             @PageableDefault(size=10, sort="id") Pageable pageable
     ) {
-        List<UserInfoResponseDto> results = adminService.selectUsers(userDetails.getUser(), pageable);
+        Page<UserInfoResponseDto> results = adminService.selectUsers(userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(results);
     }
 
