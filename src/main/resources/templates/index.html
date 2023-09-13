@@ -15,6 +15,12 @@
     <script src="/js/slides.min.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
 
+    <!-- Slick Slider JavaScript -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <!-- Slick Slider CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+
     <link href="/css/slides.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" as="font"
           href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
@@ -158,17 +164,20 @@
                             <ul class="slider animated margin-top-4" data-slider-id="60-1">
                                 <li class="selected fromCenter">
                                     <div class="popupTrigger videoThumbnail shadow rounded" data-popup-id="">
-                                        <img id="myButton3" class="wide" src="/images/best1.jpg" alt=""/>
+                                        <div id="festivalRank"></div>
+<!--                                        페스티벌 랭크 이미지-->
                                     </div>
                                 </li>
                                 <li class="fromCenter">
                                     <div class="popupTrigger videoThumbnail shadow rounded" data-popup-id="">
-                                        <img id="myButton4" class="wide" src="/images/best2.jpg" alt=""/>
+                                        <div id="reviewRank"></div>
+<!--                                       리뷰 랭크 이미지-->
                                     </div>
                                 </li>
                                 <li class="fromCenter">
                                     <div class="popupTrigger videoThumbnail shadow rounded" data-popup-id="">
-                                        <img id="myButton5" class="wide" src="/images/best3.png" alt=""/>
+                                        <div id="userRank"></div>
+<!--                                        유저 랭크 이미지-->
                                     </div>
                                 </li>
                             </ul>

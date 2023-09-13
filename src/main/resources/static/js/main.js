@@ -125,6 +125,8 @@ $(document).ready(function () {
 
     let pageNum = 0;
     loadFestivals(pageNum);
+
+    getRank();
 });
 
 function loadFestivals(pageNum) {
@@ -248,6 +250,118 @@ async function moveAdminPage() {
     } catch (error) {
         console.error(error);
     }
+}
+
+// 랭킹 가져오기
+function getRank() {
+    $.ajax({
+        url: `/api/festivals/rank`,
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+
+            // 이미지 슬라이더를 초기화
+            $('#festivalRank').slick({
+                infinite: true, // 무한 루프
+                slidesToShow: 1, // 한 번에 보여질 슬라이드 개수 (이미지 하나만 보이도록 설정)
+                autoplay: true, // 자동 재생
+                autoplaySpeed: 3000 // 자동 재생 속도 (3초마다 전환)
+            });
+
+            // 데이터를 슬라이더에 동적으로 추가
+            for (let i = 0; i < data.length; i++) {
+                const slide = `
+                <div class="rank" onclick="moveFestival(data[i].id)">
+                    <img class="wide" src="${data[i].files[0].uploadFileUrl}" alt=""/>
+                    <strong id="rank${data[i].id}" style="font-size: 30px; color: white; background-color: #5F5F5F; margin-left: 10px">${i + 1}. ${data[i].title}</strong>
+                </div>
+            `;
+
+                // 슬라이더에 슬라이드 추가
+                $('#festivalRank').slick('slickAdd', slide);
+            }
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
+
+    $.ajax({
+        url: `/api/festivals/reviews/rank`,
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+
+            // 이미지 슬라이더를 초기화
+            $('#reviewRank').slick({
+                infinite: true, // 무한 루프
+                slidesToShow: 1, // 한 번에 보여질 슬라이드 개수 (이미지 하나만 보이도록 설정)
+                autoplay: true, // 자동 재생
+                autoplaySpeed: 3000 // 자동 재생 속도 (3초마다 전환)
+            });
+
+            // 데이터를 슬라이더에 동적으로 추가
+            for (let i = 0; i < data.length; i++) {
+                const slide = `
+                <div class="rank" onclick="moveReview(data[i].festivalId, data[i].id)">
+                    <img class="wide" src="${data[i].files[0].uploadFileUrl}" alt=""/>
+                    <strong id="rank${data[i].id}" style="font-size: 30px; color: white; background-color: #5F5F5F; margin-left: 10px">${i + 1}. ${data[i].festivalTitle} : ${data[i].title}</strong>
+                </div>
+            `;
+
+                // 슬라이더에 슬라이드 추가
+                $('#reviewRank').slick('slickAdd', slide);
+            }
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
+
+    $.ajax({
+        url: `/api/users/rank`,
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+
+            // 이미지 슬라이더를 초기화
+            $('#userRank').slick({
+                infinite: true, // 무한 루프
+                slidesToShow: 1, // 한 번에 보여질 슬라이드 개수 (이미지 하나만 보이도록 설정)
+                autoplay: true, // 자동 재생
+                autoplaySpeed: 3000 // 자동 재생 속도 (3초마다 전환)
+            });
+
+            // 데이터를 슬라이더에 동적으로 추가
+            for (let i = 0; i < data.length; i++) {
+                const slide = `
+                <div class="rank" onclick="moveProfile(data[i].id)">
+                    <img class="wide" src="${data[i].files[0].uploadFileUrl}" alt=""/>
+                    <strong id="rank${data[i].id}" style="font-size: 30px; color: white; background-color: #5F5F5F; margin-left: 10px">${i + 1}. ${data[i].nickname}</strong>
+                </div>
+            `;
+
+                // 슬라이더에 슬라이드 추가
+                $('#userRank').slick('slickAdd', slide);
+            }
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
+
+}
+
+function moveFestival(festivalId) {
+    window.location.href = `/api/festivals/${festivalId}/page`;
+}
+
+function moveReview(festivalId, reviewId) {
+    window.location.href = `/festivals/${festivalId}/reviews/${reviewId}/page`;
+}
+
+function moveProfile(userId) {
+    window.location.href = `/users/${userId}/profile-page`;
 }
 
 function formatDate(serverDate) {
