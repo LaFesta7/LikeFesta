@@ -64,6 +64,44 @@ public class FollowController {
         return ResponseEntity.ok().body(results);
     }
 
+    @GetMapping("/users/{userId}/follows/check")
+    @Operation(summary = "유저 팔로우 여부 확인", description = "유저 팔로우 여부를 반환합니다.")
+    public ResponseEntity<Boolean> selectUserFollow(
+            @Parameter(name = "userId", description = "팔로우를 확인할 유저의 id", in = ParameterIn.PATH) @PathVariable Long userId,
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Boolean result = followService.selectUserFollow(userId, userDetails.getUser());
+        return ResponseEntity.ok().body(result);
+    }
+
+    @GetMapping("/users/{userId}/follows/followers")
+    @Operation(summary = "유저 팔로워 목록 조회 - 특정유저를 팔로우 하는 유저", description = "특정유저를 팔로우 하는 유저를 전체 조회합니다.")
+    public ResponseEntity<List<SelectUserResponseDto>> selectUserFollowers(
+            @Parameter(name = "userId", description = "팔로우를 확인할 유저의 id", in = ParameterIn.PATH) @PathVariable Long userId,
+            @Parameter(description = "권한 확인 및 조회 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "페이지 처리에 필요한 기본 설정")
+            @PageableDefault(size=5) Pageable pageable,
+            @Parameter(description = "No offset 페이지 넘기기에 필요한 기본 설정")
+            @RequestParam(value = "lt", required = false)Long lt
+    ){
+        List<SelectUserResponseDto> results = followService.selectUserFollowers(userId, pageable, lt);
+        return ResponseEntity.ok().body(results);
+    }
+
+    @GetMapping("/users/{userId}/follows/followings")
+    @Operation(summary = "유저 팔로잉 목록 조회 - 특정유저가 팔로우 하는 유저", description = "특정유저를 팔로우 하는 유저를 전체 조회합니다.")
+    public ResponseEntity<List<SelectUserResponseDto>> selectUserFollowings(
+            @Parameter(name = "userId", description = "팔로우를 확인할 유저의 id", in = ParameterIn.PATH) @PathVariable Long userId,
+            @Parameter(description = "권한 확인 및 조회 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Parameter(description = "페이지 처리에 필요한 기본 설정")
+            @PageableDefault(size=5) Pageable pageable,
+            @Parameter(description = "No offset 페이지 넘기기에 필요한 기본 설정")
+            @RequestParam(value = "lt", required = false)Long lt
+    ){
+        List<SelectUserResponseDto> results = followService.selectUserFollowings(userId, pageable, lt);
+        return ResponseEntity.ok().body(results);
+    }
+
     @DeleteMapping("users/follows/{followingUserId}")
     @Operation(summary = "유저 팔로우 취소", description = "@PathVariable을 통해 followingUserId를 받아와, 해당 User의 팔로우를 취소합니다")
     public ResponseEntity<ApiResponseDto> deleteFollowingUser(

@@ -87,6 +87,26 @@ public class FollowService {
         return followRepositoryCustom.findAllFollowings(userDetails.getUser(), pageable, lastFollowId);
     }
 
+    // 유저 팔로우 확인
+    @Transactional(readOnly = true)
+    public Boolean selectUserFollow(Long userId, User user) {
+        return findUserFollow(findUser(userId), user) != null;
+    }
+
+    //유저 팔로워 목록 조회 - 특정유저를 팔로우 하는 유저
+    @Transactional(readOnly = true)
+    public List<SelectUserResponseDto> selectUserFollowers(Long userId, Pageable pageable, Long lastFollowId){
+        User followedUser = findUser(userId);
+        return followRepositoryCustom.findAllFollowers(followedUser, pageable, lastFollowId);
+    }
+
+    //    유저 팔로잉 목록 조회 - 특정유저가 팔로우 하는 유저
+    @Transactional(readOnly = true)
+    public List<SelectUserResponseDto> selectUserFollowings(Long userId, Pageable pageable, Long lastFollowId){
+        User follower = findUser(userId);
+        return followRepositoryCustom.findAllFollowings(follower, pageable, lastFollowId);
+    }
+
     //유저 팔로우 취소
     @Transactional
     public ResponseEntity<ApiResponseDto> unfollowingUser(UserDetailsImpl userDetails, Long followedUserId){
@@ -191,6 +211,11 @@ public class FollowService {
         return festivalRepository.findById(festivalId).orElseThrow(() ->
                 new IllegalArgumentException("선택한 페스티벌은 존재하지 않습니다.")
         );
+    }
+
+    // 유저와 사용자로 유저 팔로우 찾기
+    private UserFollow findUserFollow(User targetUser, User followUser) {
+        return userFollowRepository.findByFollowedUserAndFollowingUser(targetUser, followUser).orElse(null);
     }
 
     // 페스티벌과 사용자로 페스티벌 팔로우 찾기

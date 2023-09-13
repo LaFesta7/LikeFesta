@@ -64,8 +64,8 @@ function getFestival() {
                     <img src="${data.files[0] ? data.files[0].uploadFileUrl : '/images/best1.jpg'}" alt="축제 이미지" class="festival-image">
                     <p class="festival-description">${data.content}</p>
                     <div id="heart-group" style="display: flex">
-                        <input type="submit" id="follow-btn" class="heart-btn" style="font-size: 14px; background-color: darkgray; color: white" value="언팔로우" onclick="unfollowFestival()"></input>
-                        <input type="submit" id="unfollow-btn" class="heart-btn" style="font-size: 14px; background-color: #8BC34A; color: white; display: none" value="팔로우" onclick="followFestival()"></a>
+                        <input type="submit" id="follow-btn" class="heart-btn" style="font-size: 14px; background-color: darkgray; color: white" value="팔로잉" onclick="unfollowFestival()"></input>
+                        <input type="submit" id="unfollow-btn" class="heart-btn" style="font-size: 14px; background-color: darkgreen; color: white; display: none" value="팔로우" onclick="followFestival()"></a>
                         <a href="" id="heart-btn" class="heart-btn" style="margin-left: 10px; text-decoration: none; font-size: 25px;" onclick="cancelFestivalLike()">❤️</a>
                         <a href="" id="not-heart-btn" class="heart-btn" style="margin-left: 10px; text-decoration: none; font-size: 25px; display: none" onclick="addFestivalLike()">🤍</a>
                         <span style="font-size: 20px; margin-left: 5px; margin-top: 5px">${data.likeCnt}</span>

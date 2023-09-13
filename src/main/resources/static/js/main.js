@@ -186,7 +186,7 @@ function loadFollowing(lastFollowingId) {
                 html += `
                     <li>
                    <a onclick="moveProfile(${data[i].id})" style="text-decoration: none"> <strong>${data[i].username}</strong> (${data[i].nickname})</a>
-                        <button style="float: right; margin-right: 20px" onclick="unfollowUSer(${data[i].id})">삭제</button>
+                        <button style="float: right; margin-right: 20px" onclick="unfollowUSer(${data[i].id})">팔로잉</button>
                     </li>`;
             }
             ;
@@ -242,7 +242,7 @@ function loadFollower(lastFollowerId) {
             for (let i = 0; i < data.length; i++) { // Loop through each festival
                 html += `
                     <li>
-                    <td>${data[i].username}</td>
+                    <a onclick="moveProfile(${data[i].id})" style="text-decoration: none"> <strong>${data[i].username}</strong> (${data[i].nickname})</a>
                     </li>`;
             }
             ;
