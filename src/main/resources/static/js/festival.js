@@ -64,8 +64,10 @@ function getFestival() {
                     <img src="${data.files[0] ? data.files[0].uploadFileUrl : '/images/best1.jpg'}" alt="축제 이미지" class="festival-image">
                     <p class="festival-description">${data.content}</p>
                     <div id="heart-group" style="display: flex">
-                        <a href="" id="heart-btn" class="heart-btn" style="text-decoration: none; font-size: 25px;" onclick="cancelFestivalLike()">❤️</a>
-                        <a href="" id="not-heart-btn" class="heart-btn" style="text-decoration: none; font-size: 25px; display: none" onclick="addFestivalLike()">🤍</a>
+                        <input type="submit" id="follow-btn" class="heart-btn" style="font-size: 14px; background-color: darkgray; color: white" value="언팔로우" onclick="unfollowFestival()"></input>
+                        <input type="submit" id="unfollow-btn" class="heart-btn" style="font-size: 14px; background-color: #8BC34A; color: white; display: none" value="팔로우" onclick="followFestival()"></a>
+                        <a href="" id="heart-btn" class="heart-btn" style="margin-left: 10px; text-decoration: none; font-size: 25px;" onclick="cancelFestivalLike()">❤️</a>
+                        <a href="" id="not-heart-btn" class="heart-btn" style="margin-left: 10px; text-decoration: none; font-size: 25px; display: none" onclick="addFestivalLike()">🤍</a>
                         <span style="font-size: 20px; margin-left: 5px; margin-top: 5px">${data.likeCnt}</span>
                     </div>
                     <div id="moveReviewPostBtn" style="float: right; display: none;">
@@ -76,6 +78,7 @@ function getFestival() {
                 `;
             $('#festival-post').html(html);
             showFestivalUDContainer(role, userName, data.editorName);
+            showFestivalFollowBtn();
             showFestivalLikeBtn();
             showReviewPostBtn();
             getReviews();
@@ -84,6 +87,74 @@ function getFestival() {
             console.log('Error:', err);
         }
     });
+}
+
+function showFestivalFollowBtn() {
+    var followBtn = document.getElementById('follow-btn');
+    var unfollowBtn = document.getElementById('unfollow-btn');
+
+    const apiUrl = `/api/users/followed-festivals/${festivalId}`
+    $.ajax({
+        url: apiUrl,
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+            if (data) {
+                followBtn.style.display = 'inline-block';
+                unfollowBtn.style.display = 'none';
+            } else {
+                followBtn.style.display = 'none';
+                unfollowBtn.style.display = 'inline-block';
+            }
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
+}
+
+function followFestival() {
+    const confirmation = confirm("해당 페스티벌을 팔로우하시겠습니까? 팔로우를 진행할 경우 해당 페스티벌에 관한 알림이 발송됩니다.");
+
+    // 사용자가 확인을 누르면 메소드를 실행합니다.
+    if (confirmation) {
+        const apiUrl = `/api/users/followed-festivals/${festivalId}`
+        $.ajax({
+            url: apiUrl,
+            type: 'POST',
+            success: function (data) {
+                console.log(data);
+                alert(data.statusMessage + ' 해당 페스티벌의 알림이 발송됩니다!');
+                getFestival();
+            },
+            error: function (err) {
+                console.log('Error:', err);
+                alert(err.responseJSON.statusMessage);
+            }
+        });
+    }
+}
+
+function unfollowFestival() {
+    const confirmation = confirm("해당 페스티벌을 언팔로우하시겠습니까? 언팔로우를 진행할 경우 해당 페스티벌에 관한 알림이 발송되지 않습니다.");
+
+    // 사용자가 확인을 누르면 메소드를 실행합니다.
+    if (confirmation) {
+        const apiUrl = `/api/users/followed-festivals/${festivalId}`
+        $.ajax({
+            url: apiUrl,
+            type: 'DELETE',
+            success: function (data) {
+                console.log(data);
+                alert(data.statusMessage + ' 해당 페스티벌의 알림이 발송되지 않습니다!');
+                getFestival();
+            },
+            error: function (err) {
+                console.log('Error:', err);
+                alert(err.responseJSON.statusMessage);
+            }
+        });
+    }
 }
 
 function showFestivalLikeBtn() {

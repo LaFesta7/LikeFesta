@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,6 +69,16 @@ public class FollowController {
     public ResponseEntity<ApiResponseDto> deleteFollowingUser(
             @Parameter(description = "권한 확인 및 취소 정보를 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long followingUserId){
         return followService.unfollowingUser(userDetails, followingUserId);
+    }
+
+    @GetMapping("/users/followed-festivals/{festivalId}")
+    @Operation(summary = "페스티벌 팔로우 여부 확인", description = "페스티벌 팔로우 여부를 반환합니다.")
+    public ResponseEntity<Boolean> selectFestivalFollow(
+            @Parameter(name = "festivalId", description = "팔로우를 확인할 페스티벌의 id", in = ParameterIn.PATH) @PathVariable Long festivalId,
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Boolean result = followService.selectFestivalFollow(festivalId, userDetails.getUser());
+        return ResponseEntity.ok().body(result);
     }
 
     @PostMapping("/users/followed-festivals/{festivalId}")

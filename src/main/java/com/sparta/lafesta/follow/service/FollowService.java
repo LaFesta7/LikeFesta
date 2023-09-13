@@ -1,6 +1,7 @@
 package com.sparta.lafesta.follow.service;
 
 import com.sparta.lafesta.common.dto.ApiResponseDto;
+import com.sparta.lafesta.common.exception.NotFoundException;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.festival.dto.FestivalResponseDto;
 import com.sparta.lafesta.festival.entity.Festival;
@@ -108,6 +109,12 @@ public class FollowService {
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), followedUser.getUsername() + "님을 언팔로우 했습니다."));
     }
 
+    // 페스티벌 팔로우 확인
+    @Transactional(readOnly = true)
+    public Boolean selectFestivalFollow(Long festivalId, User user) {
+        return findFestivalFollow(user, findFestival(festivalId)) != null;
+    }
+
 
     //페스티벌 팔로우
     @Transactional
@@ -131,7 +138,7 @@ public class FollowService {
 
         festivalFollowRepository.save(new FestivalFollow(followedFestival, follower));
 
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "팔로우 성공. 페스티벌 이름: " + followedFestival.getTitle()));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), followedFestival.getTitle() + "을(를) 팔로우 했습니다."));
     }
 
     //페스티벌 팔로우 목록 조회
@@ -177,5 +184,24 @@ public class FollowService {
             followers.add(followerUser);
         }
         return followers;
+    }
+
+    // 페스티벌 id로 페스티벌 찾기
+    public Festival findFestival(Long festivalId) {
+        return festivalRepository.findById(festivalId).orElseThrow(() ->
+                new IllegalArgumentException("선택한 페스티벌은 존재하지 않습니다.")
+        );
+    }
+
+    // 페스티벌과 사용자로 페스티벌 팔로우 찾기
+    private FestivalFollow findFestivalFollow(User user, Festival festival) {
+        return festivalFollowRepository.findByFollowedFestivalAndFollowingFestivalUser(festival, user).orElse(null);
+    }
+
+    // id로 유저 찾기
+    private User findUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() ->
+                new NotFoundException("선택한 유저는 존재하지 않습니다.")
+        );
     }
 }
