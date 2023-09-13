@@ -25,8 +25,9 @@ public class UserBadgeCreatedEventListener implements ApplicationListener<UserBa
         String title = "'" + userBadge.getBadge().getTitle() + "' 뱃지 획득";
         String detail = "'" + title + "' 뱃지를 획득했습니다.";
         LocalDateTime createdAt = userBadge.getCreatedAt();
+        String destination = "/api/users/badge";
         User user = userBadge.getUser();
-        Notification notification = new Notification(title, detail, createdAt, user);
+        Notification notification = new Notification(title, detail, createdAt, destination, user);
         notificationService.saveNotification(notification, user.getId());
         log.info("유저 뱃지 획득 이벤트 발생");
     }
