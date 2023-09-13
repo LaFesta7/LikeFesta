@@ -10,10 +10,10 @@ import com.sparta.lafesta.badge.entity.BadgeTag;
 import com.sparta.lafesta.badge.entity.UserBadge;
 import com.sparta.lafesta.badge.event.UserBadgeCreatedEventPublisher;
 import com.sparta.lafesta.badge.repository.BadgeRepository;
+import com.sparta.lafesta.badge.repository.BadgeRepositoryCustom;
 import com.sparta.lafesta.badge.repository.BadgeTagRepository;
 import com.sparta.lafesta.badge.repository.UserBadgeRepository;
 import com.sparta.lafesta.common.exception.NotFoundException;
-import com.sparta.lafesta.common.exception.UnauthorizedException;
 import com.sparta.lafesta.common.s3.S3UploadService;
 import com.sparta.lafesta.common.s3.entity.BadgeFileOnS3;
 import com.sparta.lafesta.common.s3.entity.FileOnS3;
@@ -29,6 +29,7 @@ import com.sparta.lafesta.tag.service.TagService;
 import com.sparta.lafesta.user.entity.User;
 import com.sparta.lafesta.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +50,7 @@ public class BadgeServiceImpl implements BadgeService {
     private final BadgeRepository badgeRepository;
     private final BadgeTagRepository badgeTagRepository;
     private final UserBadgeRepository userBadgeRepository;
+    private final BadgeRepositoryCustom badgeRepositoryCustom;
     private final FestivalRepository festivalRepository;
     private final ReviewRepository reviewRepository;
     private final UserService userService;
@@ -115,11 +117,11 @@ public class BadgeServiceImpl implements BadgeService {
     // 뱃지 전체 조회
     @Override
     @Transactional(readOnly = true)
-    public List<BadgeResponseDto> selectBadges(User user, Pageable pageable) {
+    public Page<BadgeResponseDto> selectBadges(User user, Pageable pageable) {
         // 관리자 권한 확인
         adminService.checkAdminRole(user);
 
-        return badgeRepository.findAllBy(pageable).stream().map(BadgeResponseDto::new).toList();
+        return badgeRepository.findAllBy(pageable).map(BadgeResponseDto::new);
     }
 
     // 뱃지 수정
@@ -303,10 +305,9 @@ public class BadgeServiceImpl implements BadgeService {
     // 나의 뱃지 보유 목록 조회
     @Override
     @Transactional(readOnly = true)
-    public List<UserBadgeResponseDto> selectMyBadges(User user, Pageable pageable) {
+    public List<UserBadgeResponseDto> selectMyBadges(User user, Pageable pageable, Long lastBadge) {
         User selectUser = userService.findUser(user.getId());
-        List<UserBadgeResponseDto> userBadges = userBadgeRepository.findAllByUser(selectUser, pageable)
-                .stream().map(UserBadgeResponseDto::new).toList();
+        List<UserBadgeResponseDto> userBadges = badgeRepositoryCustom.findAllByUser(selectUser, pageable, lastBadge);
         return userBadges;
     }
 
