@@ -12,6 +12,7 @@ import com.sparta.lafesta.user.entity.UserRoleEnum;
 import com.sparta.lafesta.user.entity.VerificationCode;
 import com.sparta.lafesta.user.entity.VerificationConfirm;
 import com.sparta.lafesta.user.repository.UserRepository;
+import com.sparta.lafesta.user.repository.UserRepositoryCustom;
 import com.sparta.lafesta.user.repository.VerificationCodeRepository;
 import com.sparta.lafesta.user.repository.VerificationConfirmRepository;
 import jakarta.servlet.http.Cookie;
@@ -35,6 +36,7 @@ public class UserService {
     //CRUD
     private final MailService mailService;
     private final UserRepository userRepository;
+    private final UserRepositoryCustom userRepositoryCustom;
     private final VerificationCodeRepository verificationCodeRepository;
     private final VerificationConfirmRepository verificationConfirmRepository;
     private final PasswordEncoder passwordEncoder;
@@ -49,6 +51,7 @@ public class UserService {
 
 
     // 회원가입
+    @Transactional
     public void signup(SignupRequestDto requestDto, List<MultipartFile> files) throws IOException {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
@@ -96,6 +99,12 @@ public class UserService {
         if (files != null) {
             uploadFiles(files, user);
         }
+    }
+
+    // 내 프로필 조회
+    @Transactional(readOnly = true)
+    public SelectUserResponseDto selectMyProfile(User user) {
+        return new SelectUserResponseDto(findUser(user.getId()));
     }
 
     // 프로필 조회
@@ -208,8 +217,8 @@ public class UserService {
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        return userRepository.findTop3User().stream()
-                .map(SelectUserResponseDto::new).toList();
+        return userRepositoryCustom.findTop3User().stream()
+            .map(SelectUserResponseDto::new).toList();
     }
 
 
@@ -222,14 +231,8 @@ public class UserService {
         checkEmail(email);
 
         String code = mailService.sendMessage(email);
-
-
         VerificationCode verificationCode = new VerificationCode(email, code);
-        long beforeTime = System.nanoTime();
         verificationCodeRepository.save(verificationCode);
-
-        long afterTime = System.nanoTime();
-        log.info("인증번호 Redis 저장 시간(ns) : " + (afterTime - beforeTime));
     }
 
     // 비밀번호를 분실한 경우 인증 메일 발송 후 코드 DB 임시 저장하기
@@ -265,10 +268,6 @@ public class UserService {
 
         verificationConfirmRepository.save(new VerificationConfirm(email, true));
     }
-
-
-//    @Scheduled(fixedRate = 1800000) // 30분마다 실행
-
 
     //카카오 로그인 시 로그아웃 // todo 안쓰면 삭제
     public void kakaoLogout(HttpServletResponse response) {

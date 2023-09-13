@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
@@ -45,12 +46,12 @@ public class FestivalController {
 
     @GetMapping("/festivals")
     @Operation(summary = "전체 축제 검색", description = "전체 축제를 검색합니다.")
-    public ResponseEntity<List<FestivalResponseDto>> selectFestivals(
+    public ResponseEntity<Page<FestivalResponseDto>> selectFestivals(
             @Parameter(description = "축제 페이지 처리에 필요한 기본 설정")
             @PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable,
             @RequestParam(value = "apiMode", required = false) Boolean apiMode
     ) {
-        List<FestivalResponseDto> results = festivalService.selectFestivals(pageable);
+        Page<FestivalResponseDto> results = festivalService.selectFestivals(pageable);
         return ResponseEntity.ok().body(results);
     }
 
@@ -115,4 +116,16 @@ public class FestivalController {
         List<FestivalResponseDto> results = festivalService.selectFestivalRanking(userDetails.getUser());
         return ResponseEntity.ok().body(results);
     }
+
+    @GetMapping("/users/festivals-search")
+    @Operation(summary = "페스티벌 키워드 검색", description = "키워드가 제목에 포함된 페스티벌을 조회합니다.")
+    public ResponseEntity<List<FestivalResponseDto>> selectSearchedFestival(
+        @Parameter(description = "검색을 위한 String 키워드") @RequestParam(value = "keyword") String keyword,
+        @Parameter(description = "페이징 처리를 위한 정보")
+        @PageableDefault(size=3, sort="createdAt", direction = Direction.DESC) Pageable pageable
+        ){
+        List<FestivalResponseDto> results = festivalService.selectSearchedFestival(keyword, pageable);
+        return ResponseEntity.ok().body(results);
+    }
+
 }

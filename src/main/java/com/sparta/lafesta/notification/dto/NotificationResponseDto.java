@@ -1,5 +1,6 @@
 package com.sparta.lafesta.notification.dto;
 
+import com.sparta.lafesta.common.entity.DurationFormatter;
 import com.sparta.lafesta.notification.entity.Notification;
 import lombok.Getter;
 
@@ -18,7 +19,7 @@ public class NotificationResponseDto {
         this.id = notification.getId();
         this.title = notification.getTitle();
         this.detail = notification.getDetail();
-        this.timeSinceCreated = Duration.between(notification.getCreatedAt(), LocalDateTime.now()).toString();
+        this.timeSinceCreated = DurationFormatter.format(notification.getCreatedAt());
         this.rd = notification.getRd();
     }
 }

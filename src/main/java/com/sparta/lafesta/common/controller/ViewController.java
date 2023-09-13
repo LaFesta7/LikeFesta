@@ -1,5 +1,6 @@
 package com.sparta.lafesta.common.controller;
 
+import com.sparta.lafesta.common.exception.UnauthorizedException;
 import com.sparta.lafesta.common.jwt.JwtUtil;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
 import com.sparta.lafesta.follow.service.FollowService;
@@ -73,21 +74,70 @@ public class ViewController {
 
     @GetMapping("/users/profile/edit-page")
     public String editProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return "mypage-modify";
+        return "mypage-edit";
     }
 
-    @GetMapping("/festivals/page")
+    @GetMapping("/users/withdrawal-page")
+    public String withdrawUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "withdrawal";
+    }
+
+    @GetMapping("/festivals/{festivalId}/page")
     public String festivalPage() {
         return "festival";
     }
 
     @GetMapping("/festivals/post-page")
-    public String festivalEdit(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String postFestival(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "festival-post";
     }
 
-    @GetMapping("/festivals/review-page")
-    public String reviewPage() {
-        return "review-show";
+    @GetMapping("/festivals/{festivalId}/edit-page")
+    public String editFestival(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "festival-edit";
+    }
+
+    @GetMapping("/festival-requests/{festivalRequestId}/page")
+    public String festivalRequestPage() {
+        return "festival-request";
+    }
+
+    @GetMapping("/festival-requests/post-page")
+    public String postFestivalRequest(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "festival-request-post";
+    }
+
+    @GetMapping("/festival-requests/{festivalRequestId}/edit-page")
+    public String editFestivalRequest(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "festival-request-edit";
+    }
+
+    @GetMapping("/festivals/{fesitvalId}/reviews/{riviewId}/page")
+    public String reviewPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "review";
+    }
+
+    @GetMapping("/festivals/{fesitvalId}/reviews/post-page")
+    public String postReview(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "review-post";
+    }
+
+    @GetMapping("/festivals/{fesitvalId}/reviews/{riviewId}/edit-page")
+    public String editReview(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "review-edit";
+    }
+
+    @GetMapping("/users/notification-page")
+    public String notificationPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "notification";
+    }
+
+
+    @GetMapping("/admin-page")
+    public String adminPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (!userDetails.getUser().getRole().getAuthority().equals("ROLE_ADMIN")) {
+            throw new UnauthorizedException("해당 페이지에 접근하실 수 없습니다.");
+        }
+        return "admin";
     }
 }

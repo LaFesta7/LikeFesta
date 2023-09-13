@@ -49,10 +49,10 @@ public class User {
     private Long kakaoId;
 
     @OneToMany(mappedBy = "followedUser", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<UserFollow> followings = new ArrayList<>(); //내가 팔로우 하는 사람들
+    private List<UserFollow> followings = new ArrayList<>(); //팔로우 당하는 유저
 
     @OneToMany(mappedBy = "followingUser", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<UserFollow> followers = new ArrayList<>();  //나를 팔로우 하는 사람들
+    private List<UserFollow> followers = new ArrayList<>();  //팔로우 하는 유저
 
     @OneToMany(mappedBy = "followingFestivalUser", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<FestivalFollow> followedFestivals = new ArrayList<>();

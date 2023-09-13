@@ -300,6 +300,16 @@ public class BadgeServiceImpl implements BadgeService {
         }
     }
 
+    // 나의 뱃지 보유 목록 조회
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserBadgeResponseDto> selectMyBadges(User user, Pageable pageable) {
+        User selectUser = userService.findUser(user.getId());
+        List<UserBadgeResponseDto> userBadges = userBadgeRepository.findAllByUser(selectUser, pageable)
+                .stream().map(UserBadgeResponseDto::new).toList();
+        return userBadges;
+    }
+
     // 유저 뱃지 보유 목록 조회
     @Override
     @Transactional(readOnly = true)
@@ -313,12 +323,7 @@ public class BadgeServiceImpl implements BadgeService {
     // 유저 대표 뱃지 설정/해제
     @Override
     @Transactional
-    public UserBadgeResponseDto modifyUserBadgeRepresentative(Long userId, Long badgeId, User user) {
-        // 해당 유저가 맞는지 권한 확인
-        if (user.getId() != userId) {
-            throw new UnauthorizedException("해당 유저의 대표 뱃지를 설정/해제할 권한이 없습니다.");
-        }
-
+    public UserBadgeResponseDto modifyUserBadgeRepresentative(Long badgeId, User user) {
         Badge badge = findBadge(badgeId);
         UserBadge userBadge = findUserAndBadge(user, badge);
 

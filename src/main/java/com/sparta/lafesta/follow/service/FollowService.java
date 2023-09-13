@@ -8,6 +8,7 @@ import com.sparta.lafesta.festival.repository.FestivalRepository;
 import com.sparta.lafesta.follow.entity.FestivalFollow;
 import com.sparta.lafesta.follow.entity.UserFollow;
 import com.sparta.lafesta.follow.repository.FestivalFollowRepository;
+import com.sparta.lafesta.follow.repository.FollowRepositoryCustom;
 import com.sparta.lafesta.follow.repository.UserFollowRepository;
 import com.sparta.lafesta.user.dto.SelectUserResponseDto;
 import com.sparta.lafesta.user.entity.User;
@@ -28,6 +29,7 @@ public class FollowService {
     private final UserFollowRepository userFollowRepository;
     private final UserRepository userRepository;
     private final FestivalFollowRepository festivalFollowRepository;
+    private final FollowRepositoryCustom followRepositoryCustom;
     private final FestivalRepository festivalRepository;
 
 
@@ -62,48 +64,26 @@ public class FollowService {
 
     //유저 팔로워 목록 조회 - 나를 팔로우 하는 유저
     @Transactional(readOnly = true)
-    public List<SelectUserResponseDto> selectFollowers(UserDetailsImpl userDetails, Pageable pageable){
+    public List<SelectUserResponseDto> selectFollowers(UserDetailsImpl userDetails, Pageable pageable, Long lastFollowId){
         User followedUser = userDetails.getUser();
 
         if(followedUser == null){
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        List<UserFollow> followers = userFollowRepository.findAllByFollowedUser(followedUser, pageable);
-
-        List<SelectUserResponseDto> followerUsers = new ArrayList<>();
-        for(UserFollow follower : followers){
-            User followerUser = userRepository.findByFollowers(follower)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
-
-            SelectUserResponseDto selectUserResponseDto = new SelectUserResponseDto(followerUser);
-            followerUsers.add(selectUserResponseDto);
-        }
-
-        return followerUsers;
+        return followRepositoryCustom.findAllFollowers(userDetails.getUser(), pageable, lastFollowId);
     }
 
 //    유저 팔로잉 목록 조회 - 내가 팔로우 하는 유저
     @Transactional(readOnly = true)
-    public List<SelectUserResponseDto> selectFollowingUsers(UserDetailsImpl userDetails, Pageable pageable){
+    public List<SelectUserResponseDto> selectFollowingUsers(UserDetailsImpl userDetails, Pageable pageable, Long lastFollowId){
         User follower = userDetails.getUser();
 
         if(follower == null){
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        List<UserFollow> followings = userFollowRepository.findAllByFollowingUser(follower, pageable);
-
-        List<SelectUserResponseDto> followingUsers = new ArrayList<>();
-        for(UserFollow following : followings){
-            User followingUser = userRepository.findByFollowings(following)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
-
-            SelectUserResponseDto selectUserResponseDto = new SelectUserResponseDto(followingUser);
-            followingUsers.add(selectUserResponseDto);
-        }
-
-        return followingUsers;
+        return followRepositoryCustom.findAllFollowings(userDetails.getUser(), pageable, lastFollowId);
     }
 
     //유저 팔로우 취소
@@ -156,24 +136,14 @@ public class FollowService {
 
     //페스티벌 팔로우 목록 조회
     @Transactional(readOnly = true)
-    public List<FestivalResponseDto> selectFollowingFestivals(UserDetailsImpl userDetails, Pageable pageable){
+    public List<FestivalResponseDto> selectFollowingFestivals(UserDetailsImpl userDetails, Pageable pageable, Long lastFollow){
         User followingUser = userDetails.getUser();
 
         if(followingUser == null){
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        List<FestivalFollow> follows = festivalFollowRepository.findAllByFollowingFestivalUser(followingUser, pageable);
-
-        List<FestivalResponseDto> followedFestivals = new ArrayList<>();
-        for(FestivalFollow festivalFollow : follows){
-            Festival followedFestival = festivalRepository.findByFestivalFollowers(festivalFollow)
-                    .orElseThrow(() -> new IllegalArgumentException("해당 페스티벌이 없습니다."));
-
-            FestivalResponseDto festivalResponseDto = new FestivalResponseDto(followedFestival);
-            followedFestivals.add(festivalResponseDto);
-        }
-        return followedFestivals;
+        return followRepositoryCustom.findAllFollowFestival(userDetails.getUser(), pageable, lastFollow);
     }
 
     //페스티벌 팔로우 취소

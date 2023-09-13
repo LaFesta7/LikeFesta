@@ -77,6 +77,16 @@ public class UserController {
         return ResponseEntity.ok().body(results);
     }
 
+    // 나의 프로필 조회
+    @GetMapping("/users/my-profile")
+    @Operation(summary = "나의 프로필 조회", description = "나의 프로필을 조회합니다.")
+    public ResponseEntity<SelectUserResponseDto> selectMyProfile(
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        SelectUserResponseDto result = userService.selectMyProfile(userDetails.getUser());
+        return ResponseEntity.ok().body(result);
+    }
+
     // 프로필 조회
     @GetMapping("/users/{userId}/profile")
     @Operation(summary = "프로필 조회", description = "Pathvariable로 유저 아이디를 받아 해당 유저의 프로필을 조회합니다.")
@@ -190,7 +200,7 @@ public class UserController {
             @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws Exception {
         userService.sendMailAndCreateVerificationCodePassword(userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "인증 메일이 발송되었습니다."));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "현재 저장된 이메일로 인증 메일이 발송되었습니다."));
     }
 
     // 인증코드 확인
