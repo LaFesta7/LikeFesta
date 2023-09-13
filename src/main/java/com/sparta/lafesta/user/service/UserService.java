@@ -222,8 +222,14 @@ public class UserService {
         checkEmail(email);
 
         String code = mailService.sendMessage(email);
+
+
         VerificationCode verificationCode = new VerificationCode(email, code);
+        long beforeTime = System.nanoTime();
         verificationCodeRepository.save(verificationCode);
+
+        long afterTime = System.nanoTime();
+        log.info("인증번호 Redis 저장 시간(ns) : " + (afterTime - beforeTime));
     }
 
     // 비밀번호를 분실한 경우 인증 메일 발송 후 코드 DB 임시 저장하기
