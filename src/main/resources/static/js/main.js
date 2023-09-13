@@ -125,8 +125,8 @@ function loadFestivalFollow(lastFesFollowId) {
             let html = '';
             for (let i = 0; i < data.length; i++) { // Loop through each festival
                 html += `
-                    <li style="display: flex;">
-                    <td style="display: flex;">
+                    <li>
+                    <td>
                         <strong><a onclick="moveFestival(${data[i].id})" style="text-decoration: none">${data[i].title}</a></strong>
                         <button style="float: right; margin-right: 20px" onclick="unfollowFestival(${data[i].id})">삭제</button>
                     </td>
