@@ -64,8 +64,8 @@ function getFestival() {
                     <img src="${data.files[0] ? data.files[0].uploadFileUrl : '/images/best1.jpg'}" alt="축제 이미지" class="festival-image">
                     <p class="festival-description">${data.content}</p>
                     <div id="heart-group" style="display: flex">
-                        <a href="" id="heart-btn" class="heart-btn" style="text-decoration: none; font-size: 25px;" onclick="cancelLike()">❤️</a>
-                        <a href="" id="not-heart-btn" class="heart-btn" style="text-decoration: none; font-size: 25px; display: none" onclick="addLike()">🤍</a>
+                        <a href="" id="heart-btn" class="heart-btn" style="text-decoration: none; font-size: 25px;" onclick="cancelFestivalLike()">❤️</a>
+                        <a href="" id="not-heart-btn" class="heart-btn" style="text-decoration: none; font-size: 25px; display: none" onclick="addFestivalLike()">🤍</a>
                         <span style="font-size: 20px; margin-left: 5px; margin-top: 5px">${data.likeCnt}</span>
                     </div>
                     <div id="moveReviewPostBtn" style="float: right; display: none;">
@@ -110,7 +110,7 @@ function showFestivalLikeBtn() {
     });
 }
 
-function addLike() {
+function addFestivalLike() {
     const apiUrl = `/api/festivals/${festivalId}/likes`
     $.ajax({
         url: apiUrl,
@@ -127,7 +127,7 @@ function addLike() {
     });
 }
 
-function cancelLike() {
+function cancelFestivalLike() {
     const apiUrl = `/api/festivals/${festivalId}/likes-cancel`
     $.ajax({
         url: apiUrl,

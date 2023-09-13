@@ -57,6 +57,15 @@ public interface ReviewService {
     void deleteReview(Long reviewId, User user);
 
     /**
+     * 선택한 리뷰 좋아요 확인
+     *
+     * @param reviewId 좋아요 확인할 페스티벌의 id
+     * @param user       권한 확인
+     * @return 좋아요 확인 결과
+     */
+    Boolean selectReviewLike(Long reviewId, User user);
+
+    /**
      * 선택한 리뷰 좋아요 추가
      * @param reviewId 좋아요 추가할 리뷰의 id
      * @param user 권한 확인

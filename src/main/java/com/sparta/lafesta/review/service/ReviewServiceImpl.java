@@ -143,6 +143,13 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.delete(review);
     }
 
+    // 리뷰 좋아요 확인
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean selectReviewLike(Long reviewId, User user) {
+        return findReviewLike(user, findReview(reviewId)) != null;
+    }
+
     // 리뷰 좋아요 추가
     @Override
     @Transactional

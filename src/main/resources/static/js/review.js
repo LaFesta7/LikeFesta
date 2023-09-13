@@ -48,7 +48,11 @@ function getReview() {
                     ${data.content}
                 </div>
                 <div class="actions">
-                    <div class="like-button">${data.likeCnt}</div>
+                    <div id="heart-group" style="display: flex">
+                        <a href="" id="heart-btn" class="heart-btn" style="text-decoration: none; font-size: 25px;" onclick="cancelReviewLike()">❤️</a>
+                        <a href="" id="not-heart-btn" class="heart-btn" style="text-decoration: none; font-size: 25px; display: none" onclick="addReviewLike()">🤍</a>
+                        <span style="font-size: 20px; margin-left: 5px; margin-top: 5px">${data.likeCnt}</span>
+                    </div>
                     <div id="reviewUDContainer" class="edit-delete">
                         <a href="${apiUrl}/edit-page" class="edit">Edit</a>
                         <button class="delete" onclick="alertDeleteReview()">Delete</button>
@@ -65,11 +69,70 @@ function getReview() {
                 <div id="review-comment"></div>
                 `;
             $('#review-page').html(html);
+            showReviewLikeBtn();
             showReviewUDContainer(role, userName, data.username);
             getComments();
         },
         error: function (err) {
             console.log('Error:', err);
+        }
+    });
+}
+
+function showReviewLikeBtn() {
+    var heartBtn = document.getElementById('heart-btn');
+    var notHeartBtn = document.getElementById('not-heart-btn');
+
+    const apiUrl = `/api/festivals/${festivalId}/reviews/${reviewId}/user-like`
+    $.ajax({
+        url: apiUrl,
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+            if (data) {
+                heartBtn.style.display = 'inline-block';
+                notHeartBtn.style.display = 'none';
+            } else {
+                heartBtn.style.display = 'none';
+                notHeartBtn.style.display = 'inline-block';
+            }
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
+}
+
+function addReviewLike() {
+    const apiUrl = `/api/festivals/${festivalId}/reviews/${reviewId}/likes`
+    $.ajax({
+        url: apiUrl,
+        type: 'POST',
+        success: function (data) {
+            console.log(data);
+            alert(data.statusMessage);
+            getReview();
+        },
+        error: function (err) {
+            console.log('Error:', err);
+            alert(err.responseJSON.statusMessage);
+        }
+    });
+}
+
+function cancelReviewLike() {
+    const apiUrl = `/api/festivals/${festivalId}/reviews/${reviewId}/likes-cancel`
+    $.ajax({
+        url: apiUrl,
+        type: 'DELETE',
+        success: function (data) {
+            console.log(data);
+            alert(data.statusMessage);
+            getReview();
+        },
+        error: function (err) {
+            console.log('Error:', err);
+            alert(err.responseJSON.statusMessage);
         }
     });
 }
