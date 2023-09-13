@@ -465,16 +465,9 @@ function getBadges(pageNum) {
             console.log(data);
             let html = '';
             data.content.forEach(function (badge) { // Loop through each festival
-                if(badge.files == null){
-                    html += `<tr>
+                html += `<tr>
                     <td>${badge.id}</td>
-                    <td id="badgeImage${badge.id}"><img alt="Badge Image" width="100"></td>`
-                }else{
-                    html += `<tr>
-                    <td>${badge.id}</td>
-                    <td id="badgeImage${badge.id}"><img src="${badge.files[0].uploadFileUrl}" alt="Badge Image" width="100"></td>`
-                }
-                html += `
+                    <td id="badgeImage${badge.id}"><img src="${badge.files[0].uploadFileUrl}" alt="Badge Image" width="100"></td>
                     <td id="badgeTitle${badge.id}" >${badge.title}</td>
                     <td id="badgeDescription${badge.id}">${badge.description}</td>
                     <td id="badgeConditionType${badge.id}">${badge.conditionEnum}</td>
