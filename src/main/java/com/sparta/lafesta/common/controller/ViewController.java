@@ -8,13 +8,12 @@ import com.sparta.lafesta.social.service.KakaoService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
 @Controller
@@ -77,23 +76,48 @@ public class ViewController {
     }
 
     @GetMapping("/festivals/{festivalId}/page")
-    public String festivalPage(@PathVariable Long festivalId) {
+    public String festivalPage() {
         return "festival";
     }
 
     @GetMapping("/festivals/post-page")
-    public String festivalEdit(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String postFestival(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "festival-post";
     }
 
     @GetMapping("/festivals/{festivalId}/edit-page")
-    public String editProfile(@PathVariable Long festivalId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String editFestival(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "festival-edit";
     }
 
-    @GetMapping("/festivals/review-page")
-    public String reviewPage() {
-        return "review-show";
+    @GetMapping("/festival-requests/{festivalRequestId}/page")
+    public String festivalRequestPage() {
+        return "festival-request";
+    }
+
+    @GetMapping("/festival-requests/post-page")
+    public String postFestivalRequest(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "festival-request-post";
+    }
+
+    @GetMapping("/festival-requests/{festivalRequestId}/edit-page")
+    public String editFestivalRequest(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "festival-request-edit";
+    }
+
+    @GetMapping("/festivals/{fesitvalId}/reviews/{riviewId}/page")
+    public String reviewPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "review";
+    }
+
+    @GetMapping("/festivals/{fesitvalId}/reviews/post-page")
+    public String postReview(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "review-post";
+    }
+
+    @GetMapping("/festivals/{fesitvalId}/reviews/{riviewId}/edit-page")
+    public String editReview(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "review-edit";
     }
 
     @GetMapping("/users/notification-page")

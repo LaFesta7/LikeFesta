@@ -31,7 +31,7 @@ public class ReviewController {
 
     @PostMapping("/festivals/{festivalId}/reviews")
     @Operation(summary = "페스티벌 리뷰 작성", description = "@PathVariable을 통해 festivalId를 받아와, 해당 위치에 페스티벌 리뷰를 작성합니다. Dto를 통해 정보를 받아와 review를 생성할 때 해당 정보를 저장합니다.")
-    public ResponseEntity<ApiResponseDto> createReview(
+    public ResponseEntity<ReviewResponseDto> createReview(
             @Parameter(name = "festivalId", description = "리뷰를 생성할 festival의 id", in = ParameterIn.PATH) @PathVariable Long festivalId,
             @Parameter(description = "리뷰를 생성할 때 필요한 정보") @RequestPart(value = "requestDto") ReviewRequestDto requestDto,
             @Parameter(description = "review 생성시 등록한 첨부 파일") @RequestPart(value = "files", required = false) List<MultipartFile> files,
@@ -39,7 +39,7 @@ public class ReviewController {
     ) throws IOException {
 
         ReviewResponseDto result = reviewService.createReview(festivalId, requestDto, files, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), result.getTitle()+"를 추가했습니다."));
+        return ResponseEntity.ok().body(result);
     }
 
     @GetMapping("/festivals/{festivalId}/reviews")

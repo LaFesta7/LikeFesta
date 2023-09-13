@@ -19,7 +19,7 @@ public class NotificationResponseDto {
         this.id = notification.getId();
         this.title = notification.getTitle();
         this.detail = notification.getDetail();
-        this.timeSinceCreated = DurationFormatter.format(Duration.between(notification.getCreatedAt(), LocalDateTime.now()));
+        this.timeSinceCreated = DurationFormatter.format(notification.getCreatedAt());
         this.rd = notification.getRd();
     }
 }

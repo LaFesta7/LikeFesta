@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>페스티벌 포스트 작성</title>
+    <title>페스티벌 요청 작성</title>
     <link rel="stylesheet" href="/css/festival-3.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -36,10 +36,6 @@
         <label for="contentInput">페스티벌 설명</label>
         <textarea id="contentInput" name="contentInput" required></textarea><br><br>
 
-        <label for="imageInput">페스티벌 이미지</label>
-        <input type="file" id="imageInput" name="imageInput" accept="image/*"><br>
-        <img id="preview-image" width="200" alt=""><br><br>
-
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); width: 100%">
             <div style="width: 90%">
                 <label for="reservationOpenDateInput">예매 오픈 일시</label>
@@ -53,14 +49,10 @@
         </div>
         <label for="officialLinkInput">페스티벌 웹사이트/링크</label>
         <input type="url" id="officialLinkInput" name="officialLinkInput" required><br><br>
-        <label for="addTagInput">태그</label>
-        <div id="tags-input-container">
-            <a id="addTagInput" onclick="addTagInput()" style="color: #3b5998">추가</a>
-        </div>
         <br><br>
         <div style="float: right">
         <input type="submit" onclick="redirectFestivalMap()" value="페스티벌 맵 돌아가기" style="background-color: crimson">
-        <input type="submit" id="festival-submit" name="festival-submit" onclick="submitFestivalPost()"
+        <input type="submit" id="festival-submit" name="festival-submit" onclick="submitFestivalRequestPost()"
                value="페스티벌 정보 작성">
         </div>
 
@@ -68,6 +60,6 @@
 
 </div>
 
-<script src="/js/festival-post.js"></script>
+<script src="/js/festival-request-post.js"></script>
 </body>
 </html>

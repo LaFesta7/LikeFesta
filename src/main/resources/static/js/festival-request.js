@@ -4,7 +4,6 @@ const token = Cookies.get('Authorization');
 // JWT 토큰의 권한 확인
 const tokenPayload = parseJwtPayload(token); // JWT 토큰을 해석하여 payload를 가져오는 함수로 직접 구현해야 합니다.
 const role = tokenPayload.auth;
-const userName = tokenPayload.sub;
 
 // 현재 URL을 가져옵니다.
 const currentURL = window.location.href;
@@ -13,15 +12,15 @@ const currentURL = window.location.href;
 const pathSegments = currentURL.split('/');
 
 // 경로 파라미터 중에서 필요한 값을 추출합니다.
-const festivalId = pathSegments[pathSegments.length - 2];
+const festivalRequestId = pathSegments[pathSegments.length - 2];
 
 $(document).ready(function () {
-    getFestival();
+    getFestivalRequest();
 });
 
-function getFestival() {
+function getFestivalRequest() {
     $.ajax({
-        url: `/api/festivals/${festivalId}`,
+        url: `/api/festival-requests/${festivalRequestId}`,
         type: 'GET',
         success: function (data) {
             console.log(data);
@@ -50,73 +49,26 @@ function getFestival() {
                     <br>
                     <br>
                     <br>
-                    <p>${data.tags.map(tag => `<span>#${tag.title}</span>`).join(' ')}</p>
             </div>
                     <div class="festival-content">
                     <div>
-                        <a href="/api/users/festivals-map">Map</a>
-                        <a href="/#features">List</a>
+                        <a href="/api/users/festivals-map" style="margin-right: 10px">Map</a>
+                        <a href="/api/admin-page#festival-request">Festival Request List</a>
                     </div>
-                    <div id="festivalUDContainer" style="float: right; display: none; margin-bottom: 15px;">
-                        <input type="submit" value="삭제" style="background-color: crimson" onclick="alertDeleteFestival('${data.title}')">
-                        <input type="submit" value="수정" style="margin-left: 10px" onclick="alertEditFestival('${data.title}')">
+                    <div id="festivalUDContainer" style="float: right; display: none; margin-bottom: 10px;">
+                        <input type="submit" value="삭제" style="background-color: crimson" onclick="alertDeleteFestivalRequest('${data.title}')">
+                        <input type="submit" value="수정" style="margin-left: 10px" onclick="alertEditFestivalRequest('${data.title}')">
                     </div>
-                    <img src="${data.files[0] ? data.files[0].uploadFileUrl : '/images/best1.jpg'}" alt="축제 이미지" class="festival-image">
-                    <p class="festival-description">${data.content}</p>
-                    <div id="moveReviewPostBtn" style="float: right; display: none;">
-                        <input type="submit" value="리뷰 작성" style="margin-left: 10px" onclick="moveReviewPost()">
-                    </div>
-                    <div id="post-review" style="margin-top: 80px"></div>
+                    <p class="festival-description" style="margin-top: 20px">${data.content}</p>
                     </div>
                 `;
             $('#festival-post').html(html);
-            showFestivalUDContainer(role, userName, data.editorName);
-            showReviewPostBtn();
-            getReviews();
+            showFestivalUDContainer(role);
         },
         error: function (err) {
             console.log('Error:', err);
         }
     });
-}
-
-function getReviews() {
-    const apiUrl = `/api/festivals/${festivalId}/reviews`
-    $.ajax({
-        url: apiUrl,
-        type: 'GET',
-        success: function (data) {
-            console.log(data);
-            let html = '';
-            for (let i = 0; i < data.length; i++) {
-                html += `
-                <div class="reviews">
-                    <div class="review-item">
-                        <p><a href="${apiUrl}/${data[i].id}/page" style="margin-left: 20px">${data[i].title}</a>
-                            <strong style="float: right; margin-right: 20px">${data[i].userNickname}</strong>
-                        </p>
-                    </div>
-                </div>
-                `;
-            }
-            $('#post-review').html(html);
-        },
-        error: function (err) {
-            console.log('Error:', err);
-        }
-    });
-}
-
-function moveReviewPost(){
-    window.location.href = `/api/festivals/${festivalId}/reviews/post-page`;
-}
-
-function showReviewPostBtn(role) {
-    if (role === 'ADMIN') {
-        $('#moveReviewPostBtn').hide();
-    } else {
-        $('#moveReviewPostBtn').show();
-    }
 }
 
 function formatDate(serverDate) {
@@ -133,34 +85,35 @@ function parseJwtPayload(token) {
     return JSON.parse(jsonPayload); // JSON 문자열을 객체로 파싱
 }
 
-function showFestivalUDContainer(role, userName, editorName) {
-    if (role === 'ADMIN' || userName === editorName) {
+function showFestivalUDContainer(role) {
+    if (role === 'ADMIN') {
         $('#festivalUDContainer').show();
     } else {
         $('#festivalUDContainer').hide();
     }
 }
 
-function alertDeleteFestival(festivalTitle) {
+function alertDeleteFestivalRequest(festivalRequestTitle) {
     // 경고창을 띄웁니다.
-    const confirmation1 = confirm("'" + festivalTitle + "'을 삭제하시겠습니까?");
+    const confirmation = confirm("'" + festivalRequestTitle + "'을 삭제하시겠습니까?");
 
     // 사용자가 확인을 누르면 메소드를 실행합니다.
-    if (confirmation1) {
-        const confirmation2 = confirm("삭제를 진행할 경우 연관된 리뷰와 댓글 모두가 함께 삭제됩니다. 그래도 삭제하시겠습니까?");
-        if (confirmation2) {
-            deleteFestival();
-        }
+    if (confirmation) {
+            deleteFestivalRequest();
     }
 }
 
-function deleteFestival() {
+function deleteFestivalRequest() {
     $.ajax({
-        url: `/api/festivals/${festivalId}`,
+        url: `/api/festival-requests/${festivalRequestId}`,
         type: 'DELETE',
         success: function (data) {
             alert(data.statusMessage);
-            window.location.href = '/api/users/festivals-map';
+            if (role === 'ADMIN') {
+                window.location.href = '/api/admin-page#festival-request';
+            } else {
+                window.location.href = '/api/users/festivals-map';
+            }
         },
         error: function (err) {
             alert(err.statusMessage);
@@ -169,12 +122,12 @@ function deleteFestival() {
     });
 }
 
-function alertEditFestival(festivalTitle) {
+function alertEditFestivalRequest(festivalRequestTitle) {
     // 경고창을 띄웁니다.
-    const confirmation = confirm("'" + festivalTitle + "'을 수정하시겠습니까?");
+    const confirmation = confirm("'" + festivalRequestTitle + "'을 수정하시겠습니까?");
 
     // 사용자가 확인을 누르면 메소드를 실행합니다.
     if (confirmation) {
-        window.location.href = `/api/festivals/${festivalId}/edit-page`;
+        window.location.href = `/api/festival-requests/${festivalRequestId}/edit-page`;
     }
 }
