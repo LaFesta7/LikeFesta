@@ -88,7 +88,7 @@ public class ReviewController {
     @GetMapping("/festivals/{festivalId}/reviews/{reviewId}/user-like")
     @Operation(summary = "리뷰 좋아요 여부 확인", description = "리뷰 좋아요 여부를 반환합니다.")
     public ResponseEntity<Boolean> selectReviewLike(
-            @Parameter(name = "festivalId", description = "좋아요를 확인할 리뷰의 id", in = ParameterIn.PATH) @PathVariable Long reviewId,
+            @Parameter(name = "reviewId", description = "좋아요를 확인할 리뷰의 id", in = ParameterIn.PATH) @PathVariable Long reviewId,
             @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         Boolean result = reviewService.selectReviewLike(reviewId, userDetails.getUser());
@@ -102,7 +102,7 @@ public class ReviewController {
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         ReviewResponseDto result = reviewService.createReviewLike(reviewId, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "좋아요를 추가했습니다. 좋아요 수: " + result.getLikeCnt()));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "좋아요를 추가했습니다."));
     }
 
     @DeleteMapping("/festivals/{festivalId}/reviews/{reviewId}/likes-cancel")
@@ -112,7 +112,7 @@ public class ReviewController {
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         ReviewResponseDto result = reviewService.deleteReviewLike(reviewId, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "좋아요를 취소했습니다. 좋아요 수: " + result.getLikeCnt()));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "좋아요를 취소했습니다."));
     }
 
     @GetMapping("/festivals/reviews/rank")

@@ -42,6 +42,15 @@ public interface CommentService {
     void deleteComment(Long commentId, User user);
 
     /**
+     * 선택한 댓글 좋아요 확인
+     *
+     * @param commentId 좋아요 확인할 페스티벌의 id
+     * @param user       권한 확인
+     * @return 좋아요 확인 결과
+     */
+    Boolean selectCommentLike(Long commentId, User user);
+
+    /**
      * 선택한 댓글 좋아요 추가
      * @param commentId 좋아요 추가할 댓글의 id
      * @param user 권한 확인
