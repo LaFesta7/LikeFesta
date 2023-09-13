@@ -10,11 +10,12 @@
     <link rel="icon" href="/images/logo1.png" type="image/x-icon">
 
     <link href="/css/slides.min.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" as="font" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
+    <link rel="stylesheet" as="font"
+          href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,600,700|Material+Icons"/>
     <link rel="stylesheet" href="/css/slides.css">
     <link rel="stylesheet" href="/css/review.css">
 
-    <script src="/js/slides.js"></script>
+<!--    <script src="/js/slides.js"></script>-->
     <script src="/js/jquery.min.js"></script>
     <script src="/js/plugins.js"></script>
 </head>
@@ -27,8 +28,8 @@
     </a>
 </div>
 
-<div class="review-form">
-    <form action="/" method="post" enctype="multipart/form-data">
+<div id="review-edit-form" class="review-form">
+
         <div>
             <label for="title">제목:</label>
             <input type="text" id="title" name="title" required>
@@ -52,8 +53,8 @@
         <div>
             <button type="submit">변경사항 저장</button>
         </div>
-    </form>
-</div>
 
+</div>
+<script src="/js/review-edit.js"></script>
 </body>
 </html>
