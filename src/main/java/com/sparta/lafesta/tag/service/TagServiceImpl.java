@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,14 +38,14 @@ public class TagServiceImpl implements TagService {
     //태그 전체 조회
     @Override
     @Transactional(readOnly = true)
-    public Page<TagResponseDto> selectTags(User user, Pageable pageable) {
+    public List<TagResponseDto> selectTags(User user, Pageable pageable) {
         //회원 확인
         if (user == null) {
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        return tagRepository.findAllBy(pageable)
-                .map(TagResponseDto::new);
+        return tagRepository.findAllBy(pageable).stream()
+                .map(TagResponseDto::new).toList();
     }
 
     //태그 수정

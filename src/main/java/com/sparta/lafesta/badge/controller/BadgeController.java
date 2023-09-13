@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
@@ -44,12 +43,12 @@ public class BadgeController {
 
     @GetMapping("/admin/badges")
     @Operation(summary = "뱃지 전체 조회", description = "생성된 뱃지를 모두 조회합니다.")
-    public ResponseEntity<Page<BadgeResponseDto>> selectBadges (
+    public ResponseEntity<List<BadgeResponseDto>> selectBadges (
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
         @Parameter(description = "뱃지 페이지 처리에 필요한 기본 설정")
-        @PageableDefault(size=10, sort="id") Pageable pageable
+        @PageableDefault(size=20, sort="id") Pageable pageable
     ) {
-        Page<BadgeResponseDto> results = badgeService.selectBadges(userDetails.getUser(), pageable);
+        List<BadgeResponseDto> results = badgeService.selectBadges(userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(results);
     }
 
@@ -80,12 +79,9 @@ public class BadgeController {
     public ResponseEntity<List<UserBadgeResponseDto>> selectMyBadges (
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "유저 뱃지 페이지 처리에 필요한 기본 설정")
-            @PageableDefault(size=5) Pageable pageable,
-        @Parameter(description = "No offset 페이지 넘기기에 필요한 기본 설정")
-        @RequestParam(value = "lt", required = false)Long lt
-
+            @PageableDefault(size=20, sort="createdAt", direction = Direction.DESC) Pageable pageable
     ) {
-        List<UserBadgeResponseDto> results = badgeService.selectMyBadges(userDetails.getUser(), pageable, lt);
+        List<UserBadgeResponseDto> results = badgeService.selectMyBadges(userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(results);
     }
 

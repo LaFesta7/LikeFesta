@@ -2,10 +2,11 @@ package com.sparta.lafesta.admin.service;
 
 import com.sparta.lafesta.admin.dto.OrganizerResponseDto;
 import com.sparta.lafesta.festivalRequest.dto.FestivaRequestlResponseDto;
+import com.sparta.lafesta.user.dto.SelectUserResponseDto;
 import com.sparta.lafesta.user.dto.UserInfoResponseDto;
 import com.sparta.lafesta.user.entity.User;
 
-import org.springframework.data.domain.Page;
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 public interface AdminService {
@@ -15,7 +16,7 @@ public interface AdminService {
      * @param pageable 페이징 정보
      * @return 주최사 가입 인증 요청 목록
      */
-    Page<OrganizerResponseDto> selectOrganizerRequests(User user, Pageable pageable);
+    List<OrganizerResponseDto> selectOrganizerRequests(User user, Pageable pageable);
 
     /**
      * 주최사 가입 인증 승인
@@ -31,7 +32,7 @@ public interface AdminService {
      * @param pageable 페이징 정보
      * @return 페스티벌 게시 요청 미승인 목록
      */
-    Page<FestivaRequestlResponseDto> selectFestivalRequestNotAdminApproval(User user, Pageable pageable);
+    List<FestivaRequestlResponseDto> selectFestivalRequestNotAdminApproval(User user, Pageable pageable);
 
     /**
      * 페스티벌 게시 요청 승인
@@ -46,7 +47,7 @@ public interface AdminService {
      * @param user 권한 확인
      * @param pageable 페이징 정보
      */
-    Page<UserInfoResponseDto> selectUsers(User user, Pageable pageable);
+    List<UserInfoResponseDto> selectUsers(User user, Pageable pageable);
 
     /**
      * 유저 삭제

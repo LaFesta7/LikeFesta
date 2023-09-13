@@ -1,10 +1,10 @@
 $(document).ready(function () {
-    getBadges(0);
+    getBadges();
 });
 
-function getBadges(lastBadgeId) {
+function getBadges() {
     $.ajax({
-        url: `/api/users/badges?lt=${lastBadgeId}`,
+        url: '/api/users/badges',
         method: 'GET',
         dataType: 'json',
         success: function (data) {
@@ -42,14 +42,7 @@ function getBadges(lastBadgeId) {
                 // 대표 박스를 listItem 앞에 추가
                 listItem.prepend(representative);
                 badgeList.append(listItem);
-
-                //마지막에 출력된 뱃지 id
-                lastBadgeId = badge.id;
             });
-            const loadBtn = document.querySelector('#load-badge');
-            loadBtn.onclick = function (){
-                getBadges(lastBadgeId);
-            }
         },
         error: function (error) {
             console.error('API 요청 중 오류 발생:', error);

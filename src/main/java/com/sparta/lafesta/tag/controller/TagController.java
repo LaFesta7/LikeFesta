@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
@@ -41,12 +40,12 @@ public class TagController {
 
     @GetMapping("/tags")
     @Operation(summary = "전체 태그 조회", description = "태그를 전체 조회합니다.")
-    public ResponseEntity<Page<TagResponseDto>> selectTags(
+    public ResponseEntity<List<TagResponseDto>> selectTags(
             @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "페이지 처리에 필요한 기본 설정")
-            @PageableDefault(size=10, sort="title", direction = Direction.ASC) Pageable pageable
+            @PageableDefault(size=30, sort="title", direction = Direction.ASC) Pageable pageable
     ) {
-        Page<TagResponseDto> results = tagservice.selectTags(userDetails.getUser(), pageable);
+        List<TagResponseDto> results = tagservice.selectTags(userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(results);
     }
 

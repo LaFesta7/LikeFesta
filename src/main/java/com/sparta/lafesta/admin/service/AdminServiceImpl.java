@@ -6,15 +6,17 @@ import com.sparta.lafesta.admin.dto.OrganizerResponseDto;
 import com.sparta.lafesta.festivalRequest.dto.FestivaRequestlResponseDto;
 import com.sparta.lafesta.festivalRequest.entity.FestivalRequest;
 import com.sparta.lafesta.festivalRequest.repository.FestivalRequestRepository;
+import com.sparta.lafesta.user.dto.SelectUserResponseDto;
 import com.sparta.lafesta.user.dto.UserInfoResponseDto;
 import com.sparta.lafesta.user.entity.User;
 import com.sparta.lafesta.user.entity.UserRoleEnum;
 import com.sparta.lafesta.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,12 +27,12 @@ public class AdminServiceImpl implements AdminService {
     // 주최사 가입 인증 요청 목록 조회
     @Override
     @Transactional(readOnly = true)
-    public Page<OrganizerResponseDto> selectOrganizerRequests(User user, Pageable pageable) {
+    public List<OrganizerResponseDto> selectOrganizerRequests(User user, Pageable pageable) {
         // admin 권한 확인
         checkAdminRole(user);
 
         return userRepository.findAllByOrganizerRequest(Boolean.TRUE, pageable)
-                .map(OrganizerResponseDto::new);
+                .stream().map(OrganizerResponseDto::new).toList();
     }
 
     // 주최사 가입 인증 승인
@@ -54,12 +56,12 @@ public class AdminServiceImpl implements AdminService {
     // 페스티벌 게시 요청 미승인 목록 조회
     @Override
     @Transactional(readOnly = true)
-    public Page<FestivaRequestlResponseDto> selectFestivalRequestNotAdminApproval(User user, Pageable pageable) {
+    public List<FestivaRequestlResponseDto> selectFestivalRequestNotAdminApproval(User user, Pageable pageable) {
         // admin 권한 확인
         checkAdminRole(user);
 
         return festivalRequestRepository.findAllByAdminApproval(Boolean.FALSE, pageable)
-                .map(FestivaRequestlResponseDto::new);
+                .stream().map(FestivaRequestlResponseDto::new).toList();
     }
 
     // 페스티벌 게시 요청 승인
@@ -83,11 +85,11 @@ public class AdminServiceImpl implements AdminService {
     // 전체 유저 목록 조회
     @Override
     @Transactional(readOnly = true)
-    public Page<UserInfoResponseDto> selectUsers(User user, Pageable pageable) {
+    public List<UserInfoResponseDto> selectUsers(User user, Pageable pageable) {
         // admin 권한 확인
         checkAdminRole(user);
 
-        return userRepository.findAll(pageable).map(UserInfoResponseDto::new);
+        return userRepository.findAll(pageable).stream().map(UserInfoResponseDto::new).toList();
     }
 
     // 유저 삭제
