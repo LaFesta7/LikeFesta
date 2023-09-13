@@ -138,7 +138,7 @@ function deleteReview() {
         },
         error: function (err) {
             console.log('Error:', err);
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
         }
     });
 }
@@ -163,7 +163,7 @@ function postComment() {
         },
         error: function (err) {
             console.log('Error:', err);
-            alert(err.responseText.statusMessage);
+            alert(err.responseJSON.statusMessage);
         }
     });
 }
@@ -231,7 +231,7 @@ function modifyComment(commentId) {
             getComments();
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
             getComments();
         }
@@ -259,7 +259,7 @@ function deleteComment(commentId) {
         },
         error: function (err) {
             console.log('Error:', err);
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
         }
     });
 }

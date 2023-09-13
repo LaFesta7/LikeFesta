@@ -227,7 +227,7 @@ function editFestivalPost(festivalId) {
             window.location.href = `/api/festivals/${festivalId}/page`;
         },
         error: function (err) {
-            alert(err.responseText.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });

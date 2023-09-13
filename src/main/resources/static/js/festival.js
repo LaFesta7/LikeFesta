@@ -122,7 +122,7 @@ function addLike() {
         },
         error: function (err) {
             console.log('Error:', err);
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
         }
     });
 }
@@ -139,7 +139,7 @@ function cancelLike() {
         },
         error: function (err) {
             console.log('Error:', err);
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
         }
     });
 }
@@ -227,7 +227,7 @@ function deleteFestival() {
             window.location.href = '/api/festivals-map';
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });

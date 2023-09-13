@@ -62,7 +62,7 @@ function approveOrganizerRequest(userId) {
             getOrganizerRequests();
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
@@ -215,7 +215,7 @@ function withdrawUser(userId) {
             getUsers();
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
@@ -298,7 +298,7 @@ function modifyTag(tagId) {
             getTags();
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
@@ -323,7 +323,7 @@ function deleteTag(tagId) {
             getTags();
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
@@ -498,7 +498,7 @@ function createBadge() {
             getBadges();
         },
         error: function (err) {
-            alert(err.responseText.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
@@ -781,7 +781,7 @@ function modifyBadge(badgeId) {
             getBadges();
         },
         error: function (err) {
-            alert(err.responseText.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
@@ -807,7 +807,7 @@ function deleteBadge(badgeId) {
             getBadges();
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });

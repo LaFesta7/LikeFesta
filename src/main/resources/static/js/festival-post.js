@@ -77,7 +77,7 @@ tagInputs.forEach(input => {
             window.location.href = '/api/festivals-map';
         },
         error: function (err) {
-            alert(err.responseText.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });

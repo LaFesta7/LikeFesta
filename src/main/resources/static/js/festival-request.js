@@ -116,7 +116,7 @@ function deleteFestivalRequest() {
             }
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
