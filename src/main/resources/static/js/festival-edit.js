@@ -156,7 +156,7 @@ function addTagInput() {
 
 
 function redirectFestivalMap() {
-    window.location.href = `/api/users/festivals-map`;
+    window.location.href = `/api/festivals-map`;
 }
 
 // 페스티벌 수정

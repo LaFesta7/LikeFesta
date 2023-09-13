@@ -52,7 +52,7 @@ function getFestivalRequest() {
             </div>
                     <div class="festival-content">
                     <div>
-                        <a href="/api/users/festivals-map" style="margin-right: 10px">Map</a>
+                        <a href="/api/festivals-map" style="margin-right: 10px">Map</a>
                         <a href="/api/admin-page#festival-request">Festival Request List</a>
                     </div>
                     <div id="festivalUDContainer" style="float: right; display: none; margin-bottom: 10px;">
@@ -112,7 +112,7 @@ function deleteFestivalRequest() {
             if (role === 'ADMIN') {
                 window.location.href = '/api/admin-page#festival-request';
             } else {
-                window.location.href = '/api/users/festivals-map';
+                window.location.href = '/api/festivals-map';
             }
         },
         error: function (err) {

@@ -23,7 +23,7 @@
 </head>
 
 <body class="slides horizontal simplifiedMobile animated">
-
+<!-- 상단 바 -->
 <nav class="panel top">
     <div class="sections desktop">
         <div class="left">
@@ -34,17 +34,16 @@
         <div class="center">
             <ul class="menu">
                 <li><a href="/">Home</a></li>
-                <li><a href="#videos">Festival Map</a></li>
-                <li><a href="#features">Festival</a></li>
-                <li><a href="#case">Ranking</a></li>
-                <li><a href="#pricing">Tag</a></li>
-                <li><a href="#download">My Page</a></li>
+                <li><a href="#festival">Festival</a></li>
+                <li><a href="#rank">Ranking</a></li>
+                <li><a href="#tag">Tag</a></li>
+                <li><a id="myPageTab" href="#mypage" style="display: none">My Page</a></li>
                 <li><a id="adminPageLink" style="display: none" onclick="moveAdminPage()">Admin Page</a></li>
             </ul>
         </div>
         <div class="right">
             <a id="notification-click" href="/api/users/notification-page">
-                <svg id="notification-icon" style="margin-right: 20px" xmlns="http://www.w3.org/2000/svg" width="50"
+                <svg id="notification-icon" style="margin-right: 20px; display: none" xmlns="http://www.w3.org/2000/svg" width="50"
                      height="50" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
                     <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
                 </svg>
@@ -68,24 +67,6 @@
     </div>
 </nav>
 
-<!-- 상단 바 -->
-<nav class="sidebar" data-sidebar-id="1">
-    <div class="content">
-        <a href="/" class="logo">
-            <svg width="37" height="30">
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" src="/"></use>
-            </svg>
-        </a>
-        <ul class="mainMenu margin-top-3">
-            <li><a href="/">Home</a></li>
-            <li><a href="#lafestamap">Festival Map</a></li>
-            <li><a href="#festival">Festival</a></li>
-            <li><a href="#rank">Ranking</a></li>
-            <li><a href="#tag">Tag</a></li>
-            <li><a href="#mypage">My Page</a></li>
-        </ul>
-    </div>
-</nav>
 
 <!-- 메인 페이지 -->
 <section class="slide fade-6 kenBurns">
@@ -96,12 +77,10 @@
                     <ul class="flex fixedSpaces verticalCenter reverse">
                         <li class="col-6-12 left middle">
                             <h1 class="ae-1 fromLeft">모든 축제의 시작과 끝 LAFESTA</h1>
-                            <p class="ae-2 fromLeft"><span class="opacity-8">라페스타와 함께 당신의 매일을 축제와 함께하세요.</span>
+                            <p class="ae-2 fromLeft"><span class="opacity-8">라페스타와 함께 당신의 매일을 축제처럼 즐겨보세요!</span>
                             </p>
                             <a id="myButton7" class="button blue gradient ae-3 fromCenter cropLeft"
-                               href="/api/users/festivals-map">축제
-                                찾으러가기</a><a
-                                class="button white ae-4 fromCenter" href="/">축제참여 인증하기</a>
+                               href="/api/festivals-map">축제 찾으러가기</a>
                         </li>
                         <li class="col-6-12">
                             <img class="ae-4" width="605" src="/images/logo6.png" alt="iPhones Thumbnail"
@@ -115,59 +94,9 @@
     <div class="background" style="background-image:url(/images/background/img-3.jpg)"></div>
 </section>
 
-<!-- 페스티벌 맵? -->
-<section class="slide fade-6 kenBurns" data-name="videos">
-    <div class="content">
-        <div class="container">
-            <div class="wrap">
-                <div class="fix-10-12">
-                    <h1 class="ae-1">
-                        추후 구현 예정</h1>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="background" style="background-image:url(/images/background/img-15.jpg)"></div>
-</section>
-
-<!--페스티벌 랭킹-->
-<div class="popup autoplay" data-popup-id="60-1">
-    <div class="content">
-        <div class="container">
-            <div class="wrap">
-                <div class="fix-10-12">
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="popup autoplay" data-popup-id="60-2">
-    <div class="content">
-        <div class="container">
-            <div class="wrap">
-                <div class="fix-10-12">
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="popup autoplay" data-popup-id="60-3">
-    <div class="content">
-        <div class="container">
-            <div class="wrap">
-                <div class="fix-10-12">
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- 페스티벌 리스트 -->
-<section class="slide fade-6 kenBurns" data-name="features">
+<section class="slide fade-6 kenBurns" data-name="festival">
     <div class="content">
         <div class="container">
             <div class="wrap">
@@ -179,9 +108,9 @@
                                 <thead>
                                 <tr>
                                     <th class="no" scope="col">No.</th>
-                                    <th class="title" scope="col">Festival name</th>
+                                    <th class="author" scope="col">Festival name</th>
                                     <th class="author" scope="col">Place</th>
-                                    <th class="author" scope="col">Content</th>
+                                    <th class="title" scope="col">Content</th>
                                     <th class="author" scope="col">Date</th>
                                     <th class="author" scope="col">Official Link</th>
                                 </tr>
@@ -200,6 +129,7 @@
                         <a href="?page=5">5</a>
                         <a href="?page=6">(쪽수설정)</a>
                     </div>
+                    <a href="/api/festivals-map" class="button" style="float: right">맵으로 보기</a>
                 </div>
             </div>
         </div>
@@ -208,7 +138,7 @@
 </section>
 
 <!-- 랭킹 페이지 -->
-<section class="slide fade-6 kenBurns" data-name="case">
+<section class="slide fade-6 kenBurns" data-name="rank">
     <div class="content">
         <div class="container">
             <div class="wrap">
@@ -252,7 +182,7 @@
 </section>
 
 <!-- 태그 검색 -->
-<section class="slide fade-6 kenBurns" data-name="pricing">
+<section class="slide fade-6 kenBurns" data-name="tag">
     <div class="content">
         <div class="container">
             <div class="wrap">
@@ -274,8 +204,8 @@
 </section>
 
 <!-- 마이 페이지 -->
-<section class="slide fade-6 kenBurns" data-name="download">
-    <div class="content">
+<section class="slide fade-6 kenBurns" data-name="mypage">
+    <div id="myPageSection" class="content" style="display: none">
         <div class="container">
             <div class="wrap">
                 <div class="fix-12-12 toCenter">
@@ -310,6 +240,27 @@
                             <h3>유저 팔로워 List</h3>
                             <p id="my-follow-list" class="tiny opacity-6"></p>
                             <button><a id="load-follow" class="load-follow">more</a></button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="myPageHiddenSection" class="content" style="display: none">
+        <div class="container">
+            <div class="wrap">
+                <div class="fix-12-12">
+                    <ul class="flex fixedSpaces verticalCenter reverse">
+                        <li class="col-6-12 left middle">
+                            <h1 class="ae-1 fromLeft">모든 축제의 시작과 끝 LAFESTA</h1>
+                            <p class="ae-2 fromLeft"><span class="opacity-8">라페스타와 함께 어떤 축제가 기다리고 있는지 확인해보세요!</span>
+                            </p>
+                            <a class="button blue gradient ae-3 fromCenter cropLeft"
+                               href="/api/users/sign-up">라페스타 함께하기</a>
+                        </li>
+                        <li class="col-6-12">
+                            <img class="ae-4" width="605" src="/images/logo6.png" alt="iPhones Thumbnail"
+                                 data-action="zoom"/>
                         </li>
                     </ul>
                 </div>

@@ -54,7 +54,7 @@ function getFestival() {
             </div>
                     <div class="festival-content">
                     <div>
-                        <a href="/api/users/festivals-map">Map</a>
+                        <a href="/api/festivals-map">Map</a>
                         <a href="/#features">List</a>
                     </div>
                     <div id="festivalUDContainer" style="float: right; display: none; margin-bottom: 15px;">
@@ -160,7 +160,7 @@ function deleteFestival() {
         type: 'DELETE',
         success: function (data) {
             alert(data.statusMessage);
-            window.location.href = '/api/users/festivals-map';
+            window.location.href = '/api/festivals-map';
         },
         error: function (err) {
             alert(err.statusMessage);

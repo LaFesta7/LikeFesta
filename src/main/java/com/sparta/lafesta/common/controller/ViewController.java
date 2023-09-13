@@ -36,7 +36,7 @@ public class ViewController {
         return "signup";
     }
 
-    @GetMapping("/users/festivals-map")
+    @GetMapping("/festivals-map")
     public String festivalsMap() {
         return "kakaomap";
     }

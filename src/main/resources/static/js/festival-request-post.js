@@ -42,7 +42,7 @@ function submitFestivalRequestPost() {
         success: function (data) {
             alert(data.statusMessage);
             // AJAX 요청이 완료되면 리다이렉트 수행
-            window.location.href = '/api/users/festivals-map';
+            window.location.href = '/api/festivals-map';
         },
         error: function (err) {
             alert(err.responseText.statusMessage);
@@ -52,5 +52,5 @@ function submitFestivalRequestPost() {
 }
 
 function redirectFestivalMap() {
-    window.location.href = `/api/users/festivals-map`;
+    window.location.href = `/api/festivals-map`;
 }
