@@ -280,17 +280,17 @@ function makePagination(page) {
     if (cur > 0) // 이전 버튼
     {
         pagination.append(
-            `<button><a onclick='loadFestivals(${cur - 1})'>이전</a></button>`);
+            `<a onclick='loadFestivals(${cur - 1})'><button>이전</button></a>`);
     }
 
     for (let i = startPage; i <= endPage; i++) { // 페이지네이션
         pagination.append(
-            `<button><a onclick="loadFestivals(${i - 1});">${i}</a></button>`);
+            `<a onclick="loadFestivals(${i - 1});"><button>${i}</button></a>`);
     }
     if (cur + 1 < page.totalPages) // 다음 버튼
     {
         pagination.append(
-            `<button><a onclick='loadFestivals(${cur + 1})'>다음</a></button>`);
+            `<a onclick='loadFestivals(${cur + 1})'><button>다음</button></a>`);
     }
 }
 
