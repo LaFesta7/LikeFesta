@@ -39,14 +39,14 @@ function getFestival() {
                     <br>
                     <br>
                     <strong> 예매일 </strong>
-                    <p>${formatDate(new Date(data.reservationOpenDate))}</p>
+                    <p>${data.reservationOpenDate ? formatDate(new Date(data.reservationOpenDate)) : ''}</p>
                     <strong> 예매처 </strong>
                     <p>${data.reservationPlace}</p>
                     <br>
                     <br>
                     <strong> 공식사이트 </strong>
                     <br>
-                    <a href="${data.officialLink}">${data.officialLink}</a>
+                    <a href="${data.officialLink}">→ 바로가기</a>
                     <br>
                     <br>
                     <br>
@@ -55,7 +55,7 @@ function getFestival() {
                     <div class="festival-content">
                     <div>
                         <a href="/api/festivals-map">Map</a>
-                        <a href="/#features">List</a>
+                        <a href="/#festival" style="margin-left: 10px">List</a>
                     </div>
                     <div id="festivalUDContainer" style="float: right; display: none; margin-bottom: 15px;">
                         <input type="submit" value="삭제" style="background-color: crimson" onclick="alertDeleteFestival('${data.title}')">
