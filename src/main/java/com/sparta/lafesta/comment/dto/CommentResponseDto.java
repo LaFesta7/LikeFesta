@@ -9,6 +9,7 @@ public class CommentResponseDto {
     private String festivalTitle;
     private String reviewTitle;
     private String userNickname;
+    private String username;
     private String content;
     private int likeCnt;
 
@@ -17,6 +18,7 @@ public class CommentResponseDto {
         this.festivalTitle = comment.getReview().getFestival().getTitle();
         this.reviewTitle = comment.getReview().getTitle();
         this.userNickname = comment.getUser().getNickname();
+        this.username = comment.getUser().getUsername();
         this.content = comment.getContent();
         this.likeCnt = comment.getCommentLikes().size();
     }

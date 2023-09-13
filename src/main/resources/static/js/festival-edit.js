@@ -8,6 +8,10 @@ const pathSegments = currentURL.split('/');
 const festivalId = pathSegments[pathSegments.length - 2];
 
 $(document).ready(function () {
+    getFestivalEditPage();
+});
+
+function getFestivalEditPage() {
     $.ajax({
         url: `/api/festivals/${festivalId}`,
         type: 'GET',
@@ -62,7 +66,7 @@ $(document).ready(function () {
         <br><br>
         <div style="float: right;">
         <input type="submit" onclick="redirectFestivalMap()" value="페스티벌 맵 돌아가기" style="background-color: crimson">
-        <input type="submit" id="festival-edit-submit" name="festival-edit-submit" onclick="editFestivalPost(data.id, data.latitude, data.longitude)"
+        <input type="submit" id="festival-edit-submit" name="festival-edit-submit" onclick="editFestivalPost(${data.id})"
                value="페스티벌 정보 수정">
     </div>
     </div>
@@ -100,7 +104,7 @@ $(document).ready(function () {
             console.log('Error:', err);
         }
     });
-});
+}
 
 // 이미지 파일 미리보기
 // 파일 선택 시 이벤트 리스너 추가
@@ -156,13 +160,11 @@ function redirectFestivalMap() {
 }
 
 // 페스티벌 수정
-function editFestivalPost(id, lat, lng) {
+function editFestivalPost(festivalId) {
     // <form> 요소에서 데이터 가져오기
     const title = $('#titleInput').val();
     const place = $('#placeInput').val();
     const content = $('#contentInput').val();
-    const latitude = lat;
-    const longitude = lng;
     const openDate = $('#openDateInput').val();
     const endDate = $('#endDateInput').val();
     const reservationOpenDate = $('#reservationOpenDateInput').val();
@@ -194,8 +196,6 @@ function editFestivalPost(id, lat, lng) {
         title: title,
         place: place,
         content: content,
-        latitude: latitude,
-        longitude: longitude,
         openDate: openDate,
         endDate: endDate,
         reservationOpenDate: reservationOpenDate,
@@ -216,15 +216,15 @@ function editFestivalPost(id, lat, lng) {
 
     // 서버로 데이터를 전송
     $.ajax({
-        url: `/api/festivals/${id}`,
+        url: `/api/festivals/${festivalId}`,
         type: 'PUT',
         data: formData, // form-data 전송
         contentType: false, // form-data는 contentType을 false로 설정
         processData: false, // 이미지 파일을 전송할 때 false로 설정
         success: function (data) {
-            alert(data.statusMessage);
-            // AJAX 요청이 완료되면 리다이렉트 수행
-            // window.location.href = '/api/festivals/${id}/page';
+            console.log(festivalId, '페스티벌 수정 완료!');
+            alert('페스티벌 수정 완료!');
+            window.location.href = `/api/festivals/${festivalId}/page`;
         },
         error: function (err) {
             alert(err.responseText.statusMessage);
