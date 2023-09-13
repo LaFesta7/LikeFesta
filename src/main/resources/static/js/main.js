@@ -1,6 +1,7 @@
+// 쿠키에서 'Authorization' 토큰을 가져옵니다.
+const token = Cookies.get('Authorization');
+
 $(document).ready(function () {
-    // 쿠키에서 'Authorization' 토큰을 가져옵니다.
-    const token = Cookies.get('Authorization');
     // 토큰이 존재하면 서버 API를 호출하여 유효성을 검사합니다.
     if (token === undefined) {
         // 토큰이 존재하지 않으면, 사용자는 로그인 상태가 아닙니다.
@@ -350,6 +351,40 @@ function getRank() {
         }
     });
 
+}
+
+function searchFestivalTag() {
+    const tagSearchInput = document.querySelector('#tagSearchInput').value; // 입력 필드의 값 가져오기
+    console.log(tagSearchInput);
+    $.ajax({
+        url: `/api/festivals/tags?tag=${tagSearchInput}`,
+        type: 'GET',
+        dataType: "json",
+        success: function (data) {
+            console.log(data);
+            let html = '';
+            for (let i = 0; i < data.length; i++) {
+                html += `
+                <div style="margin-top:30px; margin-bottom: 15px; border-bottom: 1px solid #cccccc">
+                    <strong class="left" style="font-size: 20px"><p onclick="moveFestival(${data[i].id})">${data[i].title}</p></strong>
+                    <div style="display: flex">
+                    <p>${data[i].tags.map(tag => `<span>#${tag.title}</span>`).join(' ')}</p>
+                    </div>
+                </div>
+                `;
+            };
+            $('#tag-search-festival-list').html(html);
+
+            makePagination(data);
+        },
+        error: function (err) {
+            if (token === undefined) {
+                alert('로그인을 진행해주세요!')
+            }
+            console.log('Error:', err);
+            alert(err.responseJSON.statusMessage);
+        }
+    });
 }
 
 function moveFestival(festivalId) {

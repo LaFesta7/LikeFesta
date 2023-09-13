@@ -199,13 +199,15 @@
                     <h1 class="huge ae-1 margin-bottom-2">Festival Tag Categorization</h1>
                     <p class="hero ae-2 margin-bottom-3"><span
                             class="opacity-8">태그로 원하는 페스티벌을 찾아보세요.</span></p>
-                    <form action="/" autocomplete="off" class="slides-form margin-bottom-3">
-                        <input type="text" class="ae-3" name="tag" placeholder="Festival Tag"/>
-                        <button id="getTagsBtn" type="submit" class="button blue gradient ae-4" name="submit">Search for
+<!--                    <form action="/" autocomplete="off" class="slides-form margin-bottom-3">-->
+                        <label for="tagSearchInput"></label>
+                        <input id="tagSearchInput" type="text" class="ae-3" name="tag" placeholder="Festival Tag" style="height: 50px; width: 250px">
+                        <button id="getTagsBtn" type="submit" class="button blue gradient ae-4" name="submit" onclick="searchFestivalTag()">Search for
                             Tags
                         </button>
-                    </form>
+<!--                    </form>-->
                 </div>
+                <div id="tag-search-festival-list" style="margin-top: 20px"></div>
             </div>
         </div>
     </div>
