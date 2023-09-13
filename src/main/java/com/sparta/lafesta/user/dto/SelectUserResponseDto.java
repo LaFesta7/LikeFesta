@@ -15,6 +15,7 @@ public class SelectUserResponseDto {
     private Long id;
     private String username;
     private String nickname;
+    private String introduce;
     private UserRoleEnum role;
     private List<FileOnS3Dto> files;
     private List<UserBadgeResponseDto> representativeBadges;
@@ -26,6 +27,7 @@ public class SelectUserResponseDto {
         this.id = user.getId();
         this.username = user.getUsername();
         this.nickname = user.getNickname();
+        this.introduce = user.getIntroduce();
         this.role = user.getRole();
         this.files = user.getUserFileOnS3s().stream().
                 map(FileOnS3Dto::new).toList();

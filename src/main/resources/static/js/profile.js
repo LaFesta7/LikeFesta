@@ -62,6 +62,9 @@ function getProfile() {
                                        style="font-size: 25px; background-color: forestgreen; color: white; display: none"
                                     value="팔로우" onclick="followUser()"></a>
                             </div>
+                        </div>
+                        <div>
+                            <p>${data.introduce !== null ? data.introduce : ''}</p>
                         </div>`;
             $('#profile-header').html(html1);
             let html2 = '';
