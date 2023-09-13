@@ -373,7 +373,7 @@ function addNewRow() {
     // 각 열에 대한 <td> 요소 생성
     newRow.innerHTML = `
     <td>.</td>
-    <td><input id="badgeImageInput" type="file" accept="image/*" onchange="previewImage(this)">
+    <td><input id="badgeImageInput" type="file" accept="image/*" onchange="previewImage(this)" required>
         <img id="preview" src="" alt="Image Preview" style="max-width: 300px; max-height: 300px;">
     </td>
     <td><input id="badgeTitleInput" type="text" class="input-field" placeholder="Title"></td>

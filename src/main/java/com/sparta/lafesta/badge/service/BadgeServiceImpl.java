@@ -86,6 +86,8 @@ public class BadgeServiceImpl implements BadgeService {
         // 첨부파일 업로드
         if (files != null) {
             uploadFiles(files, badge);
+        } else {
+            throw new IllegalArgumentException("이미지를 첨부해주세요!");
         }
 
         return new BadgeResponseDto(badge);
