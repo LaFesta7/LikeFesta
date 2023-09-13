@@ -63,17 +63,17 @@ function makeOrganizerRequestPagination(page){
     if (cur > 0) // 이전 버튼
     {
         pagination.append(
-            `<button><a onclick='getOrganizerRequests(${cur - 1})'>이전</a></button>`);
+            `<a onclick='getOrganizerRequests(${cur - 1})'><button>이전</a></button>`);
     }
 
     for (let i = startPage; i <= endPage; i++) { // 페이지네이션
         pagination.append(
-            `<button><a onclick="getOrganizerRequests(${i - 1});">${i}</a></button>`);
+            `<a onclick="getOrganizerRequests(${i - 1});"><button>${i}</a></button>`);
     }
     if (cur + 1 < page.totalPages) // 다음 버튼
     {
         pagination.append(
-            `<button><a onclick='getOrganizerRequests(${cur + 1})'>다음</a></button>`);
+            `<a onclick='getOrganizerRequests(${cur + 1})'><button>다음</a></button>`);
     }
 }
 
@@ -148,17 +148,17 @@ function makeFestivalRequestPagination(page){
     if (cur > 0) // 이전 버튼
     {
         pagination.append(
-            `<button><a onclick='getFestivalRequests(${cur - 1})'>이전</a></button>`);
+            `<a onclick='getFestivalRequests(${cur - 1})'><button>이전</button></a>`);
     }
 
     for (let i = startPage; i <= endPage; i++) { // 페이지네이션
         pagination.append(
-            `<button><a onclick="getFestivalRequests(${i - 1});">${i}</a></button>`);
+            `<a onclick="getFestivalRequests(${i - 1});"><button>${i}</button></a>`);
     }
     if (cur + 1 < page.totalPages) // 다음 버튼
     {
         pagination.append(
-            `<button><a onclick='getFestivalRequests(${cur + 1})'>다음</a></button>`);
+            `<a onclick='getFestivalRequests(${cur + 1})'><button>다음</button></a>`);
     }
 }
 
@@ -278,17 +278,17 @@ function makeUserPagination(page){
     if (cur > 0) // 이전 버튼
     {
         pagination.append(
-            `<button><a onclick='getUsers(${cur - 1})'>이전</a></button>`);
+            `<a onclick='getUsers(${cur - 1})'><button>이전</button></a>`);
     }
 
     for (let i = startPage; i <= endPage; i++) { // 페이지네이션
         pagination.append(
-            `<button><a onclick="getUsers(${i - 1});">${i}</a></button>`);
+            `<a onclick="getUsers(${i - 1});"><button>${i}</button></a>`);
     }
     if (cur + 1 < page.totalPages) // 다음 버튼
     {
         pagination.append(
-            `<button><a onclick='getUsers(${cur + 1})'>다음</a></button>`);
+            `<a onclick='getUsers(${cur + 1})'><button>다음</button></a>`);
     }
 }
 
@@ -359,17 +359,17 @@ function makeTagPagination(page){
     if (cur > 0) // 이전 버튼
     {
         pagination.append(
-            `<button><a onclick='getTags(${cur - 1})'>이전</a></button>`);
+            `<a onclick='getTags(${cur - 1})'><button>이전</button></a>`);
     }
 
     for (let i = startPage; i <= endPage; i++) { // 페이지네이션
         pagination.append(
-            `<button><a onclick="getTags(${i - 1});">${i}</a></button>`);
+            `<a onclick="getTags(${i - 1});"><button>${i}</button></a>`);
     }
     if (cur + 1 < page.totalPages) // 다음 버튼
     {
         pagination.append(
-            `<button><a onclick='getTags(${cur + 1})'>다음</a></button>`);
+            `<a onclick='getTags(${cur + 1})'><button>다음</button></a>`);
     }
 }
 
@@ -507,17 +507,17 @@ function makeBadgePagination(page){
     if (cur > 0) // 이전 버튼
     {
         pagination.append(
-            `<button><a onclick='getBadges(${cur - 1})'>이전</a></button>`);
+            `<a onclick='getBadges(${cur - 1})'><button>이전</button></a>`);
     }
 
     for (let i = startPage; i <= endPage; i++) { // 페이지네이션
         pagination.append(
-            `<button><a onclick="getBadges(${i - 1});">${i}</a></button>`);
+            `<a onclick="getBadges(${i - 1});"><button>${i}</button></a>`);
     }
     if (cur + 1 < page.totalPages) // 다음 버튼
     {
         pagination.append(
-            `<button><a onclick='getBadges(${cur + 1})'>다음</a></button>`);
+            `<a onclick='getBadges(${cur + 1})'><button>다음</button></a>`);
     }
 }
 
