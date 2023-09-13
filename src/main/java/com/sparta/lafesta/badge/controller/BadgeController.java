@@ -80,9 +80,12 @@ public class BadgeController {
     public ResponseEntity<List<UserBadgeResponseDto>> selectMyBadges (
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "유저 뱃지 페이지 처리에 필요한 기본 설정")
-            @PageableDefault(size=20, sort="createdAt", direction = Direction.DESC) Pageable pageable
+            @PageableDefault(size=5) Pageable pageable,
+        @Parameter(description = "No offset 페이지 넘기기에 필요한 기본 설정")
+        @RequestParam(value = "lt", required = false)Long lt
+
     ) {
-        List<UserBadgeResponseDto> results = badgeService.selectMyBadges(userDetails.getUser(), pageable);
+        List<UserBadgeResponseDto> results = badgeService.selectMyBadges(userDetails.getUser(), pageable, lt);
         return ResponseEntity.ok().body(results);
     }
 

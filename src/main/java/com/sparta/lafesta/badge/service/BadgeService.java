@@ -79,9 +79,10 @@ public interface BadgeService {
      * 나의 뱃지 보유 목록 조회
      * @param user       권한 확인
      * @param pageable 페이징 정보
+     * @param lastBadge No offset을 위한 지난 페이지 Id
      * @return 뱃지 보유 목록 조회 결과
      */
-    List<UserBadgeResponseDto> selectMyBadges(User user, Pageable pageable);
+    List<UserBadgeResponseDto> selectMyBadges(User user, Pageable pageable, Long lastBadge);
 
     /**
      * 유저 뱃지 보유 목록 조회

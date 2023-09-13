@@ -10,6 +10,7 @@ import com.sparta.lafesta.badge.entity.BadgeTag;
 import com.sparta.lafesta.badge.entity.UserBadge;
 import com.sparta.lafesta.badge.event.UserBadgeCreatedEventPublisher;
 import com.sparta.lafesta.badge.repository.BadgeRepository;
+import com.sparta.lafesta.badge.repository.BadgeRepositoryCustom;
 import com.sparta.lafesta.badge.repository.BadgeTagRepository;
 import com.sparta.lafesta.badge.repository.UserBadgeRepository;
 import com.sparta.lafesta.common.exception.NotFoundException;
@@ -49,6 +50,7 @@ public class BadgeServiceImpl implements BadgeService {
     private final BadgeRepository badgeRepository;
     private final BadgeTagRepository badgeTagRepository;
     private final UserBadgeRepository userBadgeRepository;
+    private final BadgeRepositoryCustom badgeRepositoryCustom;
     private final FestivalRepository festivalRepository;
     private final ReviewRepository reviewRepository;
     private final UserService userService;
@@ -303,10 +305,9 @@ public class BadgeServiceImpl implements BadgeService {
     // 나의 뱃지 보유 목록 조회
     @Override
     @Transactional(readOnly = true)
-    public List<UserBadgeResponseDto> selectMyBadges(User user, Pageable pageable) {
+    public List<UserBadgeResponseDto> selectMyBadges(User user, Pageable pageable, Long lastBadge) {
         User selectUser = userService.findUser(user.getId());
-        List<UserBadgeResponseDto> userBadges = userBadgeRepository.findAllByUser(selectUser, pageable)
-                .stream().map(UserBadgeResponseDto::new).toList();
+        List<UserBadgeResponseDto> userBadges = badgeRepositoryCustom.findAllByUser(selectUser, pageable, lastBadge);
         return userBadges;
     }
 
