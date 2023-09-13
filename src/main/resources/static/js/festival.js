@@ -63,6 +63,11 @@ function getFestival() {
                     </div>
                     <img src="${data.files[0] ? data.files[0].uploadFileUrl : '/images/best1.jpg'}" alt="축제 이미지" class="festival-image">
                     <p class="festival-description">${data.content}</p>
+                    <div id="heart-group" style="display: flex">
+                        <a href="" id="heart-btn" class="heart-btn" style="text-decoration: none; font-size: 25px;" onclick="cancelLike()">❤️</a>
+                        <a href="" id="not-heart-btn" class="heart-btn" style="text-decoration: none; font-size: 25px; display: none" onclick="addLike()">🤍</a>
+                        <span style="font-size: 20px; margin-left: 5px; margin-top: 5px">${data.likeCnt}</span>
+                    </div>
                     <div id="moveReviewPostBtn" style="float: right; display: none;">
                         <input type="submit" value="리뷰 작성" style="margin-left: 10px" onclick="moveReviewPost()">
                     </div>
@@ -71,11 +76,70 @@ function getFestival() {
                 `;
             $('#festival-post').html(html);
             showFestivalUDContainer(role, userName, data.editorName);
+            showFestivalLikeBtn();
             showReviewPostBtn();
             getReviews();
         },
         error: function (err) {
             console.log('Error:', err);
+        }
+    });
+}
+
+function showFestivalLikeBtn() {
+    var heartBtn = document.getElementById('heart-btn');
+    var notHeartBtn = document.getElementById('not-heart-btn');
+
+    const apiUrl = `/api/festivals/${festivalId}/user-like`
+    $.ajax({
+        url: apiUrl,
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+            if (data) {
+                heartBtn.style.display = 'inline-block';
+                notHeartBtn.style.display = 'none';
+            } else {
+                heartBtn.style.display = 'none';
+                notHeartBtn.style.display = 'inline-block';
+            }
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
+}
+
+function addLike() {
+    const apiUrl = `/api/festivals/${festivalId}/likes`
+    $.ajax({
+        url: apiUrl,
+        type: 'POST',
+        success: function (data) {
+            console.log(data);
+            alert(data.statusMessage);
+            getFestival();
+        },
+        error: function (err) {
+            console.log('Error:', err);
+            alert(err.statusMessage);
+        }
+    });
+}
+
+function cancelLike() {
+    const apiUrl = `/api/festivals/${festivalId}/likes-cancel`
+    $.ajax({
+        url: apiUrl,
+        type: 'DELETE',
+        success: function (data) {
+            console.log(data);
+            alert(data.statusMessage);
+            getFestival();
+        },
+        error: function (err) {
+            console.log('Error:', err);
+            alert(err.statusMessage);
         }
     });
 }
@@ -107,7 +171,7 @@ function getReviews() {
     });
 }
 
-function moveReviewPost(){
+function moveReviewPost() {
     window.location.href = `/api/festivals/${festivalId}/reviews/post-page`;
 }
 

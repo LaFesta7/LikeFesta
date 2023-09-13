@@ -21,6 +21,14 @@ import com.sparta.lafesta.tag.entity.FestivalTag;
 import com.sparta.lafesta.tag.entity.Tag;
 import com.sparta.lafesta.tag.service.TagServiceImpl;
 import com.sparta.lafesta.user.entity.User;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -30,15 +38,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -141,7 +140,7 @@ public class FestivalServiceImpl implements FestivalService {
         List<Tag> oldTag = tagService.findTagByFestival(festival);
         List<TagRequestDto> newTag = requestDto.getTagList();
 
-        if(!compareTags(oldTag, newTag)) {
+        if (!compareTags(oldTag, newTag)) {
             //이전 태그 정보 삭제
             deleteFestivalTag(festival);
             //새로운 태그 생성 및 추가
@@ -174,6 +173,13 @@ public class FestivalServiceImpl implements FestivalService {
         for (FestivalTag festivalTag : festivalTags) {
             tagService.deleteUnusedTag(festivalTag.getTag());
         }
+    }
+
+    // 페스티벌 좋아요 확인
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean selectFestivalLike(Long festivalId, User user) {
+        return findFestivalLike(user, findFestival(festivalId)) != null;
     }
 
     // 페스티벌 좋아요 추가
@@ -228,22 +234,22 @@ public class FestivalServiceImpl implements FestivalService {
     //페스티벌 랭킹 조회
     @Override
     @Transactional(readOnly = true)
-    public List<FestivalResponseDto> selectFestivalRanking(User user){
+    public List<FestivalResponseDto> selectFestivalRanking(User user) {
         //회원 확인
         if (user == null) {
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
         return festivalRepositoryCustom.findTop3Festival().stream()
-            .map(FestivalResponseDto::new).toList();
+                .map(FestivalResponseDto::new).toList();
     }
 
     //페스티벌 검색
     @Override
     @Transactional(readOnly = true)
-    public List<FestivalResponseDto> selectSearchedFestival(String keyword, Pageable pageable){
+    public List<FestivalResponseDto> selectSearchedFestival(String keyword, Pageable pageable) {
         return festivalRepository.findByTitleContaining(keyword, pageable).stream()
-            .map(FestivalResponseDto::new).toList();
+                .map(FestivalResponseDto::new).toList();
     }
 
     // 페스티벌 오픈 알림을 보낼 페스티벌 가져오기
@@ -390,21 +396,21 @@ public class FestivalServiceImpl implements FestivalService {
     }
 
     //태그 리스트가 이전과 동일한지 여부 확인
-    private boolean compareTags(List<Tag> oldTag, List<TagRequestDto> newTag){
+    private boolean compareTags(List<Tag> oldTag, List<TagRequestDto> newTag) {
         int count = 0;
-        if(oldTag.size() == newTag.size()){
-            for(TagRequestDto tag : newTag){
-                for(Tag old: oldTag){
-                    if(old.getTitle().equals(tag.getTitle())){
-                        count +=1;
+        if (oldTag.size() == newTag.size()) {
+            for (TagRequestDto tag : newTag) {
+                for (Tag old : oldTag) {
+                    if (old.getTitle().equals(tag.getTitle())) {
+                        count += 1;
                     }
                 }
             }
-            System.out.println("count"+count);
+            System.out.println("count" + count);
             System.out.println(newTag.size());
-            if(count == newTag.size()){
+            if (count == newTag.size()) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         }

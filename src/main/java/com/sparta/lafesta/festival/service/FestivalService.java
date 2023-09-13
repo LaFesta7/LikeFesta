@@ -5,13 +5,12 @@ import com.sparta.lafesta.festival.dto.FestivalResponseDto;
 import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.notification.dto.ReminderDto;
 import com.sparta.lafesta.user.entity.User;
-
-import java.io.IOException;
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 public interface FestivalService {
 
@@ -65,6 +64,15 @@ public interface FestivalService {
     void deleteFestival(Long festivalId, User user);
 
     /**
+     * 선택한 페스티벌 좋아요 확인
+     *
+     * @param festivalId 좋아요 확인할 페스티벌의 id
+     * @param user       권한 확인
+     * @return 좋아요 확인 결과
+     */
+    Boolean selectFestivalLike(Long festivalId, User user);
+
+    /**
      * 선택한 페스티벌 좋아요 추가
      *
      * @param festivalId 좋아요 추가할 페스티벌의 id
@@ -93,7 +101,7 @@ public interface FestivalService {
     /**
      * 페스티벌 키워드 검색
      *
-     * @param keyword 검색할 키워드
+     * @param keyword  검색할 키워드
      * @param pageable 페이징 처리를 위한 정보
      * @return 페스티벌 검색 결과
      */
