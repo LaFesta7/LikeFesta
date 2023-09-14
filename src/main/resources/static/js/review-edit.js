@@ -89,7 +89,7 @@ function editReview() {
         },
         error: function (err) {
             console.log('Error:', err);
-            alert(err.responseText.statusMessage);
+            alert(err.responseJSON.statusMessage);
         }
     });
 }

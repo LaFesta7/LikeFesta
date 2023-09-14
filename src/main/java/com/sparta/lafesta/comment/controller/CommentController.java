@@ -70,6 +70,16 @@ public class CommentController {
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "댓글 삭제 완료"));
     }
 
+    @GetMapping("/festivals/{festivalId}/reviews/{reviewId}/comments/{commentId}/user-like")
+    @Operation(summary = "댓글 좋아요 여부 확인", description = "댓글 좋아요 여부를 반환합니다.")
+    public ResponseEntity<Boolean> selectCommentLike(
+            @Parameter(name = "commentId", description = "좋아요를 확인할 댓글의 id", in = ParameterIn.PATH) @PathVariable Long commentId,
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Boolean result = commentService.selectCommentLike(commentId, userDetails.getUser());
+        return ResponseEntity.ok().body(result);
+    }
+
     @PostMapping("/festivals/{festivalId}/reviews/{reviewId}/comments/{commentId}/likes")
     @Operation(summary = "페스티벌 리뷰 댓글 좋아요 추가", description = "페스티벌 리뷰 댓글에 좋아요를 추가합니다.")
     public ResponseEntity<ApiResponseDto> createCommentLike(
@@ -77,7 +87,7 @@ public class CommentController {
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         CommentResponseDto result = commentService.createCommentLike(commentId, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "좋아요를 추가했습니다. 좋아요 수: " + result.getLikeCnt()));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "좋아요를 추가했습니다."));
     }
 
     @DeleteMapping("/festivals/{festivalId}/reviews/{reviewId}/comments/{commentId}/likes-cancel")
@@ -87,6 +97,6 @@ public class CommentController {
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         CommentResponseDto result = commentService.deleteCommentLike(commentId, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "좋아요를 취소했습니다. 좋아요 수: " + result.getLikeCnt()));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "좋아요를 취소했습니다."));
     }
 }

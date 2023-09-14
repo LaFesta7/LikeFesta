@@ -27,6 +27,7 @@ public class FestivalResponseDto {
     private List<FileOnS3Dto> files;
     private List<TagResponseDto> tags;
     private int likeCnt;
+    private Long editorId;
     private String editorName;
 
     public FestivalResponseDto(Festival festival) {
@@ -48,6 +49,7 @@ public class FestivalResponseDto {
         this.tags = festival.getTags().stream()
                 .map(FestivalTag::getTag).map(TagResponseDto::new).toList();
         this.likeCnt = festival.getFestivalLikes().size();
+        this.editorId = festival.getUser().getId();
         this.editorName = festival.getUser().getUsername();
     }
 }

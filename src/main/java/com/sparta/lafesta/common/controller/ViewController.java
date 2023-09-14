@@ -38,7 +38,7 @@ public class ViewController {
         return "signup";
     }
 
-    @GetMapping("/users/festivals-map")
+    @GetMapping("/festivals-map")
     public String festivalsMap() {
         return "kakaomap";
     }
@@ -57,8 +57,13 @@ public class ViewController {
     }
 
     @GetMapping("/users/profile")
-    public String festival1(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public String mypage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "mypage";
+    }
+
+    @GetMapping("/users/{userId}/profile-page")
+    public String profile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return "profile";
     }
 
     @GetMapping("/users/badge")
