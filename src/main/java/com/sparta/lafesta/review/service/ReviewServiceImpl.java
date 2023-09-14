@@ -19,6 +19,7 @@ import com.sparta.lafesta.review.repostiroy.ReviewRepositoryCustom;
 import com.sparta.lafesta.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,11 +91,11 @@ public class ReviewServiceImpl implements ReviewService {
     // 리뷰 전체 조회
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewResponseDto> selectReviews(Long festivalId, User user, Pageable pageable) {
+    public Page<ReviewResponseDto> selectReviews(Long festivalId, User user, Pageable pageable) {
         // user 권한 확인 예외처리 추후 추가 작성 예정
         Festival festival = festivalService.findFestival(festivalId);
-        return reviewRepository.findAllByFestival(festival, pageable).stream()
-                .map(ReviewResponseDto::new).toList();
+        return reviewRepository.findAllByFestival(festival, pageable)
+                .map(ReviewResponseDto::new);
     }
 
     // 리뷰 상세 조회
