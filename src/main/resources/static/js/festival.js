@@ -237,7 +237,7 @@ function getReviews(pageNum) {
                 <div class="reviews">
                     <div class="review-item">
                         <p><a href="/api/festivals/${festivalId}/reviews/${review.id}" style="margin-left: 20px">${review.title}</a>
-                           <a href="#" style="text-decoration: none"><strong onclick="moveProfile(${data[i].userId})" style="font-size: larger; float: right; margin-right: 20px">${data[i].userNickname}</strong></a>
+                           <a href="#" style="text-decoration: none"><strong onclick="moveProfile(${review.userId})" style="font-size: larger; float: right; margin-right: 20px">${review.userNickname}</strong></a>
                         </p>
                     </div>
                 </div>
@@ -251,10 +251,6 @@ function getReviews(pageNum) {
             console.log('Error:', err);
         }
     });
-}
-
-function moveReviewPost() {
-    window.location.href = `/api/festivals/${festivalId}/reviews/post-page`;
 }
 
 //페이지네이션
