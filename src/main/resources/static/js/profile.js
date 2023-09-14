@@ -185,7 +185,7 @@ function loadReview(lastReviewId) {
             for (let i = 0; i < data.length; i++) {
                 html += `
                     <li>
-                    <a onclick="moveReview(${data[i].id})" style="text-decoration: none"> <strong>${data[i].title}</strong> (${data[i].festivalTitle})</a>
+                    <a onclick="moveReview(${data[i].festivalId}, ${data[i].id})" style="text-decoration: none"> <strong>${data[i].title}</strong> (${data[i].festivalTitle})</a>
                     </li>`;
             }
             ;
