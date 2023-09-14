@@ -46,20 +46,20 @@
 
     <!--키워드 검색-->
 
-<!--    <div id="menu_wrap" class="bg_white">-->
-<!--        <div class="option">-->
-<!--            <div>-->
-<!--                <form onsubmit="searchPlaces(); return false;">-->
-<!--                    키워드 : <input name="keyword" type="text" value="워터밤 페스티벌" id="keyword" size="15">-->
-<!--                    <button type="submit">검색하기</button>-->
-<!--                </form>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <hr>-->
-<!--        <ul id="placesList"></ul>-->
-<!--        <div id="pagination"></div>-->
-<!--        <div id="clickLatlng"></div>-->
-<!--    </div>-->
+    <!--    <div id="menu_wrap" class="bg_white">-->
+    <!--        <div class="option">-->
+    <!--            <div>-->
+    <!--                <form onsubmit="searchPlaces(); return false;">-->
+    <!--                    키워드 : <input name="keyword" type="text" value="워터밤 페스티벌" id="keyword" size="15">-->
+    <!--                    <button type="submit">검색하기</button>-->
+    <!--                </form>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--        <hr>-->
+    <!--        <ul id="placesList"></ul>-->
+    <!--        <div id="pagination"></div>-->
+    <!--        <div id="clickLatlng"></div>-->
+    <!--    </div>-->
 </div>
 
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b3cc7fb9af6a14c0ff4e82df164f3740"></script>
@@ -109,24 +109,33 @@
                     marker.setMap(map);
                     // markers.push(marker);
 
-                    var content = '<div class="wrap">' +
-                        '    <div class="info">' +
-                        '        <div class="title">' +
-                        data.content[i].title +
-                        '            <div class="close" onclick="closeOverlay()" title="닫기"></div>' +
-                        '        </div>' +
-                        '        <div class="body">' +
-                        '            <div class="img">' +
-                        '                <img src="' + data.content[i].files[0].uploadFileUrl + '" width="73" height="70">' +
-                        '           </div>' +
-                        '            <div class="desc">' +
-                        '                <div class="ellipsis">' + data.content[i].content + '</div>' +
-                        '                <div class="jibun ellipsis">' + data.content[i].place + '</div>' +
-                        '                <div><a href="' + data.content[i].officialLink + '" target="_blank" class="link">홈페이지</a><a> / </a><a href="/api/festivals/' + data.content[i].id + '/page" target="_blank" class="link">축제 정보</a></div>' +
-                        '            </div>' +
-                        '        </div>' +
-                        '    </div>' +
-                        '</div>';
+                    // data.content[i].files[0]가 null인 경우 기본 이미지 URL 사용
+                    var imageSrc = data.content[i].files[0] ? data.content[i].files[0].uploadFileUrl : '/images/background/img-21.jpg';
+
+                    var content = `
+                        <div class="wrap">
+                            <div class="info">
+                                <div class="title">
+                                    ${data.content[i].title}
+                                    <div class="close" onclick="closeOverlay()" title="닫기"></div>
+                                </div>
+                                <div class="body">
+                                    <div class="img">
+                                        <img src="${imageSrc}" width="73" height="70">
+                                    </div>
+                                    <div class="desc">
+                                        <div class="ellipsis">${data.content[i].content}</div>
+                                        <div class="jibun ellipsis">${data.content[i].place}</div>
+                                        <div>
+                                            <a href="${data.content[i].officialLink}" target="_blank" class="link">홈페이지</a>
+                                            <a> / </a>
+                                            <a href="/api/festivals/${data.content[i].id}/page" target="_blank" class="link">축제 정보</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+
 
                     var overlay = new kakao.maps.CustomOverlay({
                         content: content,
@@ -152,7 +161,6 @@
     function closeOverlay(overlay) {
         overlay.setMap(null);
     }
-
 
 
     <!--페스티벌 작성-->
@@ -210,7 +218,6 @@
         }
         // "취소"를 선택한 경우 아무 동작도 하지 않음
     });
-
 
 
     <!--키워드 검색-->
