@@ -97,7 +97,7 @@ function getReviews(pageNum) {
                 html += `
                 <div class="reviews">
                     <div class="review-item">
-                        <p><a href="${apiUrl}/${review.id}/page" style="margin-left: 20px">${review.title}</a>
+                        <p><a href="/api/festivals/${festivalId}/reviews/${review.id}" style="margin-left: 20px">${review.title}</a>
                             <strong style="float: right; margin-right: 20px">${review.userNickname}</strong>
                         </p>
                     </div>
