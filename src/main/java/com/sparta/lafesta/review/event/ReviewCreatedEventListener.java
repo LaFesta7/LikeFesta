@@ -27,9 +27,10 @@ public class ReviewCreatedEventListener implements ApplicationListener<ReviewCre
         String editor = review.getUser().getNickname();
         String detail = "팔로우 하신 '" + editor + "'님께서 '" + review.getTitle() + "' 리뷰를 게시했습니다.";
         LocalDateTime createdAt = review.getCreatedAt();
+        String destination = "/api/festivals/" + review.getFestival().getId() + "/reviews/" + review.getId() + "/page";
         List<User> followers = event.getFollowers();
         for (User follower : followers) {
-            Notification notification = new Notification(title, detail, createdAt, follower);
+            Notification notification = new Notification(title, detail, createdAt, destination, follower);
             notificationService.saveNotification(notification, follower.getId());
         }
         log.info("리뷰 작성 이벤트 발생");

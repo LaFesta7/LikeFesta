@@ -96,7 +96,7 @@ function approveOrganizerRequest(userId) {
             getOrganizerRequests();
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
@@ -311,7 +311,7 @@ function withdrawUser(userId) {
             getUsers();
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
@@ -425,7 +425,7 @@ function modifyTag(tagId) {
             getTags();
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
@@ -450,7 +450,7 @@ function deleteTag(tagId) {
             getTags();
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
@@ -530,7 +530,7 @@ function addNewRow() {
     // 각 열에 대한 <td> 요소 생성
     newRow.innerHTML = `
     <td>.</td>
-    <td><input id="badgeImageInput" type="file" accept="image/*" onchange="previewImage(this)">
+    <td><input id="badgeImageInput" type="file" accept="image/*" onchange="previewImage(this)" required>
         <img id="preview" src="" alt="Image Preview" style="max-width: 300px; max-height: 300px;">
     </td>
     <td><input id="badgeTitleInput" type="text" class="input-field" placeholder="Title"></td>
@@ -655,7 +655,7 @@ function createBadge() {
             getBadges();
         },
         error: function (err) {
-            alert(err.responseText.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
@@ -938,7 +938,7 @@ function modifyBadge(badgeId) {
             getBadges();
         },
         error: function (err) {
-            alert(err.responseText.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
@@ -964,7 +964,7 @@ function deleteBadge(badgeId) {
             getBadges();
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });

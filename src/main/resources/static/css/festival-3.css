@@ -87,6 +87,14 @@ skewX(-45deg);
     margin: 0 auto;
 }
 
+.circular-image {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
 /*@keyframes shining {*/
 /*    100% {*/
 /*        left: 140%;*/

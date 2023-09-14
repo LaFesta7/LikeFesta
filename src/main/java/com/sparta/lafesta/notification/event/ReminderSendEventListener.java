@@ -26,9 +26,10 @@ public class ReminderSendEventListener implements ApplicationListener<ReminderSe
         String title = reminder.getMailTitle();
         String detail = reminder.getMailContent();
         LocalDateTime createdAt = LocalDateTime.now();
+        String destination = "/api/festivals/" + reminder.getFestivalId() + "/page";
         List<User> followers = event.getFollowers();
         for (User follower : followers) {
-            Notification notification = new Notification(title, detail, createdAt, follower);
+            Notification notification = new Notification(title, detail, createdAt, destination, follower);
             notificationService.saveNotification(notification, follower.getId());
         }
         log.info("리마인더 이벤트 발생");
