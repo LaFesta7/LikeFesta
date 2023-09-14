@@ -56,8 +56,9 @@ function getProfile() {
                         <div style="display: flex; justify-content: center; align-items: center;">
                             <div>
                                 <div class="circular-image">
-                                    <img src="https://vignette.wikia.nocookie.net/the-sun-vanished/images/5/5d/Twitter-avi-gender-balanced-figure.png/revision/latest?cb=20180713020754"
-                                         alt="Image Description" style="width: 100%; height: 100%; object-fit: cover;">
+                                    <img src="${data.files[0] ? data.files[0].uploadFileUrl
+                : 'https://vignette.wikia.nocookie.net/the-sun-vanished/images/5/5d/Twitter-avi-gender-balanced-figure.png/revision/latest?cb=20180713020754'}"
+                    alt="Image Description" style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
                                 <p>${data.username}</p>
                             </div>
