@@ -62,7 +62,11 @@ function getFestival() {
                         <input type="submit" value="수정" style="margin-left: 10px" onclick="alertEditFestival('${data.title}')">
                     </div>
                     <img src="${data.files[0] ? data.files[0].uploadFileUrl : '/images/best1.jpg'}" alt="축제 이미지" class="festival-image">
-                    <p class="festival-description">${data.content}</p>
+                    <div style="display: flex">
+                        <div class="festival-description">
+                            <a href="#" style="text-decoration: none"><strong onclick="moveProfile(${data.editorId})" style="font-size: larger; margin-right: 15px">${data.editorName}</strong></a></div>
+                            <p class="festival-description">${data.content}</p>
+                    </div>
                     <div id="heart-group" style="display: flex">
                         <input type="submit" id="follow-btn" class="heart-btn" style="font-size: 14px; background-color: darkgray; color: white" value="팔로잉" onclick="unfollowFestival()"></input>
                         <input type="submit" id="unfollow-btn" class="heart-btn" style="font-size: 14px; background-color: darkgreen; color: white; display: none" value="팔로우" onclick="followFestival()"></a>
@@ -227,8 +231,8 @@ function getReviews() {
                 html += `
                 <div class="reviews">
                     <div class="review-item">
-                        <p><a href="${apiUrl}/${data[i].id}/page" style="margin-left: 20px">${data[i].title}</a>
-                            <strong style="float: right; margin-right: 20px">${data[i].userNickname}</strong>
+                        <p><a href="${apiUrl}/${data[i].id}/page" style="text-decoration: none; margin-left: 20px">${data[i].title}</a>
+                            <a href="#" style="text-decoration: none"><strong onclick="moveProfile(${data[i].userId})" style="font-size: larger; float: right; margin-right: 20px">${data[i].userNickname}</strong></a>
                         </p>
                     </div>
                 </div>
@@ -312,4 +316,9 @@ function alertEditFestival(festivalTitle) {
     if (confirmation) {
         window.location.href = `/api/festivals/${festivalId}/edit-page`;
     }
+}
+
+// 프로필로 이동하기
+function moveProfile(userId) {
+    window.location.href = `/api/users/${userId}/profile-page`;
 }

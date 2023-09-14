@@ -40,11 +40,12 @@ function getReview() {
             let html = `
                 <div  class="post-header">
                     <div class="post-title">${data.title}</div>
-                    <div class="post-meta">${data.userNickname}</div>
+                    <div class="post-meta"><a href="#" style="text-decoration: none" onclick="moveFestival(${data.festivalId})">${data.festivalTitle}</a></div>
                     <div class="post-meta">${data.createdAtTimeAgo}</div>
                 </div>
                 <img src="${data.files[0].uploadFileUrl}" alt="Review Image" class="post-image">
-                <div class="post-content">
+                <div class="post-content" style="display: flex">
+                    <a href="#" style="text-decoration: none"><strong onclick="moveProfile(${data.userId})" style="font-size: larger; float: right; margin-right: 20px">${data.userNickname}</strong></a>
                     ${data.content}
                 </div>
                 <div class="actions">
@@ -163,7 +164,7 @@ async function getComments() {
 
             html += `
                     <div class="comment">
-                        <div class="comment-author" style="color: #5F5F5F; font-size: 12px">${commentData[i].userNickname}</div>
+                        <div class="comment-author" style="color: #5F5F5F; font-size: 12px"><a href="#" style="text-decoration: none" onclick="moveProfile(${commentData[i].userId})">${commentData[i].userNickname}</a></div>
                         <p id="comment${commentData[i].id}" class="comment-content" style="font-size: 16px">${commentData[i].content}</p>
                         <div class="comment-content-container" id="comment-container${commentData[i].id}" style="display: flex; justify-content: space-between;">
                             <div style="display: flex">${isCommentLike ? `
@@ -383,4 +384,14 @@ function deleteComment(commentId) {
             alert(err.responseJSON.statusMessage);
         }
     });
+}
+
+// 페스티벌로 이동하기
+function moveFestival(festivalId) {
+    window.location.href = `/api/festivals/${festivalId}/page`;
+}
+
+// 프로필로 이동하기
+function moveProfile(userId) {
+    window.location.href = `/api/users/${userId}/profile-page`;
 }
