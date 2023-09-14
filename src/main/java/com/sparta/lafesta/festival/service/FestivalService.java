@@ -35,6 +35,15 @@ public interface FestivalService {
     Page<FestivalResponseDto> selectFestivals(Pageable pageable);
 
     /**
+     * 특정 유저가 작성한 페스티벌 조회
+     *
+     * @param userId 조회할 유저의 id
+     * @param pageable 페이징 처리를 위한 정보
+     * @return 특정 유저가 작성한 페스티벌 조회 결과
+     */
+    Page<FestivalResponseDto> selectUserFestivals(Long userId, Pageable pageable);
+
+    /**
      * 페스티벌 상세 조회
      *
      * @param festivalId 조회할 페스티벌의 id

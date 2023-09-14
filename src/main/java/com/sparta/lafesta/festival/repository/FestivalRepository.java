@@ -1,16 +1,15 @@
 package com.sparta.lafesta.festival.repository;
 
 import com.sparta.lafesta.festival.entity.Festival;
-import com.sparta.lafesta.follow.entity.FestivalFollow;
 import com.sparta.lafesta.tag.entity.FestivalTag;
+import com.sparta.lafesta.user.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FestivalRepository extends JpaRepository<Festival, Long> {
 
@@ -25,4 +24,6 @@ public interface FestivalRepository extends JpaRepository<Festival, Long> {
     Optional<Festival> findByTags(FestivalTag tags);
 
     List<Festival> findByTitleContaining(String keyword, Pageable pageable);
+
+    Page<Festival> findAllByUser(User user, Pageable pageable);
 }

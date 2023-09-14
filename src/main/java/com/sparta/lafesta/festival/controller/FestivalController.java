@@ -55,6 +55,18 @@ public class FestivalController {
         return ResponseEntity.ok().body(results);
     }
 
+    @GetMapping("/users/{userId}/festivals")
+    @Operation(summary = "특정 유저가 작성한 축제 검색", description = "특정 유저가 작성한 축제를 검색합니다.")
+    public ResponseEntity<Page<FestivalResponseDto>> selectUserFestivals(
+            @Parameter(name = "userId", description = "선택한 userId", in = ParameterIn.PATH) @PathVariable Long userId,
+            @Parameter(description = "축제 페이지 처리에 필요한 기본 설정")
+            @PageableDefault(size = 10, sort = "createdAt", direction = Direction.DESC) Pageable pageable,
+            @RequestParam(value = "apiMode", required = false) Boolean apiMode
+    ) {
+        Page<FestivalResponseDto> results = festivalService.selectUserFestivals(userId, pageable);
+        return ResponseEntity.ok().body(results);
+    }
+
 
     @GetMapping("/festivals/{festivalId}")
     @Operation(summary = "페스티벌 상세 조회", description = "@PathVariable을 통해 festivalId 받아와, 해당 festival을 상세 조회합니다.")

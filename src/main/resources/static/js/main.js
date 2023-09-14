@@ -56,6 +56,8 @@ function parseJwtPayload(token) {
     return JSON.parse(jsonPayload); // JSON 문자열을 객체로 파싱
 }
 
+let loginUserId;
+
 // 내 프로필 불러오기
 function getMyProfile() {
     $.ajax({
@@ -63,6 +65,7 @@ function getMyProfile() {
         type: 'GET',
         success: function (data) {
             console.log(data);
+            loginUserId = data.id;
             let html = '';
             const representativeBadges = data.representativeBadges;
             for (let i = 0; i < representativeBadges.length; i++) { // Loop through each festival
@@ -80,6 +83,10 @@ function getMyProfile() {
             console.log('Error:', err);
         }
     });
+}
+
+function goProfile() {
+    moveProfile(loginUserId);
 }
 
 // 페스티벌 불러오기

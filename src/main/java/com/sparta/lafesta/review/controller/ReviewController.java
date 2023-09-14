@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
@@ -50,6 +51,18 @@ public class ReviewController {
             @Parameter(description = "review 페이징 처리에 필요한 기본 설정")@PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable
     ) {
         List<ReviewResponseDto> results = reviewService.selectReviews(festivalId, userDetails.getUser(), pageable);
+        return ResponseEntity.ok().body(results);
+    }
+
+    @GetMapping("/users/{userId}/festivals/reviews")
+    @Operation(summary = "특정 유저가 작성한 리뷰 검색", description = "특정 유저가 작성한 리뷰를 검색합니다.")
+    public ResponseEntity<Page<ReviewResponseDto>> selectUserReviews(
+            @Parameter(name = "userId", description = "선택한 userId", in = ParameterIn.PATH) @PathVariable Long userId,
+            @Parameter(description = "리뷰 페이지 처리에 필요한 기본 설정")
+            @PageableDefault(size = 10, sort = "createdAt", direction = Direction.DESC) Pageable pageable,
+            @RequestParam(value = "apiMode", required = false) Boolean apiMode
+    ) {
+        Page<ReviewResponseDto> results = reviewService.selectUserReviews(userId, pageable);
         return ResponseEntity.ok().body(results);
     }
 

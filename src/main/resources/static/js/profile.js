@@ -15,6 +15,9 @@ const pathSegments = currentURL.split('/');
 // 경로 파라미터 중에서 필요한 값을 추출합니다.
 const userId = pathSegments[pathSegments.length - 2];
 
+let lastReviewId = 0;
+let lastFestivalId = 0;
+
 $(document).ready(function () {
     let lastFollowingId = 0;
     let lastFollowerId = 0;
@@ -35,12 +38,16 @@ function parseJwtPayload(token) {
     return JSON.parse(jsonPayload); // JSON 문자열을 객체로 파싱
 }
 
+let profileRole;
+
 // 프로필 불러오기
 function getProfile() {
     $.ajax({
         url: `/api/users/${userId}/profile`,
         type: 'GET',
         success: function (data) {
+            profileRole = data.role;
+            loadPost(lastReviewId, lastFestivalId);
             console.log(data);
             let html1 = '';
             html1 += `
@@ -153,6 +160,89 @@ function unfollowUser() {
             }
         });
     }
+}
+
+// 게시글 불러오기
+function loadPost(lastReviewId, lastFestivalId) {
+    if (profileRole === 'USER') {
+        console.log(profileRole);
+        loadReview(lastReviewId);
+    } else {
+        console.log(profileRole);
+        loadFestival(lastFestivalId);
+    }
+}
+
+// 리뷰 불러오기
+function loadReview(lastReviewId) {
+    $.ajax({
+        url: `/api/users/${userId}/festivals/reviews?lt=${lastReviewId}`,
+        type: 'GET',
+        success: function (result) {
+            const data = result.content;
+            console.log(data);
+            let html = '';
+            for (let i = 0; i < data.length; i++) {
+                html += `
+                    <li>
+                    <a onclick="moveReview(${data[i].id})" style="text-decoration: none"> <strong>${data[i].title}</strong> (${data[i].festivalTitle})</a>
+                    </li>`;
+            }
+            ;
+
+            if (lastReviewId == 0) {
+                $('#my-post-list').html(html);
+            } else {
+                $('#my-post-list').append(html);
+            }
+
+            lastReviewId = data[data.length - 1].id;
+
+            const loadBtn = document.querySelector('#load-post');
+            loadBtn.onclick = function () {
+                loadReview(lastReviewId);
+            }
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
+}
+
+// 페스티벌 불러오기
+function loadFestival(lastFestivalId) {
+    $.ajax({
+        url: `/api/users/${userId}/festivals?lt=${lastFestivalId}`,
+        type: 'GET',
+        success: function (result) {
+            const data = result.content;
+            console.log(data);
+            let html = '';
+            for (let i = 0; i < data.length; i++) {
+                html += `
+                    <li>
+                    <a onclick="moveFestival(${data[i].id})" style="text-decoration: none"> <strong>${data[i].title}</strong></a>
+                    </li>`;
+            }
+            ;
+
+            if (lastFestivalId == 0) {
+                $('#my-post-list').html(html);
+            } else {
+                $('#my-post-list').append(html);
+            }
+
+            lastFestivalId = data[data.length - 1].id;
+
+            const loadBtn = document.querySelector('#load-post');
+            loadBtn.onclick = function () {
+                loadFestival(lastFestivalId);
+            }
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
 }
 
 // 팔로워 불러오기

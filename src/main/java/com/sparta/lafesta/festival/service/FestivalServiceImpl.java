@@ -21,6 +21,7 @@ import com.sparta.lafesta.tag.entity.FestivalTag;
 import com.sparta.lafesta.tag.entity.Tag;
 import com.sparta.lafesta.tag.service.TagServiceImpl;
 import com.sparta.lafesta.user.entity.User;
+import com.sparta.lafesta.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,6 +47,7 @@ public class FestivalServiceImpl implements FestivalService {
     //CRUD
     private final FestivalRepository festivalRepository;
     private final FestivalRepositoryCustom festivalRepositoryCustom;
+    private final UserService userService;
 
     //S3
     private final S3UploadService s3UploadService;
@@ -101,6 +103,15 @@ public class FestivalServiceImpl implements FestivalService {
     @Transactional(readOnly = true)
     public Page<FestivalResponseDto> selectFestivals(Pageable pageable) {
         return festivalRepository.findAllBy(pageable)
+                .map(FestivalResponseDto::new);
+    }
+
+    // 특정 유저가 작성한 페스티벌 전체 조회
+    @Override
+    @Transactional(readOnly = true)
+    public Page<FestivalResponseDto> selectUserFestivals(Long userId, Pageable pageable) {
+        User user = userService.findUser(userId);
+        return festivalRepository.findAllByUser(user, pageable)
                 .map(FestivalResponseDto::new);
     }
 

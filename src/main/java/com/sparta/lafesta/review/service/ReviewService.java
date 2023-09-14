@@ -4,6 +4,7 @@ import com.sparta.lafesta.review.dto.ReviewRequestDto;
 import com.sparta.lafesta.review.dto.ReviewResponseDto;
 import com.sparta.lafesta.review.entity.Review;
 import com.sparta.lafesta.user.entity.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +30,15 @@ public interface ReviewService {
      * @return 전체 리뷰 조회 결과
      */
     List<ReviewResponseDto> selectReviews(Long festivalId, User user, Pageable pageable);
+
+    /**
+     * 특정 유저가 작성한 리뷰 조회
+     *
+     * @param userId 조회할 유저의 id
+     * @param pageable 페이징 처리를 위한 정보
+     * @return 특정 유저가 작성한 리뷰 조회 결과
+     */
+    Page<ReviewResponseDto> selectUserReviews(Long userId, Pageable pageable);
 
     /**
      * 리뷰 상세 조회
