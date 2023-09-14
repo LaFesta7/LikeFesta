@@ -54,6 +54,18 @@ public class ReviewController {
         return ResponseEntity.ok().body(results);
     }
 
+    @GetMapping("/users/{userId}/festivals/reviews")
+    @Operation(summary = "특정 유저가 작성한 리뷰 검색", description = "특정 유저가 작성한 리뷰를 검색합니다.")
+    public ResponseEntity<Page<ReviewResponseDto>> selectUserReviews(
+            @Parameter(name = "userId", description = "선택한 userId", in = ParameterIn.PATH) @PathVariable Long userId,
+            @Parameter(description = "리뷰 페이지 처리에 필요한 기본 설정")
+            @PageableDefault(size = 10, sort = "createdAt", direction = Direction.DESC) Pageable pageable,
+            @RequestParam(value = "apiMode", required = false) Boolean apiMode
+    ) {
+        Page<ReviewResponseDto> results = reviewService.selectUserReviews(userId, pageable);
+        return ResponseEntity.ok().body(results);
+    }
+
     @GetMapping("/festivals/{festivalId}/reviews/{reviewId}")
     @Operation(summary = "페스티벌 리뷰 상세 조회", description = "@PathVariable을 통해 reviewId를 받아와, 해당 review을 상세 조회합니다.")
     public ResponseEntity<ReviewResponseDto> selectReview(
@@ -86,6 +98,16 @@ public class ReviewController {
         return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "리뷰 삭제 완료"));
     }
 
+    @GetMapping("/festivals/{festivalId}/reviews/{reviewId}/user-like")
+    @Operation(summary = "리뷰 좋아요 여부 확인", description = "리뷰 좋아요 여부를 반환합니다.")
+    public ResponseEntity<Boolean> selectReviewLike(
+            @Parameter(name = "reviewId", description = "좋아요를 확인할 리뷰의 id", in = ParameterIn.PATH) @PathVariable Long reviewId,
+            @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Boolean result = reviewService.selectReviewLike(reviewId, userDetails.getUser());
+        return ResponseEntity.ok().body(result);
+    }
+
     @PostMapping("/festivals/{festivalId}/reviews/{reviewId}/likes")
     @Operation(summary = "페스티벌 리뷰 좋아요 추가", description = "페스티벌 리뷰에 좋아요를 추가합니다.")
     public ResponseEntity<ApiResponseDto> createReviewLike(
@@ -93,7 +115,7 @@ public class ReviewController {
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         ReviewResponseDto result = reviewService.createReviewLike(reviewId, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "좋아요를 추가했습니다. 좋아요 수: " + result.getLikeCnt()));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.CREATED.value(), "좋아요를 추가했습니다."));
     }
 
     @DeleteMapping("/festivals/{festivalId}/reviews/{reviewId}/likes-cancel")
@@ -103,7 +125,7 @@ public class ReviewController {
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         ReviewResponseDto result = reviewService.deleteReviewLike(reviewId, userDetails.getUser());
-        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "좋아요를 취소했습니다. 좋아요 수: " + result.getLikeCnt()));
+        return ResponseEntity.ok().body(new ApiResponseDto(HttpStatus.OK.value(), "좋아요를 취소했습니다."));
     }
 
     @GetMapping("/festivals/reviews/rank")

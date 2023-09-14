@@ -86,6 +86,13 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.delete(comment);
     }
 
+    // 댓글 좋아요 확인
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean selectCommentLike(Long commentId, User user) {
+        return findCommentLike(user, findComment(commentId)) != null;
+    }
+
     // 댓글 좋아요 추가
     @Override
     @Transactional

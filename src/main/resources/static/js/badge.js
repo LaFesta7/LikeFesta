@@ -65,7 +65,7 @@ function editRepresentativeBadge(badgeId) {
             getBadges();
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });

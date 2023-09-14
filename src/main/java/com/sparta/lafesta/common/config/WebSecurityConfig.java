@@ -7,6 +7,7 @@ import com.sparta.lafesta.common.security.UserDetailsServiceImpl;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -73,6 +74,12 @@ public class WebSecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/api/users/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/festivals-map")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/festivals", "GET")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/festivals/rank", "GET")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/festivals/reviews/rank", "GET")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/users/rank", "GET")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/festivals/tags", "GET")).permitAll()
                         .anyRequest().authenticated()
         );
         // 로그인 설정

@@ -144,7 +144,7 @@ function nicknameEdit() {
                 alert(response.statusMessage);
             },
             error: function (err) {
-                alert(err.statusMessage);
+                alert(err.responseJSON.statusMessage);
             }
         });
     } else {
@@ -167,7 +167,7 @@ function introduceEdit() {
                 alert(response.statusMessage);
             },
             error: function (err) {
-                alert(err.statusMessage);
+                alert(err.responseJSON.statusMessage);
             }
         });
     } else {
@@ -190,7 +190,7 @@ function emailEdit() {
                 alert(response.statusMessage);
             },
             error: function (err) {
-                alert(err.statusMessage);
+                alert(err.responseJSON.statusMessage);
             }
         });
     } else {
@@ -281,7 +281,7 @@ function passwordEdit() {
                 alert(response.statusMessage);
             },
             error: function (err) {
-                alert(err.statusMessage);
+                alert(err.responseJSON.statusMessage);
             }
         });
     } else {
@@ -311,7 +311,7 @@ function imageEdit() {
             alert(data.statusMessage);
         },
         error: function (err) {
-            alert(err.responseText.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });

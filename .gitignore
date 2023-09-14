@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 
 
+application.properties
 application-s3.properties
 application-redis.properties
 

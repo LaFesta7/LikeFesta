@@ -40,15 +40,20 @@ function getReview() {
             let html = `
                 <div  class="post-header">
                     <div class="post-title">${data.title}</div>
-                    <div class="post-meta">${data.userNickname}</div>
+                    <div class="post-meta"><a href="#" style="text-decoration: none" onclick="moveFestival(${data.festivalId})">${data.festivalTitle}</a></div>
                     <div class="post-meta">${data.createdAtTimeAgo}</div>
                 </div>
                 <img src="${data.files[0].uploadFileUrl}" alt="Review Image" class="post-image">
-                <div class="post-content">
+                <div class="post-content" style="display: flex">
+                    <a href="#" style="text-decoration: none"><strong onclick="moveProfile(${data.userId})" style="font-size: larger; float: right; margin-right: 20px">${data.userNickname}</strong></a>
                     ${data.content}
                 </div>
                 <div class="actions">
-                    <div class="like-button">${data.likeCnt}</div>
+                    <div id="heart-group" style="display: flex">
+                        <a href="" id="heart-btn" class="heart-btn" style="text-decoration: none; font-size: 25px;" onclick="cancelReviewLike()">❤️</a>
+                        <a href="" id="not-heart-btn" class="heart-btn" style="text-decoration: none; font-size: 25px; display: none" onclick="addReviewLike()">🤍</a>
+                        <span style="font-size: 20px; margin-left: 5px; margin-top: 5px">${data.likeCnt}</span>
+                    </div>
                     <div id="reviewUDContainer" class="edit-delete">
                         <a href="${apiUrl}/edit-page" class="edit">Edit</a>
                         <button class="delete" onclick="alertDeleteReview()">Delete</button>
@@ -65,11 +70,70 @@ function getReview() {
                 <div id="review-comment"></div>
                 `;
             $('#review-page').html(html);
+            showReviewLikeBtn();
             showReviewUDContainer(role, userName, data.username);
             getComments();
         },
         error: function (err) {
             console.log('Error:', err);
+        }
+    });
+}
+
+function showReviewLikeBtn() {
+    var heartBtn = document.getElementById('heart-btn');
+    var notHeartBtn = document.getElementById('not-heart-btn');
+
+    const apiUrl = `/api/festivals/${festivalId}/reviews/${reviewId}/user-like`
+    $.ajax({
+        url: apiUrl,
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+            if (data) {
+                heartBtn.style.display = 'inline-block';
+                notHeartBtn.style.display = 'none';
+            } else {
+                heartBtn.style.display = 'none';
+                notHeartBtn.style.display = 'inline-block';
+            }
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
+}
+
+function addReviewLike() {
+    const apiUrl = `/api/festivals/${festivalId}/reviews/${reviewId}/likes`
+    $.ajax({
+        url: apiUrl,
+        type: 'POST',
+        success: function (data) {
+            console.log(data);
+            alert(data.statusMessage);
+            getReview();
+        },
+        error: function (err) {
+            console.log('Error:', err);
+            alert(err.responseJSON.statusMessage);
+        }
+    });
+}
+
+function cancelReviewLike() {
+    const apiUrl = `/api/festivals/${festivalId}/reviews/${reviewId}/likes-cancel`
+    $.ajax({
+        url: apiUrl,
+        type: 'DELETE',
+        success: function (data) {
+            console.log(data);
+            alert(data.statusMessage);
+            getReview();
+        },
+        error: function (err) {
+            console.log('Error:', err);
+            alert(err.responseJSON.statusMessage);
         }
     });
 }
@@ -82,35 +146,93 @@ function showReviewUDContainer(role, userName, editorName) {
     }
 }
 
-function getComments() {
-    $.ajax({
-        url: `/api/festivals/${festivalId}/reviews/${reviewId}/comments`,
-        type: 'GET',
-        success: function (data) {
-            console.log(data);
-            let html = '';
-            for (let i = 0; i < data.length; i++) {
-                // 현재 사용자의 이름과 댓글 작성자의 이름을 비교하여 수정 및 삭제 버튼의 가시성 설정
-                const isCurrentUser = userName === data[i].username;
-                html += `
+async function getComments() {
+    try {
+        const commentData = await $.ajax({
+            url: `/api/festivals/${festivalId}/reviews/${reviewId}/comments`,
+            type: 'GET'
+        });
+
+        let html = '';
+        for (let i = 0; i < commentData.length; i++) {
+            // 현재 사용자의 이름과 댓글 작성자의 이름을 비교하여 수정 및 삭제 버튼의 가시성 설정
+            const isCurrentUser = userName === commentData[i].username;
+            const isAdmin = role === 'ADMIN';
+
+            // 비동기로 데이터를 가져오고 처리
+            const isCommentLike = await getCommentLike(commentData[i].id);
+
+            html += `
                     <div class="comment">
-                        <div class="comment-author" style="color: #5F5F5F; font-size: 12px">${data[i].userNickname}</div>
-                        <div class="comment-content-container" id="comment-container${data[i].id}" style="display: flex; justify-content: space-between;">
-                            <p id="comment${data[i].id}" class="comment-content" style="font-size: 16px">${data[i].content}</p>
+                        <div class="comment-author" style="color: #5F5F5F; font-size: 12px"><a href="#" style="text-decoration: none" onclick="moveProfile(${commentData[i].userId})">${commentData[i].userNickname}</a></div>
+                        <p id="comment${commentData[i].id}" class="comment-content" style="font-size: 16px">${commentData[i].content}</p>
+                        <div class="comment-content-container" id="comment-container${commentData[i].id}" style="display: flex; justify-content: space-between;">
+                            <div style="display: flex">${isCommentLike ? `
+                                    <a href="" id="comment-heart-btn" class="heart-btn" style="text-decoration: none; font-size: 15px;" onclick="cancelCommentLike(${commentData[i].id})">❤️</a>
+                                ` : `
+                                <a href="" id="comment-not-heart-btn" class="heart-btn" style="text-decoration: none; font-size: 15px;" onclick="addCommentLike(${commentData[i].id})">🤍</a>`}
+                            <p id="commentLikeCnt${commentData[i].id}" class="comment-content" style="font-size: 14px; margin-left: 5px; margin-top: 5px">${commentData[i].likeCnt}</p>
+                            </div>
                             <div id="commentUDContainer" style="float: right; margin-top: 10px">
-                                ${isCurrentUser ? `
-                                    <a href="#" style="color: #5F5F5F; font-size: 14px" onclick="showCommentInput(${data[i].id}, '${data[i].content}')">수정</a>
-                                    <a href="#" style="color: #5F5F5F; font-size: 14px; margin-left: 10px" onclick="alertDeleteComment(${data[i].id})">삭제</a>
+                                ${isCurrentUser || isAdmin ? `
+                                    <a href="#" style="color: #5F5F5F; font-size: 14px" onclick="showCommentInput(${commentData[i].id}, '${commentData[i].content}')">수정</a>
+                                    <a href="#" style="color: #5F5F5F; font-size: 14px; margin-left: 10px" onclick="alertDeleteComment(${commentData[i].id})">삭제</a>
                                 ` : ''}
                             </div>
                         </div>
                     </div>
                 `;
-            }
-            $('#review-comment').html(html);
+        }
+        $('#review-comment').html(html);
+
+    } catch (err) {
+        console.log('Error:', err);
+    }
+}
+
+async function getCommentLike(commentId) {
+    try {
+        const boolean = await $.ajax({
+            url: `/api/festivals/${festivalId}/reviews/${reviewId}/comments/${commentId}/user-like`,
+            type: 'GET'
+        });
+        return !!boolean;
+    } catch (err) {
+        console.log('Error:', err);
+        return false;
+    }
+}
+
+function addCommentLike(commentId) {
+    const apiUrl = `/api/festivals/${festivalId}/reviews/${reviewId}/comments/${commentId}/likes`
+    $.ajax({
+        url: apiUrl,
+        type: 'POST',
+        success: function (data) {
+            console.log(data);
+            alert(data.statusMessage);
+            getComments();
         },
         error: function (err) {
             console.log('Error:', err);
+            alert(err.responseJSON.statusMessage);
+        }
+    });
+}
+
+function cancelCommentLike(commentId) {
+    const apiUrl = `/api/festivals/${festivalId}/reviews/${reviewId}/comments/${commentId}/likes-cancel`
+    $.ajax({
+        url: apiUrl,
+        type: 'DELETE',
+        success: function (data) {
+            console.log(data);
+            alert(data.statusMessage);
+            getComments();
+        },
+        error: function (err) {
+            console.log('Error:', err);
+            alert(err.responseJSON.statusMessage);
         }
     });
 }
@@ -138,7 +260,7 @@ function deleteReview() {
         },
         error: function (err) {
             console.log('Error:', err);
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
         }
     });
 }
@@ -163,7 +285,7 @@ function postComment() {
         },
         error: function (err) {
             console.log('Error:', err);
-            alert(err.responseText.statusMessage);
+            alert(err.responseJSON.statusMessage);
         }
     });
 }
@@ -185,7 +307,7 @@ function showCommentInput(commentId, currentContent) {
     const saveButton = $('<a>', {
         href: '#',
         style: 'color: #5F5F5F; font-size: 14px; margin-left: 10px; margin-top:20px',
-        click: function() {
+        click: function () {
             alertCommentModify(commentId);
         }
     }).text('확인');
@@ -194,7 +316,7 @@ function showCommentInput(commentId, currentContent) {
     const cancelButton = $('<a>', {
         href: '#',
         style: 'color: #5F5F5F; font-size: 14px; margin-left: 10px; margin-top:20px',
-        click: function() {
+        click: function () {
             getComments();
         }
     }).text('취소');
@@ -231,7 +353,7 @@ function modifyComment(commentId) {
             getComments();
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
             getComments();
         }
@@ -259,7 +381,17 @@ function deleteComment(commentId) {
         },
         error: function (err) {
             console.log('Error:', err);
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
         }
     });
+}
+
+// 페스티벌로 이동하기
+function moveFestival(festivalId) {
+    window.location.href = `/api/festivals/${festivalId}/page`;
+}
+
+// 프로필로 이동하기
+function moveProfile(userId) {
+    window.location.href = `/api/users/${userId}/profile-page`;
 }
