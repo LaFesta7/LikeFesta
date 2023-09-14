@@ -218,7 +218,7 @@ public class UserService {
         }
 
         return userRepositoryCustom.findTop3User().stream()
-            .map(SelectUserResponseDto::new).toList();
+                .map(SelectUserResponseDto::new).toList();
     }
 
 
@@ -230,9 +230,14 @@ public class UserService {
         // 회원 중복 확인
         checkEmail(email);
 
-        String code = mailService.sendMessage(email);
+        String code = mailService.sendMessage(email); //2s~3s. 비동기 처리도 가능.
+        // 해당 메소드가 비동기 처리된 상태에서 실패했을 시 리스크 -> 전송 실패여부
         VerificationCode verificationCode = new VerificationCode(email, code);
+
+        long beforeTime = System.nanoTime(); // 2ms
         verificationCodeRepository.save(verificationCode);
+        long afterTime = System.nanoTime();
+        log.info("Redis save 동작시간(ns) : " + (afterTime - beforeTime));
     }
 
     // 비밀번호를 분실한 경우 인증 메일 발송 후 코드 DB 임시 저장하기
@@ -252,8 +257,11 @@ public class UserService {
         String email = verificationRequestDto.getEmail();
         String code = verificationRequestDto.getVerificationCode();
 
+        long beforeTime = System.nanoTime();
         VerificationCode verificationCode = verificationCodeRepository.findById(email)
                 .orElse(null);
+        long afterTime = System.nanoTime();
+        log.info("Redis 조회 동작시간(ns) : " + (afterTime - beforeTime));
 
         // 인증 코드가 일치하지 않는 경우
         if (verificationCode == null) {

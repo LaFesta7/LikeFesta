@@ -54,7 +54,7 @@ public class JwtUtil {
     private final long REFRESH_TOKEN_TIME = REFRESH_TOKEN_TIME_SECONDS * 1000L; // 14일 세팅
 
 
-    @Value("${JWT_SECRET_KEY}") // Base64 Encode 한 SecretKey
+    @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey
 
     private String secretKey; //application.properties에 선언되어 있는 값을 가져온다.
     private Key key;

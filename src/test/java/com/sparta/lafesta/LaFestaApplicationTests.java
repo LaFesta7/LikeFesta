@@ -11,5 +11,4 @@ class LaFestaApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }
