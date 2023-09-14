@@ -9,6 +9,7 @@ import com.sparta.lafesta.user.entity.User;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
@@ -21,7 +22,7 @@ public interface TagService {
      * @param pageable 페이징을 위한 정보
      * @return 전체 태그 조회 결과
      */
-    List<TagResponseDto> selectTags(User user, Pageable pageable);
+    Page<TagResponseDto> selectTags(User user, Pageable pageable);
 
     /**
      * 태그 수정
