@@ -37,13 +37,14 @@ function getReview() {
         type: 'GET',
         success: function (data) {
             console.log(data);
+            var imageSrc = data.files[0] ? data.files[0].uploadFileUrl : '/images/best1.jpg';
             let html = `
                 <div  class="post-header">
                     <div class="post-title">${data.title}</div>
                     <div class="post-meta"><a href="#" style="text-decoration: none" onclick="moveFestival(${data.festivalId})">${data.festivalTitle}</a></div>
                     <div class="post-meta">${data.createdAtTimeAgo}</div>
                 </div>
-                <img src="${data.files[0].uploadFileUrl}" alt="Review Image" class="post-image">
+                <img src="${imageSrc}" alt="Review Image" class="post-image">
                 <div class="post-content" style="display: flex">
                     <a href="#" style="text-decoration: none"><strong onclick="moveProfile(${data.userId})" style="font-size: larger; float: right; margin-right: 20px">${data.userNickname}</strong></a>
                     ${data.content}
