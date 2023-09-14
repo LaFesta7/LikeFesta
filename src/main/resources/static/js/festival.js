@@ -33,22 +33,17 @@ function getFestival() {
                     <p>${formatDate(new Date(data.openDate))}</p>
                     <strong> 종료일 </strong>
                     <p>${formatDate(new Date(data.endDate))}</p>
-                    <br>
                     <strong> 위치 </strong>
                     <p>${data.place}</p>
-                    <br>
                     <br>
                     <strong> 예매일 </strong>
                     <p>${data.reservationOpenDate ? formatDate(new Date(data.reservationOpenDate)) : ''}</p>
                     <strong> 예매처 </strong>
                     <p>${data.reservationPlace}</p>
                     <br>
-                    <br>
                     <strong> 공식사이트 </strong>
                     <br>
                     <a href="${data.officialLink}">→ 바로가기</a>
-                    <br>
-                    <br>
                     <br>
                     <p>${data.tags.map(tag => `<span>#${tag.title}</span>`).join(' ')}</p>
             </div>
@@ -57,27 +52,29 @@ function getFestival() {
                         <a href="/api/festivals-map">Map</a>
                         <a href="/#festival" style="margin-left: 10px">List</a>
                     </div>
-                    <div id="festivalUDContainer" style="float: right; display: none; margin-bottom: 15px;">
-                        <input type="submit" value="삭제" style="background-color: crimson" onclick="alertDeleteFestival('${data.title}')">
-                        <input type="submit" value="수정" style="margin-left: 10px" onclick="alertEditFestival('${data.title}')">
-                    </div>
-                    <img src="${data.files[0] ? data.files[0].uploadFileUrl : '/images/background/img-21.jpg'}" alt="축제 이미지" class="festival-image">
-                    <div style="display: flex">
-                        <div class="festival-description">
-                            <a href="#" style="text-decoration: none"><strong onclick="moveProfile(${data.editorId})" style="font-size: larger; margin-right: 15px">${data.editorName}</strong></a></div>
-                            <p class="festival-description">${data.content}</p>
-                    </div>
-                    <div id="heart-group" style="display: flex">
-                        <input type="submit" id="follow-btn" class="heart-btn" style="font-size: 14px; background-color: darkgray; color: white" value="팔로잉" onclick="unfollowFestival()"></input>
-                        <input type="submit" id="unfollow-btn" class="heart-btn" style="font-size: 14px; background-color: darkgreen; color: white; display: none" value="팔로우" onclick="followFestival()"></a>
-                        <a href="" id="heart-btn" class="heart-btn" style="margin-left: 10px; text-decoration: none; font-size: 25px;" onclick="cancelFestivalLike()">❤️</a>
-                        <a href="" id="not-heart-btn" class="heart-btn" style="margin-left: 10px; text-decoration: none; font-size: 25px; display: none" onclick="addFestivalLike()">🤍</a>
-                        <span style="font-size: 20px; margin-left: 5px; margin-top: 5px">${data.likeCnt}</span>
-                    </div>
-                    <div id="moveReviewPostBtn" style="float: right; display: none;">
-                        <input type="submit" value="리뷰 작성" style="margin-left: 10px" onclick="moveReviewPost()">
-                    </div>
-                    <div id="post-review" style="margin-top: 80px"></div>
+                    <div class="scrollable-content">
+                        <div id="festivalUDContainer" style="float: right; display: none; margin-bottom: 15px;">
+                            <input type="submit" value="삭제" style="background-color: crimson" onclick="alertDeleteFestival('${data.title}')">
+                            <input type="submit" value="수정" style="margin-left: 10px" onclick="alertEditFestival('${data.title}')">
+                        </div>
+                        <img src="${data.files[0] ? data.files[0].uploadFileUrl : '/images/background/img-21.jpg'}" alt="축제 이미지" class="festival-image">
+                        <div style="display: flex">
+                            <div class="festival-description">
+                                <a href="#" style="text-decoration: none"><strong onclick="moveProfile(${data.editorId})" style="font-size: larger; margin-right: 15px">${data.editorName}</strong></a></div>
+                                <p class="festival-description">${data.content}</p>
+                        </div>
+                        <div id="heart-group" style="display: flex">
+                            <input type="submit" id="follow-btn" class="heart-btn" style="font-size: 14px; background-color: darkgray; color: white" value="팔로잉" onclick="unfollowFestival()"></input>
+                            <input type="submit" id="unfollow-btn" class="heart-btn" style="font-size: 14px; background-color: darkgreen; color: white; display: none" value="팔로우" onclick="followFestival()"></a>
+                            <a href="" id="heart-btn" class="heart-btn" style="margin-left: 10px; text-decoration: none; font-size: 25px;" onclick="cancelFestivalLike()">❤️</a>
+                            <a href="" id="not-heart-btn" class="heart-btn" style="margin-left: 10px; text-decoration: none; font-size: 25px; display: none" onclick="addFestivalLike()">🤍</a>
+                            <span style="font-size: 20px; margin-left: 5px; margin-top: 5px">${data.likeCnt}</span>
+                        </div>
+                        <div id="moveReviewPostBtn" style="float: right; display: none;">
+                            <input type="submit" value="리뷰 작성" style="margin-left: 10px" onclick="moveReviewPost()">
+                        </div>
+                        <div id="post-review" style="margin-top: 80px"></div>
+                        </div>
                     </div>
                 `;
             $('#festival-post').html(html);
