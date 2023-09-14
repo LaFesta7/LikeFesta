@@ -147,17 +147,6 @@ body {
     max-height: 80vh;
     overflow-y: auto;
     scrollbar-width: thin; /* Firefox에만 적용되며 스크롤바의 너비를 조절합니다. */
-    scrollbar-color: transparent transparent; /* 스크롤바의 색상을 투명으로 설정합니다. */
-}
-
-/* Chrome, Edge, Safari에 적용되는 스크롤바 숨기기 */
-.scrollable-content::-webkit-scrollbar {
-    width: 6px; /* 스크롤바 너비 조절 */
-    background-color: transparent; /* 스크롤바 배경색을 투명으로 설정 */
-}
-
-.scrollable-content::-webkit-scrollbar-thumb {
-    background-color: transparent; /* 스크롤바 색상을 투명으로 설정 */
 }
 
 
