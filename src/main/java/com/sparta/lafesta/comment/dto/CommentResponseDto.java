@@ -8,6 +8,7 @@ public class CommentResponseDto {
     private Long id;
     private String festivalTitle;
     private String reviewTitle;
+    private Long userId;
     private String userNickname;
     private String username;
     private String content;
@@ -17,6 +18,7 @@ public class CommentResponseDto {
         this.id = comment.getId();
         this.festivalTitle = comment.getReview().getFestival().getTitle();
         this.reviewTitle = comment.getReview().getTitle();
+        this.userId = comment.getUser().getId();
         this.userNickname = comment.getUser().getNickname();
         this.username = comment.getUser().getUsername();
         this.content = comment.getContent();

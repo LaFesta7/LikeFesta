@@ -9,38 +9,72 @@ $(document).ready(function () {
     } else {
         $('#logoutForm').show();  // 로그아웃 버튼을 표시합니다
         $('#loginButton').hide();  // 로그인 버튼을 숨깁니다
-        getOrganizerRequests();
-        getFestivalRequests();
-        getUsers();
-        getTags();
-        getBadges();
+        let firstPage = 0;
+        getOrganizerRequests(firstPage);
+        getFestivalRequests(firstPage);
+        getUsers(firstPage);
+        getTags(firstPage);
+        getBadges(firstPage);
     }
 });
 
 // 주최자 승인 요청
-function getOrganizerRequests() {
+function getOrganizerRequests(pageNum) {
     $.ajax({
-        url: '/api/admin/users/organizer-requests',
+        url: `/api/admin/users/organizer-requests?page=${pageNum}`,
         type: 'GET',
         success: function (data) {
             console.log(data);
             let html = '';
-            for (let i = 0; i < data.length; i++) { // Loop through each festival
+            data.content.forEach(function (organizer){ // Loop through each festival
                 html += `<tr>
-                    <td>${data[i].id}</td>
-                    <td>${data[i].username}</td>
-                    <td>${data[i].nickname}</td>
-                    <td>${data[i].email}</td>
-                    <td><a id="checkbox${i}" onclick="alertOrganizerRequest('${data[i].username}', '${data[i].id}')">승인</a></td>
+                    <td>${organizer.id}</td>
+                    <td>${organizer.username}</td>
+                    <td>${organizer.nickname}</td>
+                    <td>${organizer.email}</td>
+                    <td><a id="checkbox${organizer.id}" onclick="alertOrganizerRequest('${organizer.username}', '${organizer.id}')">승인</a></td>
                 </tr>`;
-            }
+            });
             ;
             $('#organizer-request-table-body').html(html);
+
+            makeOrganizerRequestPagination(data)
+
         },
         error: function (err) {
             console.log('Error:', err);
         }
     });
+}
+
+//페이지네이션
+function makeOrganizerRequestPagination(page){
+    let pagination = $("#organizer-request-pagination");
+    pagination.empty();
+
+    let cur = page.number; // 0부터 센다.
+    let endPage = Math.ceil((cur + 1) / 10.0) * 10; // 1~10
+    let startPage = endPage - 9; // 1~10
+    if (endPage > page.totalPages - 1) // totalPage는 1부터 센다 그래서 1을 빼줌
+    {
+        endPage = page.totalPages;
+    }
+
+    if (cur > 0) // 이전 버튼
+    {
+        pagination.append(
+            `<a onclick='getOrganizerRequests(${cur - 1})'><button>이전</a></button>`);
+    }
+
+    for (let i = startPage; i <= endPage; i++) { // 페이지네이션
+        pagination.append(
+            `<a onclick="getOrganizerRequests(${i - 1});"><button>${i}</a></button>`);
+    }
+    if (cur + 1 < page.totalPages) // 다음 버튼
+    {
+        pagination.append(
+            `<a onclick='getOrganizerRequests(${cur + 1})'><button>다음</a></button>`);
+    }
 }
 
 function alertOrganizerRequest(username, userId) {
@@ -62,39 +96,70 @@ function approveOrganizerRequest(userId) {
             getOrganizerRequests();
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
 }
 
 // 페스티벌 승인 요청
-function getFestivalRequests() {
+function getFestivalRequests(pageNum) {
     $.ajax({
-        url: '/api/admin/festival-requests',
+        url: `/api/admin/festival-requests?page=${pageNum}`,
         type: 'GET',
         success: function (data) {
             console.log(data);
             let html = '';
-            for (let i = 0; i < data.length; i++) { // Loop through each festival
+            data.content.forEach(function (fesRq) { // Loop through each festival
                 html += `<tr>
-                        <td>${data[i].id}</td>
-                        <td><a href="/api/festival-requests/${data[i].id}/page" target="_blank">${data[i].title}</a></td>
-                        <td>${data[i].place}</td>
-                        <td>${data[i].content}</td>
-                        <td>${data[i].openDate} ~ ${data[i].endDate}</td>
-                        <td><a href="${data[i].officialLink}" target="_blank">Official Link</a></td>
-                        <td>${data[i].nickname}</td>
-                        <td><input type="checkbox" onclick="toggleCheckbox(${data[i].id})"></td>
+                        <td>${fesRq.id}</td>
+                        <td><a href="/api/festival-requests/${fesRq.id}" target="_blank">${fesRq.title}</a></td>
+                        <td>${fesRq.place}</td>
+                        <td>${fesRq.content}</td>
+                        <td>${fesRq.openDate} ~ ${fesRq.endDate}</td>
+                        <td><a href="${fesRq.officialLink}" target="_blank">Official Link</a></td>
+                        <td>${fesRq.nickname}</td>
+                        <td><input type="checkbox" onclick="toggleCheckbox(${fesRq.id})"></td>
                     </tr>`;
-            }
+            })
             ;
             $('#festival-request-table-body').html(html);
+            makeFestivalRequestPagination(data);
         },
         error: function (err) {
             console.log('Error:', err);
         }
     });
+}
+
+//페이지네이션
+function makeFestivalRequestPagination(page){
+    let pagination = $("#festival-request-pagination");
+    pagination.empty();
+
+    let cur = page.number; // 0부터 센다.
+    let endPage = Math.ceil((cur + 1) / 10.0) * 10; // 1~10
+    let startPage = endPage - 9; // 1~10
+    if (endPage > page.totalPages - 1) // totalPage는 1부터 센다 그래서 1을 빼줌
+    {
+        endPage = page.totalPages;
+    }
+
+    if (cur > 0) // 이전 버튼
+    {
+        pagination.append(
+            `<a onclick='getFestivalRequests(${cur - 1})'><button>이전</button></a>`);
+    }
+
+    for (let i = startPage; i <= endPage; i++) { // 페이지네이션
+        pagination.append(
+            `<a onclick="getFestivalRequests(${i - 1});"><button>${i}</button></a>`);
+    }
+    if (cur + 1 < page.totalPages) // 다음 버튼
+    {
+        pagination.append(
+            `<a onclick='getFestivalRequests(${cur + 1})'><button>다음</button></a>`);
+    }
 }
 
 // 선택된 항목을 저장하기 위한 배열을 생성합니다.
@@ -170,30 +235,61 @@ function approveFestivalRequest(festivalRequestId) {
 }
 
 // 유저 강제 탈퇴
-function getUsers() {
+function getUsers(pageNum) {
     $.ajax({
-        url: '/api/admin/users',
+        url: `/api/admin/users?page=${pageNum}`,
         type: 'GET',
         success: function (data) {
             console.log(data);
             let html = '';
-            for (let i = 0; i < data.length; i++) { // Loop through each festival
+            data.content.forEach(function (user) { // Loop through each festival
                 html += `<tr>
-                    <td>${data[i].id}</td>
-                    <td>${data[i].role}</td>
-                    <td>${data[i].username}</td>
-                    <td>${data[i].nickname}</td>
-                    <td>${data[i].email}</td>
-                    <td><a id="checkbox${i}" onclick="alertUserWithdrawal('${data[i].username}', '${data[i].id}')">탈퇴</a></td>
+                    <td>${user.id}</td>
+                    <td>${user.role}</td>
+                    <td>${user.username}</td>
+                    <td>${user.nickname}</td>
+                    <td>${user.email}</td>
+                    <td><a id="checkbox${user.id}" onclick="alertUserWithdrawal('${user.username}', '${user.id}')">탈퇴</a></td>
                 </tr>`;
-            }
+            })
             ;
             $('#users-table-body').html(html);
+            makeUserPagination(data)
         },
         error: function (err) {
             console.log('Error:', err);
         }
     });
+}
+
+//페이지네이션
+function makeUserPagination(page){
+    let pagination = $("#user-management-pagination");
+    pagination.empty();
+
+    let cur = page.number; // 0부터 센다.
+    let endPage = Math.ceil((cur + 1) / 10.0) * 10; // 1~10
+    let startPage = endPage - 9; // 1~10
+    if (endPage > page.totalPages - 1) // totalPage는 1부터 센다 그래서 1을 빼줌
+    {
+        endPage = page.totalPages;
+    }
+
+    if (cur > 0) // 이전 버튼
+    {
+        pagination.append(
+            `<a onclick='getUsers(${cur - 1})'><button>이전</button></a>`);
+    }
+
+    for (let i = startPage; i <= endPage; i++) { // 페이지네이션
+        pagination.append(
+            `<a onclick="getUsers(${i - 1});"><button>${i}</button></a>`);
+    }
+    if (cur + 1 < page.totalPages) // 다음 버튼
+    {
+        pagination.append(
+            `<a onclick='getUsers(${cur + 1})'><button>다음</button></a>`);
+    }
 }
 
 function alertUserWithdrawal(username, userId) {
@@ -215,35 +311,66 @@ function withdrawUser(userId) {
             getUsers();
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
 }
 
 // 태그 관리
-function getTags() {
+function getTags(pageNum) {
     $.ajax({
-        url: '/api/tags',
+        url: `/api/tags?page=${pageNum}`,
         type: 'GET',
         success: function (data) {
             console.log(data);
             let html = '';
-            for (let i = 0; i < data.length; i++) { // Loop through each festival
+            data.content.forEach(function (tag){ // Loop through each festival
                 html += `<tr>
-                    <td>${data[i].id}</td>
-                    <td id="tagName${data[i].id}">${data[i].title}</td>
-                    <td><a onclick="showTagInput('${data[i].title}', '${data[i].id}')">수정</a></td>
-                    <td><a onclick="alertTagDelete('${data[i].title}', '${data[i].id}')">삭제</a></td>
+                    <td>${tag.id}</td>
+                    <td id="tagName${tag.id}">${tag.title}</td>
+                    <td><a onclick="showTagInput('${tag.title}', '${tag.id}')">수정</a></td>
+                    <td><a onclick="alertTagDelete('${tag.title}', '${tag.id}')">삭제</a></td>
                 </tr>`;
-            }
+            })
             ;
             $('#tags-table-body').html(html);
+            makeTagPagination(data);
         },
         error: function (err) {
             console.log('Error:', err);
         }
     });
+}
+
+//페이지네이션
+function makeTagPagination(page){
+    let pagination = $("#tags-management-pagination");
+    pagination.empty();
+
+    let cur = page.number; // 0부터 센다.
+    let endPage = Math.ceil((cur + 1) / 10.0) * 10; // 1~10
+    let startPage = endPage - 9; // 1~10
+    if (endPage > page.totalPages - 1) // totalPage는 1부터 센다 그래서 1을 빼줌
+    {
+        endPage = page.totalPages;
+    }
+
+    if (cur > 0) // 이전 버튼
+    {
+        pagination.append(
+            `<a onclick='getTags(${cur - 1})'><button>이전</button></a>`);
+    }
+
+    for (let i = startPage; i <= endPage; i++) { // 페이지네이션
+        pagination.append(
+            `<a onclick="getTags(${i - 1});"><button>${i}</button></a>`);
+    }
+    if (cur + 1 < page.totalPages) // 다음 버튼
+    {
+        pagination.append(
+            `<a onclick='getTags(${cur + 1})'><button>다음</button></a>`);
+    }
 }
 
 function showTagInput(title, id) {
@@ -298,7 +425,7 @@ function modifyTag(tagId) {
             getTags();
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
@@ -323,45 +450,75 @@ function deleteTag(tagId) {
             getTags();
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
 }
 
 // 뱃지 관리
-function getBadges() {
+function getBadges(pageNum) {
     $.ajax({
-        url: '/api/admin/badges',
+        url: `/api/admin/badges?page=${pageNum}`,
         type: 'GET',
         success: function (data) {
             console.log(data);
             let html = '';
-            for (let i = 0; i < data.length; i++) { // Loop through each festival
+            data.content.forEach(function (badge) { // Loop through each festival
                 html += `<tr>
-                    <td>${data[i].id}</td>
-                    <td id="badgeImage${data[i].id}"><img src="${data[i].files[0].uploadFileUrl}" alt="Badge Image" width="100"></td>
-                    <td id="badgeTitle${data[i].id}" >${data[i].title}</td>
-                    <td id="badgeDescription${data[i].id}">${data[i].description}</td>
-                    <td id="badgeConditionType${data[i].id}">${data[i].conditionEnum}</td>
-                    <td id="badgeConditionDate${data[i].id}">${data[i].conditionFirstDay} ~ ${data[i].conditionLastDay}</td>
-                    <td id="badgeConditionStandard${data[i].id}">${data[i].conditionStandard}</td>
-                    <td id ="badgeTags${data[i].id}">
+                    <td>${badge.id}</td>
+                    <td id="badgeImage${badge.id}"><img src="${badge.files[0].uploadFileUrl}" alt="Badge Image" width="100"></td>
+                    <td id="badgeTitle${badge.id}" >${badge.title}</td>
+                    <td id="badgeDescription${badge.id}">${badge.description}</td>
+                    <td id="badgeConditionType${badge.id}">${badge.conditionEnum}</td>
+                    <td id="badgeConditionDate${badge.id}">${badge.conditionFirstDay} ~ ${badge.conditionLastDay}</td>
+                    <td id="badgeConditionStandard${badge.id}">${badge.conditionStandard}</td>
+                    <td id ="badgeTags${badge.id}">
                         <ul>
-                            ${data[i].tags.map(tag => `<li>${tag.title}</li>`).join('')}
+                            ${badge.tags.map(tag => `<li>${tag.title}</li>`).join('')}
                         </ul>
                     </td>
-                    <td><a onclick="showBadgeInput('${data[i].title}', '${data[i].id}')">수정</a></td>
-                    <td><a onclick="alertBadgeDelete('${data[i].title}', '${data[i].id}')">삭제</a></td>
+                    <td><a onclick="showBadgeInput('${badge.title}', '${badge.id}')">수정</a></td>
+                    <td><a onclick="alertBadgeDelete('${badge.title}', '${badge.id}')">삭제</a></td>
                 </tr>`;
-            }
-            ;
+            });
             $('#badges-table-body').html(html);
+            makeBadgePagination(data);
         },
         error: function (err) {
             console.log('Error:', err);
         }
     });
+}
+
+//페이지네이션
+function makeBadgePagination(page){
+    let pagination = $("#badges-management-pagination");
+    pagination.empty();
+
+    let cur = page.number; // 0부터 센다.
+    let endPage = Math.ceil((cur + 1) / 10.0) * 10; // 1~10
+    let startPage = endPage - 9; // 1~10
+    if (endPage > page.totalPages - 1) // totalPage는 1부터 센다 그래서 1을 빼줌
+    {
+        endPage = page.totalPages;
+    }
+
+    if (cur > 0) // 이전 버튼
+    {
+        pagination.append(
+            `<a onclick='getBadges(${cur - 1})'><button>이전</button></a>`);
+    }
+
+    for (let i = startPage; i <= endPage; i++) { // 페이지네이션
+        pagination.append(
+            `<a onclick="getBadges(${i - 1});"><button>${i}</button></a>`);
+    }
+    if (cur + 1 < page.totalPages) // 다음 버튼
+    {
+        pagination.append(
+            `<a onclick='getBadges(${cur + 1})'><button>다음</button></a>`);
+    }
 }
 
 function addNewRow() {
@@ -373,7 +530,7 @@ function addNewRow() {
     // 각 열에 대한 <td> 요소 생성
     newRow.innerHTML = `
     <td>.</td>
-    <td><input id="badgeImageInput" type="file" accept="image/*" onchange="previewImage(this)">
+    <td><input id="badgeImageInput" type="file" accept="image/*" onchange="previewImage(this)" required>
         <img id="preview" src="" alt="Image Preview" style="max-width: 300px; max-height: 300px;">
     </td>
     <td><input id="badgeTitleInput" type="text" class="input-field" placeholder="Title"></td>
@@ -498,7 +655,7 @@ function createBadge() {
             getBadges();
         },
         error: function (err) {
-            alert(err.responseText.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
@@ -781,7 +938,7 @@ function modifyBadge(badgeId) {
             getBadges();
         },
         error: function (err) {
-            alert(err.responseText.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
@@ -807,7 +964,7 @@ function deleteBadge(badgeId) {
             getBadges();
         },
         error: function (err) {
-            alert(err.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });

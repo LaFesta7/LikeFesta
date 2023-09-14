@@ -156,7 +156,7 @@ function addTagInput() {
 
 
 function redirectFestivalMap() {
-    window.location.href = `/api/users/festivals-map`;
+    window.location.href = `/api/festivals-map`;
 }
 
 // 페스티벌 수정
@@ -227,7 +227,7 @@ function editFestivalPost(festivalId) {
             window.location.href = `/api/festivals/${festivalId}/page`;
         },
         error: function (err) {
-            alert(err.responseText.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });

@@ -1,15 +1,23 @@
+// 쿠키에서 'Authorization' 토큰을 가져옵니다.
+const token = Cookies.get('Authorization');
+
 $(document).ready(function () {
-    // 쿠키에서 'Authorization' 토큰을 가져옵니다.
-    const token = Cookies.get('Authorization');
     // 토큰이 존재하면 서버 API를 호출하여 유효성을 검사합니다.
     if (token === undefined) {
         // 토큰이 존재하지 않으면, 사용자는 로그인 상태가 아닙니다.
+        $('#myPageSection').hide();
+        $('#myPageHiddenSection').show();
+        $('#myPageTab').hide();
         $('#logoutForm').hide();  // 로그아웃 버튼을 숨깁니다
         $('#loginButton').show();  // 로그인 버튼을 표시합니다
         $('#notification-icon').hide();  // 알림 미표시
     } else {
+        $('#myPageSection').show();
+        $('#myPageHiddenSection').hide();
+        $('#myPageTab').show();
         $('#logoutForm').show();  // 로그아웃 버튼을 표시합니다
         $('#loginButton').hide();  // 로그인 버튼을 숨깁니다
+        $('#notification-icon').show();
 
         // JWT 토큰의 권한 확인
         const tokenPayload = parseJwtPayload(token); // JWT 토큰을 해석하여 payload를 가져오는 함수로 직접 구현해야 합니다.
@@ -21,105 +29,67 @@ $(document).ready(function () {
         // 토큰 만료시간 확인
         checkTokenExpiration(tokenPayload);
 
-        $.ajax({
-            url: '/api/users/my-profile',
-            type: 'GET',
-            success: function (data) {
-                console.log(data);
-                let html = '';
-                const representativeBadges = data.representativeBadges;
-                for (let i = 0; i <representativeBadges.length; i++) { // Loop through each festival
-                    html += `
+        let lastFesFollowId = 0;
+        let lastFollowingId = 0;
+        let lastFollowerId = 0;
+
+        getMyProfile();
+        loadFestivalFollow(lastFesFollowId);
+        loadFollowing(lastFollowingId);
+        loadFollower(lastFollowerId);
+    }
+
+    let pageNum = 0;
+    loadFestivals(pageNum);
+
+    getRank();
+});
+
+// JWT 읽기
+function parseJwtPayload(token) {
+    const base64Url = token.split('.')[1]; // JWT의 두 번째 부분이 페이로드입니다.
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); // URL 안전한 Base64 문자열로 변환
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join('')); // Base64 디코딩 및 URL 디코딩
+
+    return JSON.parse(jsonPayload); // JSON 문자열을 객체로 파싱
+}
+
+let loginUserId;
+
+// 내 프로필 불러오기
+function getMyProfile() {
+    $.ajax({
+        url: '/api/users/my-profile',
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+            loginUserId = data.id;
+            let html = '';
+            const representativeBadges = data.representativeBadges;
+            for (let i = 0; i < representativeBadges.length; i++) { // Loop through each festival
+                html += `
                         <div class="image-container">
                                     <img src="${representativeBadges[i].fileUrl}" alt="뱃지 이미지">
                         </div>
                         <p class="tiny opacity-6">${representativeBadges[i].title}</p>
                         `;
-                };
-                $('#representative-badges').html(html);
-            },
-            error: function (err) {
-                console.log('Error:', err);
             }
-        });
-
-        let lastFesFollowId = 0;
-        let lastFollowId = 0
-
-        loadFestivalFollow(lastFesFollowId);
-        loadFollower(lastFollowId);
-
-        function loadFestivalFollow(lastFesFollowId) {
-            $.ajax({
-                url: `/api/users/followed-festivals?lt=${lastFesFollowId}`,
-                type: 'GET',
-                success: function (data) {
-                    console.log(data);
-                    let html = '';
-                    for (let i = 0; i < data.length; i++) { // Loop through each festival
-                        html += `
-                        <li>
-                        <td>${data[i].title}</td>
-                        </li>`;
-                    }
-                    ;
-                    if(lastFesFollowId == 0){
-                        $('#my-follow-festival').html(html);
-                    }else{
-                        $('#my-follow-festival').append(html);
-                    }
-
-                    lastFesFollowId = data[data.length - 1].id;
-
-                    const loadBtn = document.querySelector('#load-festival-follow');
-                    loadBtn.onclick = function () {
-                        loadFestivalFollow(lastFesFollowId);
-                    }
-                },
-                error: function (err) {
-                    console.log('Error:', err);
-                }
-            });
+            ;
+            $('#representative-badges').html(html);
+        },
+        error: function (err) {
+            console.log('Error:', err);
         }
+    });
+}
 
-        function loadFollower(lastFollowId){
-            $.ajax({
-                url: `/api/users/follows/followers?lt=${lastFollowId}`,
-                type: 'GET',
-                success: function (data) {
-                    console.log(data);
-                    let html = '';
-                    for (let i = 0; i < data.length; i++) { // Loop through each festival
-                        html += `
-                        <li>
-                        <td>${data[i].username}</td>
-                        </li>`;
-                    }
-                    ;
-                    if(lastFollowId == 0){
-                        $('#my-follow-list').html(html);
-                    }else{
-                        $('#my-follow-list').append(html);
-                    }
+function goProfile() {
+    moveProfile(loginUserId);
+}
 
-                    lastFollowId = data[data.length - 1].id;
-
-                    const loadBtn = document.querySelector('#load-follow');
-                    loadBtn.onclick = function () {
-                        loadFollower(lastFollowId);
-                    }
-                },
-                error: function (err) {
-                    console.log('Error:', err);
-                }
-            });
-        }
-    }
-
-    let pageNum = 0;
-    loadFestivals(pageNum);
-});
-
+// 페스티벌 불러오기
 function loadFestivals(pageNum) {
     $.ajax({
         url: `/api/festivals?page=${pageNum}`,
@@ -129,7 +99,7 @@ function loadFestivals(pageNum) {
             console.log(data);
 
             let html = '';
-            data.content.forEach(function (festival){
+            data.content.forEach(function (festival) {
                 html += `<tr>
                         <td>${festival.id}</td>
                         <td><a href="/api/festivals/${festival.id}/page" target="_blank">${festival.title}</a></td>
@@ -152,6 +122,156 @@ function loadFestivals(pageNum) {
     });
 }
 
+// 페스티벌 팔로우 불러오기
+function loadFestivalFollow(lastFesFollowId) {
+    $.ajax({
+        url: `/api/users/followed-festivals?lt=${lastFesFollowId}`,
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+            let html = '';
+            for (let i = 0; i < data.length; i++) { // Loop through each festival
+                html += `
+                    <li>
+                    <td>
+                        <strong><a onclick="moveFestival(${data[i].id})" style="text-decoration: none">${data[i].title}</a></strong>
+                        <button style="float: right; margin-right: 20px" onclick="unfollowFestival(${data[i].id})">삭제</button>
+                    </td>
+                    </li>`;
+            }
+            ;
+            if (lastFesFollowId == 0) {
+                $('#my-follow-festival').html(html);
+            } else {
+                $('#my-follow-festival').append(html);
+            }
+
+            lastFesFollowId = data[data.length - 1].id;
+
+            const loadBtn = document.querySelector('#load-festival-follow');
+            loadBtn.onclick = function () {
+                loadFestivalFollow(lastFesFollowId);
+            }
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
+}
+
+// 페스티벌 언팔로우
+function unfollowFestival(festivalId) {
+    const confirmation = confirm("해당 페스티벌을 언팔로우하시겠습니까? 언팔로우를 진행할 경우 해당 페스티벌에 관한 알림이 발송되지 않습니다.");
+
+    if (confirmation) {
+        const apiUrl = `/api/users/followed-festivals/${festivalId}`
+        $.ajax({
+            url: apiUrl,
+            type: 'DELETE',
+            success: function (data) {
+                console.log(data);
+                alert(data.statusMessage + ' 해당 페스티벌의 알림이 발송되지 않습니다!');
+                loadFestivalFollow();
+            },
+            error: function (err) {
+                console.log('Error:', err);
+                alert(err.responseJSON.statusMessage);
+            }
+        });
+    }
+}
+
+// 팔로잉 불러오기
+function loadFollowing(lastFollowingId) {
+    $.ajax({
+        url: `/api/users/follows/followings?lt=${lastFollowingId}`,
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+            let html = '';
+            for (let i = 0; i < data.length; i++) {
+                html += `
+                    <li>
+                   <a onclick="moveProfile(${data[i].id})" style="text-decoration: none"> <strong>${data[i].username}</strong> (${data[i].nickname})</a>
+                        <button style="float: right; margin-right: 20px" onclick="unfollowUSer(${data[i].id})">팔로잉</button>
+                    </li>`;
+            }
+            ;
+            if (lastFollowingId == 0) {
+                $('#my-following-list').html(html);
+            } else {
+                $('#my-following-list').append(html);
+            }
+
+            lastFollowingId = data[data.length - 1].id;
+
+            const loadBtn = document.querySelector('#load-following');
+            loadBtn.onclick = function () {
+                loadFollowing(lastFollowingId);
+            }
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
+}
+
+// 유저 언팔로우
+function unfollowUSer(followingUserId) {
+    const confirmation = confirm("해당 유저 언팔로우하시겠습니까? 언팔로우를 진행할 경우 해당 유저에 관한 알림이 발송되지 않습니다.");
+
+    if (confirmation) {
+        const apiUrl = `/api/users/follows/${followingUserId}`
+        $.ajax({
+            url: apiUrl,
+            type: 'DELETE',
+            success: function (data) {
+                console.log(data);
+                alert(data.statusMessage + ' 해당 유저에 관한 알림이 발송되지 않습니다!');
+                loadFollowing();
+            },
+            error: function (err) {
+                console.log('Error:', err);
+                alert(err.responseJSON.statusMessage);
+            }
+        });
+    }
+}
+
+// 팔로워 불러오기
+function loadFollower(lastFollowerId) {
+    $.ajax({
+        url: `/api/users/follows/followers?lt=${lastFollowerId}`,
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+            let html = '';
+            for (let i = 0; i < data.length; i++) { // Loop through each festival
+                html += `
+                    <li>
+                    <a onclick="moveProfile(${data[i].id})" style="text-decoration: none"> <strong>${data[i].username}</strong> (${data[i].nickname})</a>
+                    </li>`;
+            }
+            ;
+            if (lastFollowerId == 0) {
+                $('#my-follower-list').html(html);
+            } else {
+                $('#my-follower-list').append(html);
+            }
+
+            lastFollowerId = data[data.length - 1].id;
+
+            const loadBtn = document.querySelector('#load-follower');
+            loadBtn.onclick = function () {
+                loadFollower(lastFollowerId);
+            }
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
+}
+
 function makePagination(page) {
     let pagination = $("#pagination");
     pagination.empty();
@@ -167,28 +287,18 @@ function makePagination(page) {
     if (cur > 0) // 이전 버튼
     {
         pagination.append(
-            `<button><a onclick='loadFestivals(${cur - 1})'>이전</a></button>`);
+            `<a onclick='loadFestivals(${cur - 1})'><button>이전</button></a>`);
     }
 
     for (let i = startPage; i <= endPage; i++) { // 페이지네이션
         pagination.append(
-            `<button><a onclick="loadFestivals(${i - 1});">${i}</a></button>`);
+            `<a onclick="loadFestivals(${i - 1});"><button>${i}</button></a>`);
     }
     if (cur + 1 < page.totalPages) // 다음 버튼
     {
         pagination.append(
-            `<button><a onclick='loadFestivals(${cur + 1})'>다음</a></button>`);
+            `<a onclick='loadFestivals(${cur + 1})'><button>다음</button></a>`);
     }
-}
-
-function parseJwtPayload(token) {
-    const base64Url = token.split('.')[1]; // JWT의 두 번째 부분이 페이로드입니다.
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); // URL 안전한 Base64 문자열로 변환
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join('')); // Base64 디코딩 및 URL 디코딩
-
-    return JSON.parse(jsonPayload); // JSON 문자열을 객체로 파싱
 }
 
 // 토큰 만료 시간을 확인하는 함수
@@ -241,6 +351,157 @@ async function moveAdminPage() {
     } catch (error) {
         console.error(error);
     }
+}
+
+// 랭킹 가져오기
+function getRank() {
+    $.ajax({
+        url: `/api/festivals/rank`,
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+
+            // 이미지 슬라이더를 초기화
+            $('#festivalRank').slick({
+                infinite: true, // 무한 루프
+                slidesToShow: 1, // 한 번에 보여질 슬라이드 개수 (이미지 하나만 보이도록 설정)
+                autoplay: true, // 자동 재생
+                autoplaySpeed: 3000 // 자동 재생 속도 (3초마다 전환)
+            });
+
+            // 데이터를 슬라이더에 동적으로 추가
+            for (let i = 0; i < data.length; i++) {
+                const slide = `
+                <div class="rank" onclick="moveFestival(${data[i].id})">
+                    <img class="wide" src="${data[i].files[0].uploadFileUrl}" alt="">
+                    <strong id="rank${data[i].id}" style="font-size: 30px; color: white; background-color: #5F5F5F; margin-left: 10px">${i + 1}. ${data[i].title}</strong>
+                </div>
+            `;
+
+                // 슬라이더에 슬라이드 추가
+                $('#festivalRank').slick('slickAdd', slide);
+            }
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
+
+    $.ajax({
+        url: `/api/festivals/reviews/rank`,
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+
+            // 이미지 슬라이더를 초기화
+            $('#reviewRank').slick({
+                infinite: true, // 무한 루프
+                slidesToShow: 1, // 한 번에 보여질 슬라이드 개수 (이미지 하나만 보이도록 설정)
+                autoplay: true, // 자동 재생
+                autoplaySpeed: 3000 // 자동 재생 속도 (3초마다 전환)
+            });
+
+            // 데이터를 슬라이더에 동적으로 추가
+            for (let i = 0; i < data.length; i++) {
+                const slide = `
+                <div class="rank" onclick="moveReview(${data[i].festivalId}, ${data[i].id})">
+                    <img class="wide" src="${data[i].files[0].uploadFileUrl}" alt=""/>
+                    <strong id="rank${data[i].id}" style="font-size: 30px; color: white; background-color: #5F5F5F; margin-left: 10px">${i + 1}. ${data[i].festivalTitle} : ${data[i].title}</strong>
+                </div>
+            `;
+
+                // 슬라이더에 슬라이드 추가
+                $('#reviewRank').slick('slickAdd', slide);
+            }
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
+
+    $.ajax({
+        url: `/api/users/rank`,
+        type: 'GET',
+        success: function (data) {
+            console.log(data);
+
+            // 이미지 슬라이더를 초기화
+            $('#userRank').slick({
+                infinite: true, // 무한 루프
+                slidesToShow: 1, // 한 번에 보여질 슬라이드 개수 (이미지 하나만 보이도록 설정)
+                autoplay: true, // 자동 재생
+                autoplaySpeed: 3000 // 자동 재생 속도 (3초마다 전환)
+            });
+
+            // 데이터를 슬라이더에 동적으로 추가
+            for (let i = 0; i < data.length; i++) {
+                const slide = `
+                <div class="rank" onclick="moveProfile(${data[i].id})">
+                    <img class="wide" src="${data[i].files[0].uploadFileUrl}" alt=""/>
+                    <strong id="rank${data[i].id}" style="font-size: 30px; color: white; background-color: #5F5F5F; margin-left: 10px">${i + 1}. ${data[i].nickname}</strong>
+                </div>
+            `;
+
+                // 슬라이더에 슬라이드 추가
+                $('#userRank').slick('slickAdd', slide);
+            }
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
+
+}
+
+// 페스티벌 태그 검색
+function searchFestivalTag() {
+    const tagSearchInput = document.querySelector('#tagSearchInput').value; // 입력 필드의 값 가져오기
+    console.log(tagSearchInput);
+    $.ajax({
+        url: `/api/festivals/tags?tag=${tagSearchInput}`,
+        type: 'GET',
+        dataType: "json",
+        success: function (data) {
+            console.log(data);
+            let html = '';
+            for (let i = 0; i < data.length; i++) {
+                html += `
+                <div style="margin-top:30px; margin-bottom: 15px; border-bottom: 1px solid #cccccc">
+                    <strong class="left" style="font-size: 20px"><p onclick="moveFestival(${data[i].id})">${data[i].title}</p></strong>
+                    <div style="display: flex">
+                    <p>${data[i].tags.map(tag => `<span>#${tag.title}</span>`).join(' ')}</p>
+                    </div>
+                </div>
+                `;
+            }
+            ;
+            $('#tag-search-festival-list').html(html);
+
+            makePagination(data);
+        },
+        error: function (err) {
+            if (token === undefined) {
+                alert('로그인을 진행해주세요!')
+            }
+            console.log('Error:', err);
+            alert(err.responseJSON.statusMessage);
+        }
+    });
+}
+
+// 페스티벌로 이동하기
+function moveFestival(festivalId) {
+    window.location.href = `/api/festivals/${festivalId}/page`;
+}
+
+// 리뷰로 이동하기
+function moveReview(festivalId, reviewId) {
+    window.location.href = `/api/festivals/${festivalId}/reviews/${reviewId}/page`;
+}
+
+// 프로필로 이동하기
+function moveProfile(userId) {
+    window.location.href = `/api/users/${userId}/profile-page`;
 }
 
 function formatDate(serverDate) {
