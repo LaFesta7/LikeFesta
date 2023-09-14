@@ -143,3 +143,10 @@ body {
     color: #ffffff;
 }
 
+.scrollable-content {
+    max-height: 80vh;
+    overflow-y: auto;
+    scrollbar-width: thin; /* Firefox에만 적용되며 스크롤바의 너비를 조절합니다. */
+}
+
+

@@ -44,31 +44,33 @@ function getReview() {
                     <div class="post-meta"><a href="#" style="text-decoration: none" onclick="moveFestival(${data.festivalId})">${data.festivalTitle}</a></div>
                     <div class="post-meta">${data.createdAtTimeAgo}</div>
                 </div>
-                <img src="${imageSrc}" alt="Review Image" class="post-image">
-                <div class="post-content" style="display: flex">
-                    <a href="#" style="text-decoration: none"><strong onclick="moveProfile(${data.userId})" style="font-size: larger; float: right; margin-right: 20px">${data.userNickname}</strong></a>
-                    ${data.content}
-                </div>
-                <div class="actions">
-                    <div id="heart-group" style="display: flex">
-                        <a href="" id="heart-btn" class="heart-btn" style="text-decoration: none; font-size: 25px;" onclick="cancelReviewLike()">❤️</a>
-                        <a href="" id="not-heart-btn" class="heart-btn" style="text-decoration: none; font-size: 25px; display: none" onclick="addReviewLike()">🤍</a>
-                        <span style="font-size: 20px; margin-left: 5px; margin-top: 5px">${data.likeCnt}</span>
+                <div class="scrollable-content">
+                    <img src="${imageSrc}" alt="Review Image" class="post-image">
+                    <div class="post-content" style="display: flex">
+                        <a href="#" style="text-decoration: none"><strong onclick="moveProfile(${data.userId})" style="font-size: larger; float: right; margin-right: 20px">${data.userNickname}</strong></a>
+                        ${data.content}
                     </div>
-                    <div id="reviewUDContainer" class="edit-delete">
-                        <a href="${apiUrl}/edit-page" class="edit">Edit</a>
-                        <button class="delete" onclick="alertDeleteReview()">Delete</button>
+                    <div class="actions">
+                        <div id="heart-group" style="display: flex">
+                            <a href="" id="heart-btn" class="heart-btn" style="text-decoration: none; font-size: 25px;" onclick="cancelReviewLike()">❤️</a>
+                            <a href="" id="not-heart-btn" class="heart-btn" style="text-decoration: none; font-size: 25px; display: none" onclick="addReviewLike()">🤍</a>
+                            <span style="font-size: 20px; margin-left: 5px; margin-top: 5px">${data.likeCnt}</span>
+                        </div>
+                        <div id="reviewUDContainer" class="edit-delete">
+                            <a href="${apiUrl}/edit-page" class="edit">Edit</a>
+                            <button class="delete" onclick="alertDeleteReview()">Delete</button>
+                        </div>
                     </div>
+                    <div class="comment-post-container-before"></div>
+                    <div style="margin-top: 20px">
+                        <strong>Comments</strong>
+                    </div>
+                    <div id="comment-post" class="comment-post-container" style="margin-top: 20px">
+                        <textarea id="commentInput" name="commentInput" rows="2" required=""></textarea>
+                        <button type="submit" class="comment-post" onclick="postComment()">작성</button>
+                    </div>
+                    <div id="review-comment"></div>
                 </div>
-                <div class="comment-post-container-before"></div>
-                <div style="margin-top: 20px">
-                    <strong>Comments</strong>
-                </div>
-                <div id="comment-post" class="comment-post-container" style="margin-top: 20px">
-                    <textarea id="commentInput" name="commentInput" rows="2" required=""></textarea>
-                    <button type="submit" class="comment-post" onclick="postComment()">작성</button>
-                </div>
-                <div id="review-comment"></div>
                 `;
             $('#review-page').html(html);
             showReviewLikeBtn();
