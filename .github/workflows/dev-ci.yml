@@ -22,17 +22,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    env:
-      DB_URL: ${{ secrets.DB_URL }}
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-      KAKAO_REST_API: ${{ secrets.KAKAO_REST_API }}
-      MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
-      MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
-      MAIL_HOST: ${{ secrets.MAIL_HOST }}
-      MAIL_PORT: ${{ secrets.MAIL_PORT }}
-
     services:
       mysql:
         image: mysql:latest
@@ -58,6 +47,8 @@ jobs:
       - name: properties 파일 생성
         run: |
           cd ./src/main/resources
+          touch ./application.properties
+          echo "${{secrets.APPLICATION_PROPERTIES}}" > ./application.properties
           touch ./application-s3.properties
           echo "${{secrets.APPLICATION_S3_PROPERTIES}}" > ./application-s3.properties
           touch ./application-redis.properties
