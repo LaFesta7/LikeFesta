@@ -56,11 +56,25 @@ function getNotifications() {
                         <td>${data[i].title}</td>
                         <td>${data[i].detail}</td>
                         <td>${data[i].timeSinceCreated}</td>
-                        <td>${data[i].rd}</td>
+                        <td><a href="${data[i].destination}" onclick="readNotification(${data[i].id})">확인</a></td>
                     </tr>`;
             }
             ;
             $('#notification-table-body').html(html);
+        },
+        error: function (err) {
+            console.log('Error:', err);
+        }
+    });
+}
+
+// 알림 읽음 처리
+function readNotification(notificationId) {
+    $.ajax({
+        url: `/api/users/notifications/${notificationId}`,
+        type: 'PATCH',
+        success: function (data) {
+            console.log('알림 읽음 처리 완료');
         },
         error: function (err) {
             console.log('Error:', err);

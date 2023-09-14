@@ -16,6 +16,7 @@ import java.util.List;
 public class ReminderDto {
     private String mailTitle;
     private String mailContent;
+    private Long festivalId;
     private String festivalTitle;
     private String festivalOpenDate;
     private String festivalPlace;
@@ -27,6 +28,7 @@ public class ReminderDto {
     public ReminderDto(Festival festival, FestivalReminderType type) {
         this.mailTitle = findMailtitle(festival, type);
         this.mailContent = findMailContent(festival, type);
+        this.festivalId = festival.getId();
         this.festivalTitle = festival.getTitle();
         this.festivalOpenDate = formFestivalDate(festival, FestivalReminderType.FESTIVAL_OPEN);
         this.festivalPlace = festival.getPlace();

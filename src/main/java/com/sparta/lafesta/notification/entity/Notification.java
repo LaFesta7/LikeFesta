@@ -26,6 +26,9 @@ public class Notification {
     @Column(name = "createdAt", nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "destination", nullable = false)
+    private String destination;
+
     @Column(name = "rd", nullable = false)
     private Boolean rd;
 
@@ -37,11 +40,12 @@ public class Notification {
     @Column(nullable = false)
     private LocalDateTime expirationTime;
 
-    public Notification(String title, String detail, LocalDateTime createdAt, User follower) {
+    public Notification(String title, String detail, LocalDateTime createdAt, String destination, User follower) {
         this.follower = follower;
         this.title = title;
         this.detail = detail;
         this.createdAt = createdAt;
+        this.destination = destination;
         this.rd = false;
         this.expirationTime = LocalDateTime.now().plusDays(7);
     }

@@ -17,8 +17,10 @@ import com.sparta.lafesta.review.event.ReviewCreatedEventPublisher;
 import com.sparta.lafesta.review.repostiroy.ReviewRepository;
 import com.sparta.lafesta.review.repostiroy.ReviewRepositoryCustom;
 import com.sparta.lafesta.user.entity.User;
+import com.sparta.lafesta.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +38,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewRepositoryCustom reviewRepositoryCustom;
     private final FestivalService festivalService;
+    private final UserService userService;
 
     //S3
     private final S3UploadService s3UploadService;
@@ -97,6 +100,15 @@ public class ReviewServiceImpl implements ReviewService {
                 .map(ReviewResponseDto::new).toList();
     }
 
+    // 특정 유저가 작성한 리뷰 전체 조회
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ReviewResponseDto> selectUserReviews(Long userId, Pageable pageable) {
+        User user = userService.findUser(userId);
+        return reviewRepository.findAllByUser(user, pageable)
+                .map(ReviewResponseDto::new);
+    }
+
     // 리뷰 상세 조회
     @Override
     @Transactional(readOnly = true)
@@ -141,6 +153,13 @@ public class ReviewServiceImpl implements ReviewService {
         deleteFiles(review);
 
         reviewRepository.delete(review);
+    }
+
+    // 리뷰 좋아요 확인
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean selectReviewLike(Long reviewId, User user) {
+        return findReviewLike(user, findReview(reviewId)) != null;
     }
 
     // 리뷰 좋아요 추가

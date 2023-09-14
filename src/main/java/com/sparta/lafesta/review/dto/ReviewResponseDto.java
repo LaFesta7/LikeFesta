@@ -14,6 +14,7 @@ public class ReviewResponseDto {
     private Long festivalId;
     private String festivalTitle;
     private String userNickname;
+    private Long userId;
     private String username;
     private String title;
     private String content;
@@ -27,6 +28,7 @@ public class ReviewResponseDto {
         this.createdAtTimeAgo = DurationFormatter.format(review.getCreatedAt());
         this.festivalId = review.getFestival().getId();
         this.festivalTitle = review.getFestival().getTitle();
+        this.userId = review.getUser().getId();
         this.userNickname = review.getUser().getNickname();
         this.username = review.getUser().getUsername();
         this.title = review.getTitle();

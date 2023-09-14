@@ -91,7 +91,7 @@ function getFestivalRequestEditPage() {
 }
 
 function redirectFestivalMap() {
-    window.location.href = `/api/users/festivals-map`;
+    window.location.href = `/api/festivals-map`;
 }
 
 function redirectFestivalRequestList() {
@@ -133,11 +133,11 @@ function editFestivalRequestPost(festivalRequestId) {
             if (role === 'ADMIN') {
                 window.location.href = '/api/admin-page#festival-request';
             } else {
-                window.location.href = '/api/users/festivals-map';
+                window.location.href = '/api/festivals-map';
             }
         },
         error: function (err) {
-            alert(err.responseText.statusMessage);
+            alert(err.responseJSON.statusMessage);
             console.log('Error:', err);
         }
     });
