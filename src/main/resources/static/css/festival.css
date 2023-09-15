@@ -2,8 +2,8 @@
 .festival-header {
     background-color: #4CAF50;
     color: white;
-    padding: 20px 0;
     text-align: center;
+    width: 250px;
 }
 
 .festival-content {
@@ -37,11 +37,6 @@
     padding: 20px;
     background-color: rgba(255, 255, 255, 0.8); /* 약간 투명한 배경색 */
     display: flex;
-}
-
-.festival-header {
-    text-align: center;
-    margin-bottom: 20px;  /* 헤더와 컨텐트 사이의 간격 */
 }
 
 .festival-content {
