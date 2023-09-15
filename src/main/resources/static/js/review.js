@@ -67,15 +67,16 @@ function getReview() {
                     </div>
                     <div id="comment-post" class="comment-post-container" style="margin-top: 20px">
                         <textarea id="commentInput" name="commentInput" rows="2" required=""></textarea>
-                        <button type="submit" class="comment-post" onclick="postComment()">작성</button>
-                    </div>
+                        <button type="submit" class="comment-post" onclick="postComment()">작성</button>                        
+                    </div>                    
                     <div id="review-comment"></div>
+                    <div id="review-comment-pagination"><a>1</a></div>
                 </div>
                 `;
             $('#review-page').html(html);
             showReviewLikeBtn();
             showReviewUDContainer(role, userName, data.username);
-            getComments();
+            getComments(0);
         },
         error: function (err) {
             console.log('Error:', err);
@@ -149,37 +150,38 @@ function showReviewUDContainer(role, userName, editorName) {
     }
 }
 
-async function getComments() {
+async function getComments(pageNum) {
     try {
         const commentData = await $.ajax({
-            url: `/api/festivals/${festivalId}/reviews/${reviewId}/comments`,
+            url: `/api/festivals/${festivalId}/reviews/${reviewId}/comments?page=${pageNum}`,
             type: 'GET'
         });
 
         let html = '';
-        for (let i = 0; i < commentData.length; i++) {
+        for (let i = 0; i < commentData.content.length; i++) {
+            let commentDt = commentData.content[i];
             // 현재 사용자의 이름과 댓글 작성자의 이름을 비교하여 수정 및 삭제 버튼의 가시성 설정
-            const isCurrentUser = userName === commentData[i].username;
+            const isCurrentUser = userName === commentDt.username;
             const isAdmin = role === 'ADMIN';
 
             // 비동기로 데이터를 가져오고 처리
-            const isCommentLike = await getCommentLike(commentData[i].id);
+            const isCommentLike = await getCommentLike(commentDt.id);
 
             html += `
                     <div class="comment">
-                        <div class="comment-author" style="color: #5F5F5F; font-size: 12px"><a href="#" style="text-decoration: none" onclick="moveProfile(${commentData[i].userId})">${commentData[i].userNickname}</a></div>
-                        <p id="comment${commentData[i].id}" class="comment-content" style="font-size: 16px">${commentData[i].content}</p>
-                        <div class="comment-content-container" id="comment-container${commentData[i].id}" style="display: flex; justify-content: space-between;">
+                        <div class="comment-author" style="color: #5F5F5F; font-size: 12px"><a href="#" style="text-decoration: none" onclick="moveProfile(${commentDt.userId})">${commentDt.userNickname}</a></div>
+                        <p id="comment${commentDt.id}" class="comment-content" style="font-size: 16px">${commentDt.content}</p>
+                        <div class="comment-content-container" id="comment-container${commentDt.id}" style="display: flex; justify-content: space-between;">
                             <div style="display: flex">${isCommentLike ? `
-                                    <a href="" id="comment-heart-btn" class="heart-btn" style="text-decoration: none; font-size: 15px;" onclick="cancelCommentLike(${commentData[i].id})">❤️</a>
+                                    <a href="" id="comment-heart-btn" class="heart-btn" style="text-decoration: none; font-size: 15px;" onclick="cancelCommentLike(${commentDt.id})">❤️</a>
                                 ` : `
-                                <a href="" id="comment-not-heart-btn" class="heart-btn" style="text-decoration: none; font-size: 15px;" onclick="addCommentLike(${commentData[i].id})">🤍</a>`}
-                            <p id="commentLikeCnt${commentData[i].id}" class="comment-content" style="font-size: 14px; margin-left: 5px; margin-top: 5px">${commentData[i].likeCnt}</p>
+                                <a href="" id="comment-not-heart-btn" class="heart-btn" style="text-decoration: none; font-size: 15px;" onclick="addCommentLike(${commentDt.id})">🤍</a>`}
+                            <p id="commentLikeCnt${commentDt.id}" class="comment-content" style="font-size: 14px; margin-left: 5px; margin-top: 5px">${commentDt.likeCnt}</p>
                             </div>
                             <div id="commentUDContainer" style="float: right; margin-top: 10px">
                                 ${isCurrentUser || isAdmin ? `
-                                    <a href="#" style="color: #5F5F5F; font-size: 14px" onclick="showCommentInput(${commentData[i].id}, '${commentData[i].content}')">수정</a>
-                                    <a href="#" style="color: #5F5F5F; font-size: 14px; margin-left: 10px" onclick="alertDeleteComment(${commentData[i].id})">삭제</a>
+                                    <a href="#" style="color: #5F5F5F; font-size: 14px" onclick="showCommentInput(${commentDt.id}, '${commentDt.content}')">수정</a>
+                                    <a href="#" style="color: #5F5F5F; font-size: 14px; margin-left: 10px" onclick="alertDeleteComment(${commentDt.id})">삭제</a>
                                 ` : ''}
                             </div>
                         </div>
@@ -188,8 +190,38 @@ async function getComments() {
         }
         $('#review-comment').html(html);
 
+        makeCommentPagination(commentData);
     } catch (err) {
         console.log('Error:', err);
+    }
+}
+
+function makeCommentPagination(page){
+    let pagination = $("#review-comment-pagination");
+    // pagination.empty();
+
+    let cur = page.number; // 0부터 센다.
+    let endPage = Math.ceil((cur + 1) / 10.0) * 10; // 1~10
+    let startPage = endPage - 9; // 1~10
+    if (endPage > page.totalPages - 1) // totalPage는 1부터 센다 그래서 1을 빼줌
+    {
+        endPage = page.totalPages;
+    }
+
+    if (cur > 0) // 이전 버튼
+    {
+        pagination.append(
+            `<a onclick='getComments(${cur - 1})'><button>이전</button></a>`);
+    }
+
+    for (let i = startPage; i <= endPage; i++) { // 페이지네이션
+        pagination.append(
+            `<a onclick="getComments(${i - 1});"><button>${i}</button></a>`);
+    }
+    if (cur + 1 < page.totalPages) // 다음 버튼
+    {
+        pagination.append(
+            `<a onclick='getComments(${cur + 1})'><button>다음</button></a>`);
     }
 }
 
