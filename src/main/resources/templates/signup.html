@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta charset="UTF-8">
@@ -63,7 +63,7 @@
             <div id="adminTokenContainer" style="display: none;">
                 <label for="adminToken">Admin Token</label>
                 <input type="text" id="adminToken" name="adminToken">
-<!--                <button type="button" id="adminTokenButton">Verify</button>-->
+                <!--                <button type="button" id="adminTokenButton">Verify</button>-->
             </div>
         </div>
         <div class="user-box">
@@ -181,7 +181,7 @@
         if (verificationCodeInput.value) {
             // 인증 확인
             const verifyResponse = await fetch('/api/users/verify-code', {
-                method: 'PUT',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
