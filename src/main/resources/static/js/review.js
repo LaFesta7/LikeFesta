@@ -70,7 +70,7 @@ function getReview() {
                         <button type="submit" class="comment-post" onclick="postComment()">작성</button>                        
                     </div>                    
                     <div id="review-comment"></div>
-                    <div id="review-comment-pagination"><a>1</a></div>
+                    <div id="review-comment-pagination" style="text-align: center;"><a>1</a></div>
                 </div>
                 `;
             $('#review-page').html(html);
@@ -198,7 +198,7 @@ async function getComments(pageNum) {
 
 function makeCommentPagination(page){
     let pagination = $("#review-comment-pagination");
-    // pagination.empty();
+    pagination.empty();
 
     let cur = page.number; // 0부터 센다.
     let endPage = Math.ceil((cur + 1) / 10.0) * 10; // 1~10

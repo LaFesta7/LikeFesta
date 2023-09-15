@@ -233,7 +233,7 @@ function getReviews(pageNum) {
                 html += `
                 <div class="reviews">
                     <div class="review-item">
-                        <p><a href="/api/festivals/${festivalId}/reviews/${review.id}" style="margin-left: 20px">${review.title}</a>
+                        <p><a href="/api/festivals/${festivalId}/reviews/${review.id}/page" style="margin-left: 20px">${review.title}</a>
                            <a href="#" style="text-decoration: none"><strong onclick="moveProfile(${review.userId})" style="font-size: larger; float: right; margin-right: 20px">${review.userNickname}</strong></a>
                         </p>
                     </div>
