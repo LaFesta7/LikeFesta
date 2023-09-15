@@ -454,30 +454,31 @@ function getRank() {
 }
 
 // 페스티벌 태그 검색
-function searchFestivalTag() {
+function searchFestivalTag(pageNum) {
     const tagSearchInput = document.querySelector('#tagSearchInput').value; // 입력 필드의 값 가져오기
     console.log(tagSearchInput);
     $.ajax({
-        url: `/api/festivals/tags?tag=${tagSearchInput}`,
+        url: `/api/festivals/tags?tag=${tagSearchInput}&page=${pageNum}`,
         type: 'GET',
         dataType: "json",
         success: function (data) {
             console.log(data);
             let html = '';
-            for (let i = 0; i < data.length; i++) {
+            let tagFestival;
+            for (let i = 0; i < data.content.length; i++) {
+                tagFestival = data.content[i];
                 html += `
                 <div style="margin-top:30px; margin-bottom: 15px; border-bottom: 1px solid #cccccc">
-                    <strong class="left" style="font-size: 20px"><p onclick="moveFestival(${data[i].id})">${data[i].title}</p></strong>
+                    <strong class="left" style="font-size: 20px"><p onclick="moveFestival(${tagFestival.id})">${tagFestival.title}</p></strong>
                     <div style="display: flex">
-                    <p>${data[i].tags.map(tag => `<span>#${tag.title}</span>`).join(' ')}</p>
+                    <p>${tagFestival.tags.map(tag => `<span>#${tag.title}</span>`).join(' ')}</p>
                     </div>
                 </div>
                 `;
             }
-            ;
             $('#tag-search-festival-list').html(html);
 
-            makePagination(data);
+            makeTagFestivalPagination(data);
         },
         error: function (err) {
             if (token === undefined) {
@@ -487,6 +488,35 @@ function searchFestivalTag() {
             alert(err.responseJSON.statusMessage);
         }
     });
+}
+
+function makeTagFestivalPagination(page) {
+    let pagination = $("#tag-search-festival-pagination");
+    pagination.empty();
+
+    let cur = page.number; // 0부터 센다.
+    let endPage = Math.ceil((cur + 1) / 10.0) * 10; // 1~10
+    let startPage = endPage - 9; // 1~10
+    if (endPage > page.totalPages - 1) // totalPage는 1부터 센다 그래서 1을 빼줌
+    {
+        endPage = page.totalPages;
+    }
+
+    if (cur > 0) // 이전 버튼
+    {
+        pagination.append(
+            `<a onclick='searchFestivalTag(${cur - 1})'><button>이전</button></a>`);
+    }
+
+    for (let i = startPage; i <= endPage; i++) { // 페이지네이션
+        pagination.append(
+            `<a onclick="searchFestivalTag(${i - 1});"><button>${i}</button></a>`);
+    }
+    if (cur + 1 < page.totalPages) // 다음 버튼
+    {
+        pagination.append(
+            `<a onclick='searchFestivalTag(${cur + 1})'><button>다음</button></a>`);
+    }
 }
 
 // 페스티벌로 이동하기
