@@ -39,7 +39,7 @@ public class UserController {
     @PostMapping("/users/sign-up")
     @Operation(summary = "유저 회원가입", description = "ResponseDto를 통해 가입할 유저정보를 받아옵니다.")
     public ResponseEntity<ApiResponseDto> signup(
-            @Parameter(description = "유저 정보를 받을 dto") @Valid @RequestPart(value = "requestDto") SignupRequestDto requestDto,
+            @Parameter(description = "유저 정보를 받을 dto") @Valid @RequestBody SignupRequestDto requestDto,
             @Parameter(description = "유저프로필 생성시 등록할 첨부 파일") @RequestPart(value = "files", required = false) List<MultipartFile> files,
             BindingResult bindingResult
     ) throws IOException {

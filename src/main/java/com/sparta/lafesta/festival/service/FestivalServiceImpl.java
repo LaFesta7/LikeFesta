@@ -24,6 +24,7 @@ import com.sparta.lafesta.user.entity.User;
 import com.sparta.lafesta.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -245,6 +246,7 @@ public class FestivalServiceImpl implements FestivalService {
     //페스티벌 랭킹 조회
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(key = "festivalRanking")
     public List<FestivalResponseDto> selectFestivalRanking(User user) {
         //회원 확인
         if (user == null) {
