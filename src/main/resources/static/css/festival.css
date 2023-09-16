@@ -24,11 +24,15 @@
     margin-top: 40px;
 }
 
+.festival-container{
+    height: 100%;
+}
+
 .festival-wrapper {
     border: 1px solid #e0e0e0;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: #ffffff;
-    width: 50%;
+    width: 75%;
     margin: 40px auto;
     padding: 20px;
     background-color: rgba(255, 255, 255, 0.8); /* 약간 투명한 배경색 */
@@ -60,4 +64,8 @@
 
 .reviews {
     flex: 1; /* flex-grow: 리뷰 영역은 상대적으로 작은 공간 차지 */
+}
+
+.load-review{
+    text-align: center;
 }

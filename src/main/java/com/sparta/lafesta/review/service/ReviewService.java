@@ -29,7 +29,7 @@ public interface ReviewService {
      * @param user 권한 확인
      * @return 전체 리뷰 조회 결과
      */
-    List<ReviewResponseDto> selectReviews(Long festivalId, User user, Pageable pageable);
+    Page<ReviewResponseDto> selectReviews(Long festivalId, User user, Pageable pageable);
 
     /**
      * 특정 유저가 작성한 리뷰 조회

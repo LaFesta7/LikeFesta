@@ -4,7 +4,7 @@ import com.sparta.lafesta.comment.dto.CommentRequestDto;
 import com.sparta.lafesta.comment.dto.CommentResponseDto;
 import com.sparta.lafesta.user.entity.User;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface CommentService {
@@ -23,7 +23,7 @@ public interface CommentService {
      * @param user 권한 확인
      * @return 전체 댓글 조회 결과
      */
-    List<CommentResponseDto> selectComments(Long reviewId, User user, Pageable pageable);
+    Page<CommentResponseDto> selectComments(Long reviewId, User user, Pageable pageable);
 
     /**
      * 댓글 수정

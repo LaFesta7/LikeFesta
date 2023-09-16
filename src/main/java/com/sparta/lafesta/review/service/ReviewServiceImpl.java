@@ -93,11 +93,11 @@ public class ReviewServiceImpl implements ReviewService {
     // 리뷰 전체 조회
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewResponseDto> selectReviews(Long festivalId, User user, Pageable pageable) {
+    public Page<ReviewResponseDto> selectReviews(Long festivalId, User user, Pageable pageable) {
         // user 권한 확인 예외처리 추후 추가 작성 예정
         Festival festival = festivalService.findFestival(festivalId);
-        return reviewRepository.findAllByFestival(festival, pageable).stream()
-                .map(ReviewResponseDto::new).toList();
+        return reviewRepository.findAllByFestival(festival, pageable)
+                .map(ReviewResponseDto::new);
     }
 
     // 특정 유저가 작성한 리뷰 전체 조회

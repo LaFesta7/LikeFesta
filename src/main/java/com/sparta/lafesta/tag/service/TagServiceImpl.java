@@ -81,25 +81,13 @@ public class TagServiceImpl implements TagService {
     //페스티벌 태그별 조회
     @Override
     @Transactional(readOnly = true)
-    public List<FestivalResponseDto> selectFestivalTags(String title, User user, Pageable pageable) {
+    public Page<FestivalResponseDto> selectFestivalTags(String title, User user, Pageable pageable) {
         //회원 확인
         if (user == null) {
             throw new IllegalArgumentException("로그인 해주세요");
         }
 
-        Tag tag = tagRepository.findByTitle(title)
-                .orElseThrow(() -> new IllegalArgumentException("해당 태그가 없습니다."));
-
-        List<FestivalTag> festivalTags = festivalTagRepository.findAllByTag(tag, pageable);
-
-        List<FestivalResponseDto> tagedFestivals = new ArrayList<>();
-        for (FestivalTag festivalTag : festivalTags) {
-            Festival tagedFestival = findFestivalByTag(festivalTag);
-
-            FestivalResponseDto festivalResponseDto = new FestivalResponseDto(tagedFestival);
-            tagedFestivals.add(festivalResponseDto);
-        }
-        return tagedFestivals;
+            return tagRepositoryCustom.findAllByTag(title, pageable);
     }
 
     //페스티벌 태그 삭제 - 페스티벌과 맞지 않는 태그를 관리자가 임의로 삭제가능
@@ -168,12 +156,6 @@ public class TagServiceImpl implements TagService {
         return festivalRepository.findById(festivalId).orElseThrow(() ->
                 new IllegalArgumentException("선택한 페스티벌은 존재하지 않습니다.")
         );
-    }
-
-    //페스티벌 태그로 페스티벌 찾기
-    private Festival findFestivalByTag(FestivalTag festivalTag) {
-        return festivalRepository.findByTags(festivalTag)
-                .orElseThrow(() -> new IllegalArgumentException("해당 페스티벌이 없습니다."));
     }
 
     //페스티벌로 페스티벌 태그 연관관계 찾기
