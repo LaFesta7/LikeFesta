@@ -3,7 +3,7 @@
 스파르타코딩클럽 내일배움캠프 6기 Spring B반 7조 
 <br>
 <br>
-**'판교피플' 최종프로젝트 '라페스타'**
+**'판교피플' 최종 프로젝트 '라페스타'**
 
 ![image (1)](https://github.com/LaFesta7/LikeFesta/assets/131599243/d1e9c0a0-24d3-42c2-b79b-4c68fad5c2d5)
 
