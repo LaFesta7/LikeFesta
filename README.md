@@ -103,6 +103,8 @@
 
 </details>
 
+<br>
+
 ### 3.2. 초기 설계
 
 <details>
@@ -484,6 +486,8 @@ github actions 과정에서 node.js 12를 사용하여 오류 발생
 
 </details>
 
+</details>
+
 <details>
 
 <summary>4.2.3. 페스티벌 리마인더 알림 관련 이벤트 리스너에서 팔로워를 불러오지 못하는 문제 (Hibernate의 LazyLoading으로 인한 오류)</summary>
@@ -733,7 +737,9 @@ private Boolean rd;
 
 </details>
 
-### 4.3. 유저 피드백에 따른 리팩토링 및 트러블 슈팅
+<br>
+
+### 4.3. 사용성 테스트 및 유저 피드백에 따른 리팩토링 및 트러블 슈팅
 <details>
 
 <summary>4.3.1. 프론트에서 페스티벌, 리뷰, 유저 상세 조회 시 데이터가 조회되지 않는 문제 발생</summary>
@@ -857,6 +863,7 @@ public class StringFormatter {
 
 </details>
 
+<br>
 
 ## 5. 팀원 소개 및 역할 분담
 
