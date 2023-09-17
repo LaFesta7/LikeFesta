@@ -102,7 +102,7 @@ function loadFestivals(pageNum) {
             data.content.forEach(function (festival) {
                 html += `<tr>
                         <td>${festival.id}</td>
-                        <td><a href="/api/festivals/${festival.id}/page" target="_blank">${festival.title}</a></td>
+                        <td><a href="/api/festivals/${festival.id}/page">${festival.title}</a></td>
                         <td>${festival.place}</td>
                         <td>${festival.content}</td>
                         <td>${formatDate(
