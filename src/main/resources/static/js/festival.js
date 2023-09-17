@@ -57,7 +57,9 @@ function getFestival() {
                             <input type="submit" value="삭제" style="background-color: crimson" onclick="alertDeleteFestival('${data.title}')">
                             <input type="submit" value="수정" style="margin-left: 10px" onclick="alertEditFestival('${data.title}')">
                         </div>
-                        <img src="${data.files[0] ? data.files[0].uploadFileUrl : '/images/background/img-21.jpg'}" alt="축제 이미지" class="festival-image">
+
+                        <img src="${data.fileUrl}" alt="축제 이미지" class="festival-image">
+
                         <div style="display: flex">
                             <div class="festival-description">
                                 <a href="#" style="text-decoration: none"><strong onclick="moveProfile(${data.editorId})" style="font-size: larger; margin-right: 15px">${data.editorName}</strong></a></div>
@@ -74,6 +76,9 @@ function getFestival() {
                             <input type="submit" value="리뷰 작성" style="margin-left: 10px" onclick="moveReviewPost()">
                         </div>
                         <div id="post-review" style="margin-top: 80px"></div>
+                        <div id="load-review" class="load-review">
+                          <a>1</a>
+                        </div>
                         </div>
                     </div>
                 `;
@@ -82,7 +87,7 @@ function getFestival() {
             showFestivalFollowBtn();
             showFestivalLikeBtn();
             showReviewPostBtn();
-            getReviews();
+            getReviews(0);
         },
         error: function (err) {
             console.log('Error:', err);
@@ -216,26 +221,30 @@ function cancelFestivalLike() {
     });
 }
 
-function getReviews() {
-    const apiUrl = `/api/festivals/${festivalId}/reviews`
+function getReviews(pageNum) {
+    const apiUrl = `/api/festivals/${festivalId}/reviews?page=${pageNum}`
     $.ajax({
         url: apiUrl,
         type: 'GET',
         success: function (data) {
             console.log(data);
             let html = '';
-            for (let i = 0; i < data.length; i++) {
+            let review;
+            for (let i = 0; i < data.content.length; i++) {
+                review = data.content[i];
                 html += `
                 <div class="reviews">
                     <div class="review-item">
-                        <p><a href="${apiUrl}/${data[i].id}/page" style="text-decoration: none; margin-left: 20px">${data[i].title}</a>
-                            <a href="#" style="text-decoration: none"><strong onclick="moveProfile(${data[i].userId})" style="font-size: larger; float: right; margin-right: 20px">${data[i].userNickname}</strong></a>
+                        <p><a href="/api/festivals/${festivalId}/reviews/${review.id}/page" style="margin-left: 20px">${review.title}</a>
+                           <a href="#" style="text-decoration: none"><strong onclick="moveProfile(${review.userId})" style="font-size: larger; float: right; margin-right: 20px">${review.userNickname}</strong></a>
                         </p>
                     </div>
                 </div>
                 `;
             }
             $('#post-review').html(html);
+
+            makeReviewPagination(data);
         },
         error: function (err) {
             console.log('Error:', err);
@@ -243,7 +252,37 @@ function getReviews() {
     });
 }
 
-function moveReviewPost() {
+//페이지네이션
+function makeReviewPagination(page){
+    let pagination = $("#load-review");
+    pagination.empty();
+
+    let cur = page.number; // 0부터 센다.
+    let endPage = Math.ceil((cur + 1) / 10.0) * 10; // 1~10
+    let startPage = endPage - 9; // 1~10
+    if (endPage > page.totalPages - 1) // totalPage는 1부터 센다 그래서 1을 빼줌
+    {
+        endPage = page.totalPages;
+    }
+
+    if (cur > 0) // 이전 버튼
+    {
+        pagination.append(
+            `<a onclick='getReviews(${cur - 1})'><button>이전</button></a>`);
+    }
+
+    for (let i = startPage; i <= endPage; i++) { // 페이지네이션
+        pagination.append(
+            `<a onclick="getReviews(${i - 1});"><button>${i}</button></a>`);
+    }
+    if (cur + 1 < page.totalPages) // 다음 버튼
+    {
+        pagination.append(
+            `<a onclick='getReviews(${cur + 1})'><button>다음</button></a>`);
+    }
+}
+
+function moveReviewPost(){
     window.location.href = `/api/festivals/${festivalId}/reviews/post-page`;
 }
 

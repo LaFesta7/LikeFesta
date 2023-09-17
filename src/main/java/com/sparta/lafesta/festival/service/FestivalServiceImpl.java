@@ -245,12 +245,7 @@ public class FestivalServiceImpl implements FestivalService {
     //페스티벌 랭킹 조회
     @Override
     @Transactional(readOnly = true)
-    public List<FestivalResponseDto> selectFestivalRanking(User user) {
-        //회원 확인
-        if (user == null) {
-            throw new IllegalArgumentException("로그인 해주세요");
-        }
-
+    public List<FestivalResponseDto> selectFestivalRanking() {
         return festivalRepositoryCustom.findTop3Festival().stream()
                 .map(FestivalResponseDto::new).toList();
     }

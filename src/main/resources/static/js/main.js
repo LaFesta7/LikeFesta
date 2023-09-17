@@ -102,7 +102,7 @@ function loadFestivals(pageNum) {
             data.content.forEach(function (festival) {
                 html += `<tr>
                         <td>${festival.id}</td>
-                        <td><a href="/api/festivals/${festival.id}/page" target="_blank">${festival.title}</a></td>
+                        <td><a href="/api/festivals/${festival.id}/page">${festival.title}</a></td>
                         <td>${festival.place}</td>
                         <td>${festival.content}</td>
                         <td>${formatDate(
@@ -373,8 +373,7 @@ function getRank() {
             for (let i = 0; i < data.length; i++) {
                 const slide = `
                 <div class="rank" onclick="moveFestival(${data[i].id})">
-                    <img style="width: 100%; height: 65vh; object-fit: cover" src="${data[i].files[0] ? data[i].files[0].uploadFileUrl
-                    : '/images/background/img-21.jpg'}" alt="">
+                    <img style="width: 100%; height: 65vh; object-fit: cover" src="${data[i].fileUrl}" alt="">
                     <div style="padding: 15px;">
                         <strong id="rank${data[i].id}" style="line-height: 1.3; font-size: 30px; color: white; margin-left: 10px">${i + 1}. ${data[i].title}</strong>
                     </div>
@@ -408,8 +407,7 @@ function getRank() {
             for (let i = 0; i < data.length; i++) {
                 const slide = `
                 <div class="rank" onclick="moveReview(${data[i].festivalId}, ${data[i].id})">
-                    <img style="width: 100%; height: 65vh; object-fit: cover" src="${data[i].files[0] ? data[i].files[0].uploadFileUrl
-                    : '/images/best1.jpg'}" alt=""/>
+                    <img style="width: 100%; height: 65vh; object-fit: cover" src="${data[i].fileUrl}" alt=""/>
                     <div style="padding: 15px;">
                         <strong id="rank${data[i].id}" style="line-height: 1.3; font-size: 30px; color: white; margin-left: 10px">${i + 1}. ${data[i].festivalTitle} : ${data[i].title}</strong>
                     </div>
@@ -443,8 +441,7 @@ function getRank() {
             for (let i = 0; i < data.length; i++) {
                 const slide = `
                 <div class="rank" onclick="moveProfile(${data[i].id})">
-                    <img style="width: 100%; height: 65vh; object-fit: cover" src="${data[i].files[0] ? data[i].files[0].uploadFileUrl
-                    : 'https://vignette.wikia.nocookie.net/the-sun-vanished/images/5/5d/Twitter-avi-gender-balanced-figure.png/revision/latest?cb=20180713020754'}" alt=""/>
+                    <img style="width: 100%; height: 65vh; object-fit: cover" src="${data[i].fileUrl}" alt=""/>
                     <div style="padding: 15px;">
                         <strong id="rank${data[i].id}" style="line-height: 1.3; font-size: 30px; color: white; margin-left: 10px">${i + 1}. ${data[i].nickname}</strong>
                     </div>
@@ -463,30 +460,31 @@ function getRank() {
 }
 
 // 페스티벌 태그 검색
-function searchFestivalTag() {
+function searchFestivalTag(pageNum) {
     const tagSearchInput = document.querySelector('#tagSearchInput').value; // 입력 필드의 값 가져오기
     console.log(tagSearchInput);
     $.ajax({
-        url: `/api/festivals/tags?tag=${tagSearchInput}`,
+        url: `/api/festivals/tags?tag=${tagSearchInput}&page=${pageNum}`,
         type: 'GET',
         dataType: "json",
         success: function (data) {
             console.log(data);
             let html = '';
-            for (let i = 0; i < data.length; i++) {
+            let tagFestival;
+            for (let i = 0; i < data.content.length; i++) {
+                tagFestival = data.content[i];
                 html += `
                 <div style="margin-top:30px; margin-bottom: 15px; border-bottom: 1px solid #cccccc">
-                    <strong class="left" style="font-size: 20px"><p onclick="moveFestival(${data[i].id})">${data[i].title}</p></strong>
+                    <strong class="left" style="font-size: 20px"><p onclick="moveFestival(${tagFestival.id})">${tagFestival.title}</p></strong>
                     <div style="display: flex">
-                    <p>${data[i].tags.map(tag => `<span>#${tag.title}</span>`).join(' ')}</p>
+                    <p>${tagFestival.tags.map(tag => `<span>#${tag.title}</span>`).join(' ')}</p>
                     </div>
                 </div>
                 `;
             }
-            ;
             $('#tag-search-festival-list').html(html);
 
-            makePagination(data);
+            makeTagFestivalPagination(data);
         },
         error: function (err) {
             if (token === undefined) {
@@ -496,6 +494,35 @@ function searchFestivalTag() {
             alert(err.responseJSON.statusMessage);
         }
     });
+}
+
+function makeTagFestivalPagination(page) {
+    let pagination = $("#tag-search-festival-pagination");
+    pagination.empty();
+
+    let cur = page.number; // 0부터 센다.
+    let endPage = Math.ceil((cur + 1) / 10.0) * 10; // 1~10
+    let startPage = endPage - 9; // 1~10
+    if (endPage > page.totalPages - 1) // totalPage는 1부터 센다 그래서 1을 빼줌
+    {
+        endPage = page.totalPages;
+    }
+
+    if (cur > 0) // 이전 버튼
+    {
+        pagination.append(
+            `<a onclick='searchFestivalTag(${cur - 1})'><button>이전</button></a>`);
+    }
+
+    for (let i = startPage; i <= endPage; i++) { // 페이지네이션
+        pagination.append(
+            `<a onclick="searchFestivalTag(${i - 1});"><button>${i}</button></a>`);
+    }
+    if (cur + 1 < page.totalPages) // 다음 버튼
+    {
+        pagination.append(
+            `<a onclick='searchFestivalTag(${cur + 1})'><button>다음</button></a>`);
+    }
 }
 
 // 페스티벌로 이동하기

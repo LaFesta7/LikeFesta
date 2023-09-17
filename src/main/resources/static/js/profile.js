@@ -1,10 +1,14 @@
 // 쿠키에서 'Authorization' 토큰을 가져옵니다.
 const token = Cookies.get('Authorization');
 
-// JWT 토큰의 권한 확인
-const tokenPayload = parseJwtPayload(token); // JWT 토큰을 해석하여 payload를 가져오는 함수로 직접 구현해야 합니다.
-const role = tokenPayload.auth;
-const userName = tokenPayload.sub;
+if (token === undefined) {
+    window.location.href = '/api/users/login-page'
+} else {
+    // JWT 토큰의 권한 확인
+    const tokenPayload = parseJwtPayload(token); // JWT 토큰을 해석하여 payload를 가져오는 함수로 직접 구현해야 합니다.
+    const role = tokenPayload.auth;
+    const userName = tokenPayload.sub;
+}
 
 // 현재 URL을 가져옵니다.
 const currentURL = window.location.href;
@@ -56,8 +60,7 @@ function getProfile() {
                         <div style="display: flex; justify-content: center; align-items: center;">
                             <div>
                                 <div class="circular-image">
-                                    <img src="${data.files[0] ? data.files[0].uploadFileUrl
-                : 'https://vignette.wikia.nocookie.net/the-sun-vanished/images/5/5d/Twitter-avi-gender-balanced-figure.png/revision/latest?cb=20180713020754'}"
+                                    <img src="${data.fileUrl}"
                     alt="Image Description" style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
                                 <p>${data.username}</p>

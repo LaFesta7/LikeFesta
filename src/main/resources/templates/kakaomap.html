@@ -110,7 +110,7 @@
                     // markers.push(marker);
 
                     // data.content[i].files[0]가 null인 경우 기본 이미지 URL 사용
-                    var imageSrc = data.content[i].files[0] ? data.content[i].files[0].uploadFileUrl : '/images/background/img-21.jpg';
+                    var imageSrc = data.content[i].fileUrl;
 
                     var content = `
                         <div class="wrap">
@@ -129,7 +129,7 @@
                                         <div>
                                             <a href="${data.content[i].officialLink}" target="_blank" class="link">홈페이지</a>
                                             <a> / </a>
-                                            <a href="/api/festivals/${data.content[i].id}/page" target="_blank" class="link">축제 정보</a>
+                                            <a href="/api/festivals/${data.content[i].id}/page" class="link">축제 정보</a>
                                         </div>
                                     </div>
                                 </div>

@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
@@ -40,12 +41,12 @@ public class CommentController {
 
     @GetMapping("/festivals/{festivalId}/reviews/{reviewId}/comments")
     @Operation(summary = "페스티벌 리뷰 댓글 전체 조회", description = "페스티벌 리뷰 댓글을 전체 조회합니다.")
-    public ResponseEntity<List<CommentResponseDto>> selectComments(
+    public ResponseEntity<Page<CommentResponseDto>> selectComments(
             @Parameter(name = "reviewId", description = "댓글을 조회할 review의 id", in = ParameterIn.PATH) @PathVariable Long reviewId,
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
-            @Parameter(description = "comment 페이징 처리에 필요한 기본 설정")@PageableDefault(size=20, sort="createdAt", direction = Direction.DESC) Pageable pageable
+            @Parameter(description = "comment 페이징 처리에 필요한 기본 설정")@PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable
     ) {
-        List<CommentResponseDto> results = commentService.selectComments(reviewId, userDetails.getUser(), pageable);
+        Page<CommentResponseDto> results = commentService.selectComments(reviewId, userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(results);
     }
 

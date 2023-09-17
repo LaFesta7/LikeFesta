@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    List<Review> findAllByFestival(Festival festival, Pageable pageable);
+    Page<Review> findAllByFestival(Festival festival, Pageable pageable);
 
     boolean existsByUserAndFestival(User user, Festival festival);
 

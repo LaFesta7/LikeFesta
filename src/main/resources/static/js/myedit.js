@@ -47,11 +47,10 @@ $(document).ready(function () {
                     <div class="right" style="margin-top: -60px"><a href="#" onclick="passwordEdit()">수정</a></div>
                     <div class="user-box">
                         <p style="top: -20px; left: 0; color: #03e9f4; font-size: 12px;">Image</p>
-                        <p id="imageName" style="font-size: 16px; color: white">${data.files[0] ? data.files[0].keyName : null}</p>
+                        <p id="imageName" style="font-size: 16px; color: white">${data.fileName}</p>
                         <div class="circular-image">
                             <img id="preview" 
-                                src="${data.files[0] ? data.files[0].uploadFileUrl 
-                                : 'https://vignette.wikia.nocookie.net/the-sun-vanished/images/5/5d/Twitter-avi-gender-balanced-figure.png/revision/latest?cb=20180713020754'}" 
+                                src="${data.fileUrl}" 
                                 alt="Image Preview" style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
                         <input id="imageInput" type="file" accept="image/*" onchange="previewImage(this)">

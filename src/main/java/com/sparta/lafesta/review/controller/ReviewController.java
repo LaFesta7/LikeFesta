@@ -45,12 +45,12 @@ public class ReviewController {
 
     @GetMapping("/festivals/{festivalId}/reviews")
     @Operation(summary = "페스티벌 리뷰 전체 조회", description = "페스티벌 리뷰를 전체 조회합니다.")
-    public ResponseEntity<List<ReviewResponseDto>> selectReviews(
+    public ResponseEntity<Page<ReviewResponseDto>> selectReviews(
             @Parameter(name = "festivalId", description = "리뷰를 조회할 festival의 id", in = ParameterIn.PATH) @PathVariable Long festivalId,
             @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "review 페이징 처리에 필요한 기본 설정")@PageableDefault(size=10, sort="createdAt", direction = Direction.DESC) Pageable pageable
     ) {
-        List<ReviewResponseDto> results = reviewService.selectReviews(festivalId, userDetails.getUser(), pageable);
+        Page<ReviewResponseDto> results = reviewService.selectReviews(festivalId, userDetails.getUser(), pageable);
         return ResponseEntity.ok().body(results);
     }
 
@@ -131,9 +131,8 @@ public class ReviewController {
     @GetMapping("/festivals/reviews/rank")
     @Operation(summary = "리뷰 랭킹 조회", description = "가장 좋아요가 많은 리뷰 TOP3를 조회합니다.")
     public ResponseEntity<List<ReviewResponseDto>> selectReviewRanking(
-        @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ){
-        List<ReviewResponseDto> results = reviewService.selectReviewRanking(userDetails.getUser());
+        List<ReviewResponseDto> results = reviewService.selectReviewRanking();
         return ResponseEntity.ok().body(results);
     }
 }

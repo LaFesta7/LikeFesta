@@ -50,7 +50,7 @@ public interface TagService {
      * @param pageable 페이징 정보
      * @return 태그별 페스티벌 조회 결과
      */
-    List<FestivalResponseDto> selectFestivalTags(String tag, User user, Pageable pageable);
+    Page<FestivalResponseDto> selectFestivalTags(String tag, User user, Pageable pageable);
 
     /**
      * 페스티벌 태그 삭제

@@ -216,12 +216,7 @@ public class UserService {
 
     //인플루언서 랭킹 조회
     @Transactional(readOnly = true)
-    public List<SelectUserResponseDto> selectUserRanking(User user) {
-        //회원 확인
-        if (user == null) {
-            throw new IllegalArgumentException("로그인 해주세요");
-        }
-
+    public List<SelectUserResponseDto> selectUserRanking() {
         return userRepositoryCustom.findTop3User().stream()
             .map(SelectUserResponseDto::new).toList();
     }

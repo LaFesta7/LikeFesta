@@ -3,9 +3,9 @@ package com.sparta.lafesta.badge.dto;
 import com.sparta.lafesta.badge.entity.Badge;
 import com.sparta.lafesta.badge.entity.BadgeConditionEnum;
 import com.sparta.lafesta.badge.entity.BadgeTag;
+import com.sparta.lafesta.common.entity.StringFormatter;
 import com.sparta.lafesta.common.s3.dto.FileOnS3Dto;
 import com.sparta.lafesta.tag.dto.TagResponseDto;
-import com.sparta.lafesta.tag.entity.Tag;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -25,8 +25,8 @@ public class BadgeResponseDto {
 
     public BadgeResponseDto(Badge badge) {
         this.id = badge.getId();
-        this.title = badge.getTitle();
-        this.description = badge.getDescription();
+        this.title = StringFormatter.format(badge.getTitle());
+        this.description = StringFormatter.format(badge.getDescription());
         this.conditionEnum = badge.getConditionEnum();
         this.conditionFirstDay = badge.getConditionFirstDay();
         this.conditionLastDay = badge.getConditionLastDay();
