@@ -10,6 +10,7 @@ import com.sparta.lafesta.user.entity.UserRoleEnum;
 import com.sparta.lafesta.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +20,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.net.URI;
 import java.util.UUID;
 
-@Slf4j(topic ="KAKAO Login")
+@Slf4j(topic = "KAKAO Login")
 @Service
 @RequiredArgsConstructor
 public class KakaoService {
@@ -56,7 +56,7 @@ public class KakaoService {
 
         User kakaoUser = registerKakaoUserIfNeeded(kakaoLoginDto);
 
-        String createToken = jwtUtil.createToken(kakaoUser.getUsername(), kakaoUser.getRole());
+        String createToken = jwtUtil.createAccessToken(kakaoUser.getUsername(), kakaoUser.getRole());
 
         return createToken;
     }

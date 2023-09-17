@@ -204,7 +204,7 @@ public class UserController {
     }
 
     // 인증코드 확인
-    @PutMapping("/users/verify-code")
+    @PostMapping("/users/verify-code")
     @Operation(summary = "이메일 인증 코드 확인", description = "클라이언트가 보낸 이메일 인증 코드를 확인합니다.")
     public ResponseEntity<ApiResponseDto> verifyCode(
             @Parameter(description = "이메일 인증 코드를 확인할 dto") @RequestBody VerificationRequestDto verificationRequestDto) {

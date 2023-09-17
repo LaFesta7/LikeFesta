@@ -15,6 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.io.UnsupportedEncodingException;
+
 @Slf4j
 @Controller
 @RequestMapping("/api")
@@ -42,7 +44,12 @@ public class ViewController {
     }
 
     @GetMapping("/users/login-page")
-    public String login(HttpServletRequest request, Model model) {
+    public String login(HttpServletRequest request, Model model) throws UnsupportedEncodingException {
+        String jwtToken = jwtUtil.getTokensFromRequest(request)[0]; // 인덱스 0은 AccessToken
+
+        if (jwtToken != null && jwtUtil.validateToken(jwtToken)) {
+            return "redirect:/";
+        }
 
         String kakaoUrl = kakaoService.getKakaoLogin();
         model.addAttribute("kakaoUrl", kakaoUrl);

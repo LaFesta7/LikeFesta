@@ -6,9 +6,12 @@ build/
 !**/src/test/**/build/
 
 
+### properties ###
+
 application.properties
 application-s3.properties
 application-redis.properties
+
 
 
 ### STS ###
@@ -41,3 +44,4 @@ out/
 
 ### VS Code ###
 .vscode/
+application.properties

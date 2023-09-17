@@ -1,16 +1,13 @@
 package com.sparta.lafesta.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.lafesta.common.dto.ApiResponseDto;
-import com.sparta.lafesta.user.dto.LoginRequestDto;
 import com.sparta.lafesta.common.security.UserDetailsImpl;
-import com.sparta.lafesta.user.entity.UserRoleEnum;
+import com.sparta.lafesta.user.dto.LoginRequestDto;
+import com.sparta.lafesta.user.entity.User;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -46,20 +43,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
     }
 
-    //@exceptionHandler
-//customExceptionHandler (runtime exception)
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
         log.info("로그인 성공 및 JWT 생성");
-        String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
-        UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
-        String token = jwtUtil.createToken(username, role);
-        jwtUtil.addJwtToCookie(token, response);
+
+        User user = ((UserDetailsImpl) authResult.getPrincipal()).getUser();
+        jwtUtil.addJwtToCookie(user, response);
 
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
         log.info("로그인 실패");
         response.setStatus(401);
     }

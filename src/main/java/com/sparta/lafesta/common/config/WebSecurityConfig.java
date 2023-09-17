@@ -3,7 +3,9 @@ package com.sparta.lafesta.common.config;
 import com.sparta.lafesta.common.jwt.JwtAuthenticationFilter;
 import com.sparta.lafesta.common.jwt.JwtAuthorizationFilter;
 import com.sparta.lafesta.common.jwt.JwtUtil;
+import com.sparta.lafesta.common.refreshtoken.repository.RefreshTokenRepository;
 import com.sparta.lafesta.common.security.UserDetailsServiceImpl;
+import com.sparta.lafesta.user.repository.UserRepository;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,12 +29,16 @@ public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
+    private final UserRepository userRepository;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    public WebSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, AuthenticationConfiguration authenticationConfiguration) {
+    public WebSecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, UserRepository userRepository, AuthenticationConfiguration authenticationConfiguration, RefreshTokenRepository refreshTokenRepository) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
         this.authenticationConfiguration = authenticationConfiguration;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @Bean
@@ -54,7 +60,7 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
+        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, userRepository, refreshTokenRepository);
     }
 
     @Bean

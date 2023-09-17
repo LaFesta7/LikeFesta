@@ -10,21 +10,21 @@ import com.sparta.lafesta.user.dto.*;
 import com.sparta.lafesta.user.entity.User;
 import com.sparta.lafesta.user.entity.UserRoleEnum;
 import com.sparta.lafesta.user.entity.VerificationCode;
+import com.sparta.lafesta.user.entity.VerificationConfirm;
 import com.sparta.lafesta.user.repository.UserRepository;
 import com.sparta.lafesta.user.repository.UserRepositoryCustom;
 import com.sparta.lafesta.user.repository.VerificationCodeRepository;
+import com.sparta.lafesta.user.repository.VerificationConfirmRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,18 +38,20 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserRepositoryCustom userRepositoryCustom;
     private final VerificationCodeRepository verificationCodeRepository;
+    private final VerificationConfirmRepository verificationConfirmRepository;
     private final PasswordEncoder passwordEncoder;
 
     //S3
     private final S3UploadService s3UploadService;
     private final UserFileRepository userFileRepository;
-    private final String USER_FOLDER_NAME = "user";
+    private final String USER_S3_FOLDER_NAME = "user";
 
     // ADMIN_TOKEN
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
 
     // 회원가입
+    @Transactional
     public void signup(SignupRequestDto requestDto, List<MultipartFile> files) throws IOException {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
@@ -58,16 +60,10 @@ public class UserService {
         Boolean organizerRequest = false;
 
         // 회원 중복 확인
-        Optional<User> checkUsername = userRepository.findByUsername(username);
-        if (checkUsername.isPresent()) {
-            throw new IllegalArgumentException("중복된 Username이 존재합니다.");
-        }
+        checkUsername(username);
+        checkNickname(nickname);
 
-        Optional<User> checkNickname = userRepository.findByNickname(nickname);
-        if (checkNickname.isPresent()) {
-            throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
-        }
-
+        // 이메일 중복 확인
         checkEmail(email);
 
         // 사용자 ROLE 확인
@@ -86,10 +82,10 @@ public class UserService {
         }
 
         // 사용자 이메일 인증 확인
-        VerificationCode verificationCode = verificationCodeRepository.findByEmailAndConfirm(email, true)
-                .orElse(null);
+        VerificationConfirm verificationConfirm = verificationConfirmRepository.findById(email).orElse(null);
+
         // 이메일 인증이 되지 않은 경우
-        if (verificationCode == null) {
+        if (verificationConfirm == null || !verificationConfirm.isConfirm()) {
             log.error("이메일 미인증");
             throw new IllegalArgumentException("이메일 인증이 완료되지 않았습니다.");
         }
@@ -97,7 +93,7 @@ public class UserService {
         // 사용자 등록 및 회원가입 완료된 인증코드 삭제
         User user = new User(username, password, email, role, nickname, organizerRequest);
         userRepository.save(user);
-        verificationCodeRepository.delete(verificationCode);
+        verificationConfirmRepository.delete(verificationConfirm);
 
         //첨부파일 업로드
         if (files != null) {
@@ -127,10 +123,7 @@ public class UserService {
     // 내 닉네임 수정
     @Transactional
     public UserInfoResponseDto modifyUserNickname(NicknameRequestDto requestDto, User user) {
-        Optional<User> checkNickname = userRepository.findByNickname(requestDto.getNickname());
-        if (checkNickname.isPresent()) {
-            throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
-        }
+        checkNickname(requestDto.getNickname());
         User selectUser = findUser(user.getId());
         selectUser.modifyNickname(requestDto.getNickname());
         return new UserInfoResponseDto(selectUser);
@@ -151,16 +144,18 @@ public class UserService {
         checkEmail(requestDto.getEmail());
 
         // 사용자 이메일 인증 확인
-        VerificationCode verificationCode = verificationCodeRepository.findByEmailAndConfirm(requestDto.getEmail(), true)
+        VerificationConfirm confirm = verificationConfirmRepository.findById(requestDto.getEmail())
                 .orElse(null);
         // 이메일 인증이 되지 않은 경우
-        if (verificationCode == null) {
+        if (confirm == null) {
             log.error("이메일 미인증");
             throw new IllegalArgumentException("이메일 인증이 완료되지 않았습니다.");
         }
 
         User selectUser = findUser(user.getId());
         selectUser.modifyEmail(requestDto.getEmail());
+
+        verificationConfirmRepository.delete(confirm);
         return new UserInfoResponseDto(selectUser);
     }
 
@@ -178,10 +173,10 @@ public class UserService {
         // 현재 비밀번호를 잊어버린 경우 이메일 인증 확인
         if (requestDto.getCurrentPassword().isBlank()) {
             // 사용자 이메일 인증 확인
-            VerificationCode verificationCode = verificationCodeRepository.findByEmailAndConfirm(selectUser.getEmail(), true)
+            VerificationConfirm confirm = verificationConfirmRepository.findById(selectUser.getEmail())
                     .orElse(null);
             // 이메일 인증이 되지 않은 경우
-            if (verificationCode == null) {
+            if (confirm == null) {
                 log.error("이메일 미인증");
                 throw new IllegalArgumentException("이메일 인증이 완료되지 않았습니다.");
             }
@@ -223,8 +218,9 @@ public class UserService {
         }
 
         return userRepositoryCustom.findTop3User().stream()
-            .map(SelectUserResponseDto::new).toList();
+                .map(SelectUserResponseDto::new).toList();
     }
+
 
     // 인증 메일 발송 후 코드 DB 임시 저장하기
     @Transactional
@@ -234,12 +230,18 @@ public class UserService {
         // 회원 중복 확인
         checkEmail(email);
 
-        String code = mailService.sendMessage(email);
+        String code = mailService.sendMessage(email); //2s~3s. 비동기 처리도 가능.
+        // 해당 메소드가 비동기 처리된 상태에서 실패했을 시 리스크 -> 전송 실패여부
         VerificationCode verificationCode = new VerificationCode(email, code);
+
+        long beforeTime = System.nanoTime(); // 2ms
         verificationCodeRepository.save(verificationCode);
+        long afterTime = System.nanoTime();
+        log.info("Redis save 동작시간(ns) : " + (afterTime - beforeTime));
     }
 
     // 비밀번호를 분실한 경우 인증 메일 발송 후 코드 DB 임시 저장하기
+    // refactor 위에 메소드랑 통합시킬 수 있을 듯?
     @Transactional
     public void sendMailAndCreateVerificationCodePassword(User user) throws Exception {
         String email = findUser(user.getId()).getEmail();
@@ -255,36 +257,48 @@ public class UserService {
         String email = verificationRequestDto.getEmail();
         String code = verificationRequestDto.getVerificationCode();
 
-        VerificationCode verificationCode = verificationCodeRepository.findByEmailAndCode(email, code)
+        long beforeTime = System.nanoTime();
+        VerificationCode verificationCode = verificationCodeRepository.findById(email)
                 .orElse(null);
+        long afterTime = System.nanoTime();
+        log.info("Redis 조회 동작시간(ns) : " + (afterTime - beforeTime));
 
         // 인증 코드가 일치하지 않는 경우
         if (verificationCode == null) {
-            log.error("인증 코드 불일치");
-            throw new IllegalArgumentException("인증코드가 만료되었거나 일치하지 않습니다.");
-        }
-        // 인증 코드가 만료된 경우
-        if (verificationCode.getExpirationTime().isBefore(LocalDateTime.now())) {
             log.error("인증 코드 만료");
-            throw new IllegalArgumentException("만료된 인증코드입니다.");
+            throw new IllegalArgumentException("인증코드가 만료되었습니다.");
         }
-        verificationCode.verificationCodeConfirm();
+
+        if (!verificationCode.getCode().equals(code)) {
+            log.error("인증 코드 불일치");
+            throw new IllegalArgumentException("인증코드가 일치하지 않습니다.");
+        }
+
+        verificationConfirmRepository.save(new VerificationConfirm(email, true));
     }
 
-    // 인증 코드 DB 30분마다 삭제하기
-    @Transactional
-    @Scheduled(fixedRate = 1800000) // 30분마다 실행
-    public void cleanupExpiredVerificationCodes() {
-        verificationCodeRepository.deleteByExpirationTimeBefore(LocalDateTime.now());
-    }
-
-    //카카오 로그인 시 로그아웃
+    //카카오 로그인 시 로그아웃 // todo 안쓰면 삭제
     public void kakaoLogout(HttpServletResponse response) {
         Cookie cookie = new Cookie("token", null);
         cookie.setMaxAge(0);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         response.addCookie(cookie);
+    }
+
+    // Username 중복 확인
+    private void checkUsername(String username) {
+        Optional<User> checkUsername = userRepository.findByUsername(username);
+        if (checkUsername.isPresent()) {
+            throw new IllegalArgumentException("중복된 Username이 존재합니다.");
+        }
+    }
+
+    private void checkNickname(String nickname) {
+        Optional<User> checkNickname = userRepository.findByNickname(nickname);
+        if (checkNickname.isPresent()) {
+            throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
+        }
     }
 
     // 이메일 중복 확인
@@ -299,7 +313,7 @@ public class UserService {
     private void uploadFiles(List<MultipartFile> files, User user) throws IOException {
         List<FileOnS3> fileOnS3s = new ArrayList<>();
         if (files != null) {
-            fileOnS3s = s3UploadService.putObjects(files, USER_FOLDER_NAME, user.getId());
+            fileOnS3s = s3UploadService.putObjects(files, USER_S3_FOLDER_NAME, user.getId());
         }
 
         // FielOnS3를 User로 변환

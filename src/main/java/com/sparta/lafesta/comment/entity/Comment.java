@@ -6,13 +6,14 @@ import com.sparta.lafesta.like.commentLike.entity.CommentLike;
 import com.sparta.lafesta.review.entity.Review;
 import com.sparta.lafesta.user.entity.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
@@ -35,6 +36,14 @@ public class Comment extends Timestamped {
 
     @OneToMany(mappedBy = "comment", orphanRemoval = true)
     private List<CommentLike> commentLikes = new ArrayList<>();
+
+
+    @Builder
+    public Comment(String content, User user, Review review) {
+        this.content = content;
+        this.user = user;
+        this.review = review;
+    }
 
     public Comment(Review review, CommentRequestDto requestDto, User user) {
         this.review = review;

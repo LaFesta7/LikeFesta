@@ -1,5 +1,7 @@
 package com.sparta.lafesta.user.entity;
 
+import java.util.Arrays;
+
 public enum UserRoleEnum {
     USER(Authority.USER),  // 사용자 권한
     ADMIN(Authority.ADMIN),  // 관리자 권한
@@ -13,6 +15,13 @@ public enum UserRoleEnum {
 
     public String getAuthority() {
         return this.authority;
+    }
+
+    public static UserRoleEnum valueOfRole (String roleStr) {
+        return Arrays.stream(values())
+                .filter(role -> role.getAuthority().equals("ROLE_"+roleStr))
+                .findAny()
+                .orElse(null);
     }
 
     public static class Authority {

@@ -1,12 +1,14 @@
 package com.sparta.lafesta.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.sparta.lafesta.common.dto.ApiResponseDto;
-import com.sparta.lafesta.common.security.UserDetailsImpl;
+import com.sparta.lafesta.common.exception.NotFoundException;
+import com.sparta.lafesta.common.refreshtoken.entity.UserToken;
+import com.sparta.lafesta.common.refreshtoken.repository.RefreshTokenRepository;
 import com.sparta.lafesta.common.security.UserDetailsServiceImpl;
+import com.sparta.lafesta.user.entity.User;
+import com.sparta.lafesta.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,28 +30,64 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
+    private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
+    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, UserRepository userRepository, RefreshTokenRepository refreshTokenRepository) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
 
-        String tokenValue = jwtUtil.getTokenFromRequest(req);
+        String[] tokens = jwtUtil.getTokensFromRequest(req);
 
-        if (StringUtils.hasText(tokenValue)) {
-            // JWT 토큰 substring
-            tokenValue = jwtUtil.substringToken(tokenValue);
-            log.info(tokenValue);
+        String accessToken = tokens[0];
+        String refreshToken = tokens[1];
 
-            if (!jwtUtil.validateToken(tokenValue,res)) {
-                log.error("Token Error");
-                return;
+        if (StringUtils.hasText(accessToken)) {
+
+            if (!jwtUtil.validateToken(accessToken)) {
+                if (jwtUtil.validateToken(refreshToken)) {
+                    //refreshToken은 살아있을 때 AccessToken과 RefreshToken 재발급 후 해당 Jwt로 인증인가 진행
+
+                    log.info("accessToken 재발급");
+
+                    Claims infoFromRefreshToken = jwtUtil.getUserInfoFromToken(refreshToken);
+
+                    String username = infoFromRefreshToken.getSubject();
+                    UserToken foundTokenDto = findFoundTokenDtoFromRedis(username);
+
+                    if (foundTokenDto.getRefreshToken().equals(refreshToken)) {
+                        //재발급
+                        User user = findUserByUsername(username);
+                        tokens = jwtUtil.addJwtToCookie(user, res);
+                    }
+                } else {
+                    res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    res.setContentType("application/json");
+                    String result = new ObjectMapper().writeValueAsString(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "INVALID_TOKEN"));
+
+                    res.getOutputStream().print(result);
+                    return;
+                }
             }
 
-            Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+            Claims info;
+            try {
+                accessToken = tokens[0];
+                info = jwtUtil.getUserInfoFromToken(accessToken);
+            } catch (Exception e) {
+                res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                res.setContentType("application/json");
+                String result = new ObjectMapper().writeValueAsString(new ApiResponseDto(HttpStatus.BAD_REQUEST.value(), "INVALID_TOKEN"));
+
+                res.getOutputStream().print(result);
+                return;
+            }
 
             try {
                 setAuthentication(info.getSubject());
@@ -75,5 +113,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private Authentication createAuthentication(String username) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    }
+
+    private UserToken findFoundTokenDtoFromRedis(String username) {
+        return refreshTokenRepository.findById(username).orElseThrow(()
+                -> new NotFoundException("Redis서버에서 RefreshToken 정보를 찾을 수 없습니다."));
+    }
+
+    private User findUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
     }
 }
