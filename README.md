@@ -318,6 +318,8 @@ github actions 과정에서 node.js 12를 사용하여 오류 발생
 
 <summary>4.2.2. CI 환경 설정 관련 오류</summary>
 
+<br>
+
 <details>
 
 <summary>MySQl 설치 부분</summary>
@@ -488,6 +490,62 @@ github actions 과정에서 node.js 12를 사용하여 오류 발생
           DB_PASSWORD: root
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
           KAKAO_REST_API: ${{ secrets.KAKAO_REST_API }}
+    ```
+
+</details>
+
+<details>
+
+<summary>환경변수 설정 → application.properties 방식으로 변경</summary>
+
+* 기존 application.properties를 레포지토리에 직접 넣고 해당 환경변수를 secrets에 담아 CI/CD 환경을 설정하는 방식은 보안상 좋지 않다고 판단하여 해당 파일 삭제 및 .gitignore 추가 후 application.properties 전체를 sercrets에 담아 CI/CD 환경을 설정하는 방식으로 통일
+
+- 기존 코드
+    
+    ```
+    dev-ci.yml
+    
+    env:
+      DB_URL: ${{ secrets.DB_URL }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+      KAKAO_REST_API: ${{ secrets.KAKAO_REST_API }}
+      MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+      MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+      MAIL_HOST: ${{ secrets.MAIL_HOST }}
+      MAIL_PORT: ${{ secrets.MAIL_PORT }}
+
+    steps:
+        - name: properties 파일 생성
+        run: |
+          cd ./src/main/resources
+          touch ./application-s3.properties
+          echo "${{secrets.APPLICATION_S3_PROPERTIES}}" > ./application-s3.properties
+          touch ./application-redis.properties
+          echo "${{secrets.APPLICATION_REDIS_PROPERTIES}}" > ./application-redis.properties
+    
+- 수정한 코드
+    
+    ```
+    (application.properties 파일 삭제)
+    
+    dev-ci.yml
+    
+      (삭제)
+
+    steps:
+        - name: properties 파일 생성
+        run: |
+          cd ./src/main/resources
+          # 추가--------
+          touch ./application.properties
+          echo "${{secrets.APPLICATION_PROPERTIES}}" > ./application.properties
+          # --------
+          touch ./application-s3.properties
+          echo "${{secrets.APPLICATION_S3_PROPERTIES}}" > ./application-s3.properties
+          touch ./application-redis.properties
+          echo "${{secrets.APPLICATION_REDIS_PROPERTIES}}" > ./application-redis.properties
     ```
 
 </details>
