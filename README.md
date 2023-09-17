@@ -2,6 +2,8 @@
 
 7조 최종프로젝트 '라페스타'
 
+![image (1)](https://github.com/LaFesta7/LikeFesta/assets/131599243/d1e9c0a0-24d3-42c2-b79b-4c68fad5c2d5)
+
 <br>
 
 ## 1. 프로젝트 개요
@@ -17,8 +19,6 @@
 ### [→ 라페스타 발표자료 보러가기](https://www.canva.com/design/DAFuYWiRXCQ/237flMN085Tv00Urxvs_MA/view?utm_content=DAFuYWiRXCQ&utm_campaign=designshare&utm_medium=link&utm_source=viewer)
 
 <br>
-
-![image (1)](https://github.com/LaFesta7/LikeFesta/assets/131599243/d1e9c0a0-24d3-42c2-b79b-4c68fad5c2d5)
 
 #### 🚩 개발 기간
 2023.08.16. ~ 2023.09.17.
