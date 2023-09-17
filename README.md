@@ -29,13 +29,19 @@
 
 <details>
     
-<summary>2.1. 기술 스택</summary>
+<summary>2.1. 서비스 아키텍처</summary>
 
 <br>
 
-- 서비스 아키텍처
-
 ![라페스타 서비스 아키텍처 최종 목표 수정 230913 drawio144](https://github.com/LaFesta7/LikeFesta/assets/131599243/f53cf90a-d4ab-4fbf-9e8b-e9e551ab790b)
+
+</details>
+
+<details>
+    
+<summary>2.2. 기술 스택</summary>
+
+<br>
 
 - Back-end : <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=OpenJDK&logoColor=white"><img src="https://img.shields.io/badge/spring boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"><img src="https://img.shields.io/badge/spring security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"><img src="https://img.shields.io/badge/spring data jpa-6DB33F?style=for-the-badge&logo=spring&logoColor=white"><img src="https://img.shields.io/badge/kakao login api (oauth2.0)-FFCD00?style=for-the-badge&logo=kakao&logoColor=white">
 - Front-end : <img src="https://img.shields.io/badge/jquery-0769AD?style=for-the-badge&logo=jquery&logoColor=white"><img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white"><img src="https://img.shields.io/badge/css3-1572B6?style=for-the-badge&logo=css3&logoColor=white"><img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=white"><img src="https://img.shields.io/badge/kakao map api-FFCD00?style=for-the-badge&logo=kakao&logoColor=white">
@@ -52,7 +58,7 @@
 
 <details>
     
-<summary>2.2. 개발 환경</summary>
+<summary>2.3. 개발 환경</summary>
 
 <br>
 
