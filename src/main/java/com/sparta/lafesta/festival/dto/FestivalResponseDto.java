@@ -1,5 +1,6 @@
 package com.sparta.lafesta.festival.dto;
 
+import com.sparta.lafesta.common.entity.StringFormatter;
 import com.sparta.lafesta.common.s3.dto.FileOnS3Dto;
 import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.review.dto.ReviewResponseDto;
@@ -34,15 +35,15 @@ public class FestivalResponseDto {
 
     public FestivalResponseDto(Festival festival) {
         this.id = festival.getId();
-        this.title = festival.getTitle();
-        this.place = festival.getPlace();
+        this.title = StringFormatter.format(festival.getTitle());
+        this.place = StringFormatter.format(festival.getPlace());
         this.latitude = festival.getLatitude();
         this.longitude = festival.getLongitude();
-        this.content = festival.getContent();
+        this.content = StringFormatter.format(festival.getContent());
         this.openDate = festival.getOpenDate();
         this.endDate = festival.getEndDate();
         this.reservationOpenDate = festival.getReservationOpenDate();
-        this.reservationPlace = festival.getReservationPlace();
+        this.reservationPlace = festival.getReservationPlace() != null ? StringFormatter.format(festival.getReservationPlace()) : "";
         this.officialLink = festival.getOfficialLink();
         this.reviews = festival.getReviews().stream().
                 map(ReviewResponseDto::new).toList();

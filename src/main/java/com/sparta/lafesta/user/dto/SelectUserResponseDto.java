@@ -2,6 +2,7 @@ package com.sparta.lafesta.user.dto;
 
 import com.sparta.lafesta.badge.dto.UserBadgeResponseDto;
 import com.sparta.lafesta.badge.entity.UserBadge;
+import com.sparta.lafesta.common.entity.StringFormatter;
 import com.sparta.lafesta.common.exception.NotFoundException;
 import com.sparta.lafesta.common.s3.dto.FileOnS3Dto;
 import com.sparta.lafesta.user.entity.User;
@@ -29,7 +30,7 @@ public class SelectUserResponseDto {
         this.id = user.getId();
         this.username = user.getUsername();
         this.nickname = user.getNickname();
-        this.introduce = user.getIntroduce();
+        this.introduce = user.getIntroduce() != null ? StringFormatter.format(user.getIntroduce()) : "";
         this.role = user.getRole();
         this.files = user.getUserFileOnS3s().stream().
                 map(FileOnS3Dto::new).toList();
