@@ -214,12 +214,7 @@ public class ReviewServiceImpl implements ReviewService {
     //리뷰 랭킹 조회
     @Override
     @Transactional(readOnly = true)
-    public List<ReviewResponseDto> selectReviewRanking(User user){
-        //회원 확인
-        if (user == null) {
-            throw new IllegalArgumentException("로그인 해주세요");
-        }
-
+    public List<ReviewResponseDto> selectReviewRanking(){
         return reviewRepositoryCustom.findTop3Review().stream()
             .map(ReviewResponseDto::new).toList();
     }

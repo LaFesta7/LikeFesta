@@ -102,10 +102,9 @@ public interface FestivalService {
     /**
      * 페스티벌 랭킹 조회
      *
-     * @param user 권한 확인
      * @return 페스티벌 랭킹 조회 결과
      */
-    List<FestivalResponseDto> selectFestivalRanking(User user);
+    List<FestivalResponseDto> selectFestivalRanking();
 
     /**
      * 페스티벌 키워드 검색

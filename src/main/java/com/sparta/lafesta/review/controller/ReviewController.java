@@ -131,9 +131,8 @@ public class ReviewController {
     @GetMapping("/festivals/reviews/rank")
     @Operation(summary = "리뷰 랭킹 조회", description = "가장 좋아요가 많은 리뷰 TOP3를 조회합니다.")
     public ResponseEntity<List<ReviewResponseDto>> selectReviewRanking(
-        @Parameter(description = "권한 확인을 위해 필요한 User 정보")@AuthenticationPrincipal UserDetailsImpl userDetails
     ){
-        List<ReviewResponseDto> results = reviewService.selectReviewRanking(userDetails.getUser());
+        List<ReviewResponseDto> results = reviewService.selectReviewRanking();
         return ResponseEntity.ok().body(results);
     }
 }
