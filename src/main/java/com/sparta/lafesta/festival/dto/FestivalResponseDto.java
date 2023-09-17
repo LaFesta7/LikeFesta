@@ -25,6 +25,8 @@ public class FestivalResponseDto {
     private String officialLink;
     private List<ReviewResponseDto> reviews;
     private List<FileOnS3Dto> files;
+    private String fileName;
+    private String fileUrl;
     private List<TagResponseDto> tags;
     private int likeCnt;
     private Long editorId;
@@ -46,6 +48,8 @@ public class FestivalResponseDto {
                 map(ReviewResponseDto::new).toList();
         this.files = festival.getFestivalFileOnS3s().stream().
                 map(FileOnS3Dto::new).toList();
+        this.fileName = files.size() > 0 ? files.get(0).getKeyName() : "image";
+        this.fileUrl = files.size() > 0 ? files.get(0).getUploadFileUrl() : "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FxGuK9%2FbtsufX7IOe1%2FdJbJpCZ5UM6CYK5vGkS8Tk%2Fimg.png";
         this.tags = festival.getTags().stream()
                 .map(FestivalTag::getTag).map(TagResponseDto::new).toList();
         this.likeCnt = festival.getFestivalLikes().size();

@@ -42,7 +42,7 @@ function getFestivalEditPage() {
 
         <label for="imageInput">페스티벌 이미지</label>
         <input type="file" id="imageInput" name="imageInput" accept="image/*" onchange="previewImage(this)"><br>
-        <img id="preview-image" width="200" alt="" src="${data.files[0].uploadFileUrl}"><br><br>
+        <img id="preview-image" width="200" alt="" src="${data.fileUrl}"><br><br>
 
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); width: 100%">
             <div style="width: 90%">

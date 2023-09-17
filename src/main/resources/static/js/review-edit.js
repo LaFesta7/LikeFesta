@@ -33,7 +33,7 @@ function getReviewInputs() {
                 <div>
                     <label for="imageInput">첨부파일:</label>
                     <input type="file" id="imageInput" name="imageInput" onchange="showPreviewImage(this)">
-                    <img id="preview-image" width="200" alt="" src="${data.files[0].uploadFileUrl}"><br><br>
+                    <img id="preview-image" width="200" alt="" src="${data.fileUrl}"><br><br>
                 </div>
 
                 <div>

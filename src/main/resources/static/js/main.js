@@ -373,8 +373,7 @@ function getRank() {
             for (let i = 0; i < data.length; i++) {
                 const slide = `
                 <div class="rank" onclick="moveFestival(${data[i].id})">
-                    <img style="width: 100%; height: 65vh; object-fit: cover" src="${data[i].files[0] ? data[i].files[0].uploadFileUrl
-                    : '/images/background/img-21.jpg'}" alt="">
+                    <img style="width: 100%; height: 65vh; object-fit: cover" src="${data[i].fileUrl}" alt="">
                     <div style="padding: 15px;">
                         <strong id="rank${data[i].id}" style="line-height: 1.3; font-size: 30px; color: white; margin-left: 10px">${i + 1}. ${data[i].title}</strong>
                     </div>
@@ -408,8 +407,7 @@ function getRank() {
             for (let i = 0; i < data.length; i++) {
                 const slide = `
                 <div class="rank" onclick="moveReview(${data[i].festivalId}, ${data[i].id})">
-                    <img style="width: 100%; height: 65vh; object-fit: cover" src="${data[i].files[0] ? data[i].files[0].uploadFileUrl
-                    : '/images/best1.jpg'}" alt=""/>
+                    <img style="width: 100%; height: 65vh; object-fit: cover" src="${data[i].fileUrl}" alt=""/>
                     <div style="padding: 15px;">
                         <strong id="rank${data[i].id}" style="line-height: 1.3; font-size: 30px; color: white; margin-left: 10px">${i + 1}. ${data[i].festivalTitle} : ${data[i].title}</strong>
                     </div>
@@ -443,8 +441,7 @@ function getRank() {
             for (let i = 0; i < data.length; i++) {
                 const slide = `
                 <div class="rank" onclick="moveProfile(${data[i].id})">
-                    <img style="width: 100%; height: 65vh; object-fit: cover" src="${data[i].files[0] ? data[i].files[0].uploadFileUrl
-                    : 'https://vignette.wikia.nocookie.net/the-sun-vanished/images/5/5d/Twitter-avi-gender-balanced-figure.png/revision/latest?cb=20180713020754'}" alt=""/>
+                    <img style="width: 100%; height: 65vh; object-fit: cover" src="${data[i].fileUrl}" alt=""/>
                     <div style="padding: 15px;">
                         <strong id="rank${data[i].id}" style="line-height: 1.3; font-size: 30px; color: white; margin-left: 10px">${i + 1}. ${data[i].nickname}</strong>
                     </div>
