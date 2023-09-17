@@ -1,6 +1,6 @@
 # 🎉 LaFesta
 
-7조 최종프로젝트 '라페스타'
+'판교피플' 최종프로젝트 '라페스타'
 
 ![image (1)](https://github.com/LaFesta7/LikeFesta/assets/131599243/d1e9c0a0-24d3-42c2-b79b-4c68fad5c2d5)
 
