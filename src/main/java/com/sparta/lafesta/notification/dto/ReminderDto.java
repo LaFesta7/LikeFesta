@@ -1,5 +1,6 @@
 package com.sparta.lafesta.notification.dto;
 
+import com.sparta.lafesta.common.entity.StringFormatter;
 import com.sparta.lafesta.festival.entity.Festival;
 import com.sparta.lafesta.follow.entity.FestivalFollow;
 import com.sparta.lafesta.notification.entity.FestivalReminderType;
@@ -26,18 +27,18 @@ public class ReminderDto {
     private List<String> festivalFollowUsersEmail;
 
     public ReminderDto(Festival festival, FestivalReminderType type) {
-        this.mailTitle = findMailtitle(festival, type);
-        this.mailContent = findMailContent(festival, type);
+        this.mailTitle = StringFormatter.format(findMailtitle(festival, type));
+        this.mailContent = StringFormatter.format(findMailContent(festival, type));
         this.festivalId = festival.getId();
-        this.festivalTitle = festival.getTitle();
+        this.festivalTitle = StringFormatter.format(festival.getTitle());
         this.festivalOpenDate = formFestivalDate(festival, FestivalReminderType.FESTIVAL_OPEN);
-        this.festivalPlace = festival.getPlace();
+        this.festivalPlace = StringFormatter.format(festival.getPlace());
         if (type != FestivalReminderType.RESERVATION_OPEN) {
             this.reservationOpenDate = null;
             this.reservationPlace = null;
         } else {
             this.reservationOpenDate = formFestivalDate(festival, FestivalReminderType.RESERVATION_OPEN);
-            this.reservationPlace = festival.getReservationPlace();
+            this.reservationPlace = StringFormatter.format(festival.getReservationPlace());
         }
         this.festivalFollowUsers = festival.getFestivalFollowers().stream()
                 .map(FestivalFollow::getFollowingFestivalUser)

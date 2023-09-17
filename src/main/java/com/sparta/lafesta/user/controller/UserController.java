@@ -71,9 +71,8 @@ public class UserController {
     @GetMapping("/users/rank")
     @Operation(summary = "인플루언서 랭킹 조회", description = "가장 팔로워 수가 많은 유저 TOP3를 조회합니다.")
     public ResponseEntity<List<SelectUserResponseDto>> selectUserRanking(
-            @Parameter(description = "권한 확인을 위해 필요한 User 정보") @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        List<SelectUserResponseDto> results = userService.selectUserRanking(userDetails.getUser());
+        List<SelectUserResponseDto> results = userService.selectUserRanking();
         return ResponseEntity.ok().body(results);
     }
 

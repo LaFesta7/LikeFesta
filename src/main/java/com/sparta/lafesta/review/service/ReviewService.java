@@ -94,10 +94,9 @@ public interface ReviewService {
     /**
      * 리뷰 랭킹 조회
      *
-     * @param user 회원 권한 확인
      * @return 리뷰 랭킹 조회 결과
      */
-    List<ReviewResponseDto> selectReviewRanking(User user);
+    List<ReviewResponseDto> selectReviewRanking();
 
     /**
      * 리뷰 가져오기

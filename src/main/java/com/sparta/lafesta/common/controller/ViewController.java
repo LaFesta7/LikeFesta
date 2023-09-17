@@ -64,12 +64,6 @@ public class ViewController {
         return "my-badge";
     }
 
-    @GetMapping("/users/profile/followings-page")
-    public String showFollowings(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info(userDetails.getUsername());
-        return "my-follow";
-    }
-
     @GetMapping("/users/profile/edit-page")
     public String editProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return "mypage-edit";

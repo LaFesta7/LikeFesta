@@ -37,7 +37,7 @@ function getReview() {
         type: 'GET',
         success: function (data) {
             console.log(data);
-            var imageSrc = data.files[0] ? data.files[0].uploadFileUrl : '/images/best1.jpg';
+            var imageSrc = data.fileUrl;
             let html = `
                 <div  class="post-header">
                     <div class="post-title">${data.title}</div>
