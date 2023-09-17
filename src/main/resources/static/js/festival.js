@@ -57,7 +57,9 @@ function getFestival() {
                             <input type="submit" value="삭제" style="background-color: crimson" onclick="alertDeleteFestival('${data.title}')">
                             <input type="submit" value="수정" style="margin-left: 10px" onclick="alertEditFestival('${data.title}')">
                         </div>
+
                         <img src="${data.fileUrl}" alt="축제 이미지" class="festival-image">
+
                         <div style="display: flex">
                             <div class="festival-description">
                                 <a href="#" style="text-decoration: none"><strong onclick="moveProfile(${data.editorId})" style="font-size: larger; margin-right: 15px">${data.editorName}</strong></a></div>
