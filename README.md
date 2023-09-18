@@ -936,8 +936,8 @@ public class StringFormatter {
 
 #### [권진혁(리더)](https://github.com/05030522)
 
-* Back: User 인증인가 및 회원가입/로그인, 소셜 로그인, 페스티벌 라인업, CI/CD 구축 및 도메인 설정
-* Front: 카카오맵 오픈 API 적용, 정적페이지 작성, 백 연결 1차
+* Back: User 인증인가 및 회원가입/로그인, 소셜 로그인, 페스티벌 라인업, CI/CD 구축 및 도메인 설정, Swap Memory 설정
+* Front: 카카오맵 오픈 API 적용, 정적페이지 작성, 백 연결 1차, https 설정
 * Etc.: READ ME 1차 작성, 기술버전 기록, 발표 대본 및 자료(PPT) 준비, 중간발표 시연영상 제작, 최종 1차 발표 영상 제작, 중간 발표 및 최종 발표
 
 #### [김현우(부리더)](https://github.com/Wooin-dev)
