@@ -17,7 +17,7 @@
 엔터테이먼트 웹서비스 입니다.
 <br>
 
-### [→ 라페스타 서비스 보러가기](http://lafesta.site/)
+### 2023.10.31. 서비스 배포 종료
 ### [→ 라페스타 시연영상 보러가기](https://www.youtube.com/watch?v=Yo1aidZtxkg)
 ### [→ 라페스타 발표자료 보러가기](https://www.canva.com/design/DAFuYWiRXCQ/237flMN085Tv00Urxvs_MA/view?utm_content=DAFuYWiRXCQ&utm_campaign=designshare&utm_medium=link&utm_source=viewer)
 
